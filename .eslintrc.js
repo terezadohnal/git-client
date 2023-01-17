@@ -9,6 +9,9 @@ module.exports = {
     'react/jsx-filename-extension': [2, { extensions: ['.tsx', '.jsx'] }],
     'react/function-component-definition': 'off',
     'import/extensions': 'off',
+    'import/prefer-default-export': 'off',
+    'no-undef': 'off',
+    'react/jsx-props-no-spreading': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,
