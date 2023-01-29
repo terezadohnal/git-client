@@ -1,17 +1,9 @@
-/* eslint global-require: off, no-console: off, promise/always-return: off */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { simpleGit } from 'simple-git';
+import fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
@@ -25,10 +17,55 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
+ipcMain.on('message', (event, arg) => {
+  console.log(arg);
+});
+
+ipcMain.handle('clone', async (event, arg) => {
+  console.log(arg);
+  const git = simpleGit();
+  try {
+    const dir = '/Users/tereza/Downloads/repo';
+    let filesLength = 0;
+    fs.readdir(dir, (_, files) => {
+      filesLength = files.length;
+    });
+    if (filesLength === 0) {
+      await git.clone(`${arg}`, '/Users/tereza/Downloads/repo');
+      return 'Repository cloned';
+    }
+    throw new Error('Directory is not empty');
+  } catch (err) {
+    return err;
+  }
+});
+
+ipcMain.on('clone-repository', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `Repository URL: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+  const git = simpleGit();
+  try {
+    const dir = '/Users/tereza/Downloads/repo';
+    let filesLength = 0;
+    fs.readdir(dir, (err, files) => {
+      filesLength = files.length;
+      if (err) {
+        console.log(err);
+      }
+    });
+    if (filesLength > 0) {
+      await git.clone(`${arg}`, '/Users/tereza/Downloads/repo');
+      await git.log();
+      event.reply('clone-repository', msgTemplate('Repository cloned'));
+    } else {
+      event.reply('clone-repository', msgTemplate('Directory is not empty'));
+    }
+  } catch (err) {
+    console.log(err);
+    event.reply(
+      'clone-repository',
+      msgTemplate('Repository not cloned, something went wrong')
+    );
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {

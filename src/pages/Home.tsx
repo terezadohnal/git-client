@@ -1,10 +1,23 @@
 import { AppInput } from 'components/AppInput/AppInput';
-import { useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
+import { AppButton } from 'components/AppButton/AppButton';
+import { useForm, FormProvider } from 'react-hook-form';
 
 export const Home = () => {
-  const [value, setValue] = useState<string>();
-  window.electron.ipcRenderer.sendMessage('ipc-example', [value]);
+  const methods = useForm({
+    defaultValues: {
+      repository: 'hello',
+    },
+  });
+
+  const onSubmit = async (data: { repository: string }) => {
+    // window.electron.ipcRenderer.cloneRepository(data.repository);
+    const response = await window.electron.ipcRenderer.cloneRepository(
+      data.repository
+    );
+    console.log(response);
+  };
+
   return (
     <Grid
       container
@@ -12,17 +25,29 @@ export const Home = () => {
       justifyContent="center"
       alignItems="center"
       width="100%"
+      gap={3}
     >
-      <h3>Here is your best Git app</h3>
-      <h5>Clone your repo</h5>
-      <form>
-        <AppInput
-          name="repository"
-          placeholder="Repository name"
-          onChange={(val) => setValue(val.target.value)}
-          fullWidth
-        />
-      </form>
+      <Typography variant="h3">Here is your best Git app</Typography>
+      <Typography variant="h5">Clone your repo</Typography>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <Grid item>
+            <Grid container justifyContent="center" gap={3}>
+              <AppInput
+                name="repository"
+                label="Repository"
+                id="repository"
+                placeholder="Repository name"
+                type="text"
+                fullWidth
+              />
+              <AppButton variant="contained" color="secondary" type="submit">
+                Clone
+              </AppButton>
+            </Grid>
+          </Grid>
+        </form>
+      </FormProvider>
     </Grid>
   );
 };
