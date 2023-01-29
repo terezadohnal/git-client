@@ -1,5 +1,6 @@
+/* eslint-disable global-require */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { simpleGit } from 'simple-git';
@@ -22,7 +23,6 @@ ipcMain.on('message', (event, arg) => {
 });
 
 ipcMain.handle('clone', async (event, arg) => {
-  console.log(arg);
   const git = simpleGit();
   try {
     const dir = '/Users/tereza/Downloads/repo';
@@ -31,7 +31,7 @@ ipcMain.handle('clone', async (event, arg) => {
       filesLength = files.length;
     });
     if (filesLength === 0) {
-      await git.clone(`${arg}`, '/Users/tereza/Downloads/repo');
+      await git.clone(`${arg.repoPath}`, arg.path);
       return 'Repository cloned';
     }
     throw new Error('Directory is not empty');
@@ -39,6 +39,16 @@ ipcMain.handle('clone', async (event, arg) => {
     return err;
   }
 });
+
+const handleFileOpen = async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ['openDirectory', 'createDirectory'],
+  });
+  if (canceled) {
+    return null;
+  }
+  return filePaths[0];
+};
 
 ipcMain.on('clone-repository', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `Repository URL: ${pingPong}`;
@@ -163,7 +173,9 @@ app.on('window-all-closed', () => {
 
 app
   .whenReady()
+  // eslint-disable-next-line promise/always-return
   .then(() => {
+    ipcMain.handle('dialog:openFile', handleFileOpen);
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
@@ -171,4 +183,4 @@ app
       if (mainWindow === null) createWindow();
     });
   })
-  .catch(console.log);
+  .catch((e) => console.log(e));

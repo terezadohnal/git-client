@@ -24,7 +24,10 @@ const API = {
       ipcRenderer.send('message', args);
     },
 
-    cloneRepository: (args: string) => ipcRenderer.invoke('clone', args),
+    cloneRepository: (args: { repoPath: string; path: string }) =>
+      ipcRenderer.invoke('clone', args),
+
+    openDialog: () => ipcRenderer.invoke('dialog:openFile'),
   },
 };
 

@@ -1,9 +1,11 @@
 import { AppInput } from 'components/AppInput/AppInput';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Text, Container, Input, Spacer } from '@nextui-org/react';
 import { AppButton } from 'components/AppButton/AppButton';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useState } from 'react';
 
 export const Home = () => {
+  const [value, setValue] = useState('');
   const methods = useForm({
     defaultValues: {
       repository: 'hello',
@@ -11,43 +13,71 @@ export const Home = () => {
   });
 
   const onSubmit = async (data: { repository: string }) => {
-    // window.electron.ipcRenderer.cloneRepository(data.repository);
-    const response = await window.electron.ipcRenderer.cloneRepository(
-      data.repository
-    );
-    console.log(response);
+    if (value) {
+      const response = await window.electron.ipcRenderer.cloneRepository({
+        repoPath: data.repository,
+        path: value,
+      });
+      console.log(response);
+    }
+  };
+
+  const onOpen = async () => {
+    console.log('clicked');
+    const filePath = await window.electron.ipcRenderer.openDialog();
+    setValue(filePath);
   };
 
   return (
-    <Grid
-      container
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      width="100%"
-      gap={3}
-    >
-      <Typography variant="h3">Here is your best Git app</Typography>
-      <Typography variant="h5">Clone your repo</Typography>
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <Grid item>
-            <Grid container justifyContent="center" gap={3}>
-              <AppInput
-                name="repository"
-                label="Repository"
-                id="repository"
-                placeholder="Repository name"
-                type="text"
-                fullWidth
-              />
-              <AppButton variant="contained" color="secondary" type="submit">
-                Clone
-              </AppButton>
-            </Grid>
+    <Container fluid justify="center" gap={5}>
+      <Grid.Container justify="center" direction="column" alignItems="center">
+        <Text h3>Here is your best Git app</Text>
+        <Text h5>Clone your repo</Text>
+      </Grid.Container>
+      <Spacer y={2} />
+      <Grid.Container direction="column" alignItems="center">
+        <Grid.Container direction="row" justify="center" alignItems="center">
+          <Grid>
+            <Input readOnly placeholder="Where" value={value} />
           </Grid>
-        </form>
-      </FormProvider>
-    </Grid>
+          <Spacer x={1} />
+          <Grid>
+            <AppButton flat color="secondary" size="sm" onClick={onOpen}>
+              Open folder
+            </AppButton>
+          </Grid>
+        </Grid.Container>
+        <Spacer y={2} />
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <Container fluid justify="center" direction="column">
+              <Grid>
+                {/* @ts-ignore */}
+                <AppInput
+                  name="repository"
+                  id="repository"
+                  labelPlaceholder="Repository name"
+                  type="text"
+                  clearable
+                  fullWidth
+                  disabled={!value}
+                />
+              </Grid>
+              <Spacer y={1} />
+              <Grid>
+                <AppButton
+                  color="gradient"
+                  shadow
+                  type="submit"
+                  disabled={!value}
+                >
+                  Clone
+                </AppButton>
+              </Grid>
+            </Container>
+          </form>
+        </FormProvider>
+      </Grid.Container>
+    </Container>
   );
 };

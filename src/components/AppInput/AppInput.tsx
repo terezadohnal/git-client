@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { TextField } from '@mui/material';
+import { Input } from '@nextui-org/react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { AppInputProps } from './types';
 
@@ -8,7 +8,8 @@ export const AppInput: FC<AppInputProps> = ({
   type,
   placeholder,
   fullWidth,
-  size = 'small',
+  size = 'md',
+  ...props
 }) => {
   const { control } = useFormContext();
   return (
@@ -17,15 +18,14 @@ export const AppInput: FC<AppInputProps> = ({
       control={control}
       render={({ field: { onChange } }) => {
         return (
-          <TextField
+          <Input
             name={name}
             onChange={onChange}
             type={type}
             placeholder={placeholder}
-            size={size}
-            color="secondary"
             fullWidth={fullWidth}
-            InputProps={{ inputProps: { color: 'white' } }}
+            size={size}
+            {...props}
           />
         );
       }}

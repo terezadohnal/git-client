@@ -1,6 +1,6 @@
-import { TextFieldProps } from '@mui/material';
+import { InputProps } from '@nextui-org/react';
 
-export type AppInputProps = TextFieldProps & {
+export type AppInputProps = InputProps & {
   name: string;
   unit?: string;
   float?: boolean;
