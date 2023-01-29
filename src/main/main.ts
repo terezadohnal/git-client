@@ -7,6 +7,7 @@ import { simpleGit } from 'simple-git';
 import fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { CHANELS } from '../constants';
 
 class AppUpdater {
   constructor() {
@@ -22,10 +23,10 @@ ipcMain.on('message', (event, arg) => {
   console.log(arg);
 });
 
-ipcMain.handle('clone', async (event, arg) => {
+ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
   const git = simpleGit();
   try {
-    const dir = '/Users/tereza/Downloads/repo';
+    const dir = arg.path;
     let filesLength = 0;
     fs.readdir(dir, (_, files) => {
       filesLength = files.length;
@@ -50,33 +51,7 @@ const handleFileOpen = async () => {
   return filePaths[0];
 };
 
-ipcMain.on('clone-repository', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `Repository URL: ${pingPong}`;
-  const git = simpleGit();
-  try {
-    const dir = '/Users/tereza/Downloads/repo';
-    let filesLength = 0;
-    fs.readdir(dir, (err, files) => {
-      filesLength = files.length;
-      if (err) {
-        console.log(err);
-      }
-    });
-    if (filesLength > 0) {
-      await git.clone(`${arg}`, '/Users/tereza/Downloads/repo');
-      await git.log();
-      event.reply('clone-repository', msgTemplate('Repository cloned'));
-    } else {
-      event.reply('clone-repository', msgTemplate('Directory is not empty'));
-    }
-  } catch (err) {
-    console.log(err);
-    event.reply(
-      'clone-repository',
-      msgTemplate('Repository not cloned, something went wrong')
-    );
-  }
-});
+ipcMain.handle(CHANELS.OPEN_FILE, handleFileOpen);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -175,7 +150,6 @@ app
   .whenReady()
   // eslint-disable-next-line promise/always-return
   .then(() => {
-    ipcMain.handle('dialog:openFile', handleFileOpen);
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the

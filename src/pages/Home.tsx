@@ -2,21 +2,26 @@ import { AppInput } from 'components/AppInput/AppInput';
 import { Grid, Text, Container, Input, Spacer } from '@nextui-org/react';
 import { AppButton } from 'components/AppButton/AppButton';
 import { useForm, FormProvider } from 'react-hook-form';
-import { useState } from 'react';
+import {
+  useAppState,
+  useAppStateDispatch,
+  StateAction,
+} from '../context/AppStateContext/AppStateProvider';
 
 export const Home = () => {
-  const [value, setValue] = useState('');
+  const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const methods = useForm({
     defaultValues: {
-      repository: 'hello',
+      repository: '',
     },
   });
 
   const onSubmit = async (data: { repository: string }) => {
-    if (value) {
+    if (appState.repositoryPath) {
       const response = await window.electron.ipcRenderer.cloneRepository({
         repoPath: data.repository,
-        path: value,
+        path: appState.repositoryPath,
       });
       console.log(response);
     }
@@ -25,7 +30,12 @@ export const Home = () => {
   const onOpen = async () => {
     console.log('clicked');
     const filePath = await window.electron.ipcRenderer.openDialog();
-    setValue(filePath);
+    appStateDispatch({
+      type: StateAction.SET_REPOSITORY_PATH,
+      payload: {
+        repositoryPath: filePath,
+      },
+    });
   };
 
   return (
@@ -38,7 +48,11 @@ export const Home = () => {
       <Grid.Container direction="column" alignItems="center">
         <Grid.Container direction="row" justify="center" alignItems="center">
           <Grid>
-            <Input readOnly placeholder="Where" value={value} />
+            <Input
+              readOnly
+              placeholder="Where"
+              value={appState.repositoryPath}
+            />
           </Grid>
           <Spacer x={1} />
           <Grid>
@@ -60,7 +74,7 @@ export const Home = () => {
                   type="text"
                   clearable
                   fullWidth
-                  disabled={!value}
+                  disabled={!appState.repositoryPath}
                 />
               </Grid>
               <Spacer y={1} />
@@ -69,7 +83,7 @@ export const Home = () => {
                   color="gradient"
                   shadow
                   type="submit"
-                  disabled={!value}
+                  disabled={!appState.repositoryPath}
                 >
                   Clone
                 </AppButton>

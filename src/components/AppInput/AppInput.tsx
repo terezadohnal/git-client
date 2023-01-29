@@ -16,11 +16,11 @@ export const AppInput: FC<AppInputProps> = ({
     <Controller
       name={name}
       control={control}
-      render={({ field: { onChange } }) => {
+      render={({ field }) => {
         return (
           <Input
+            {...field}
             name={name}
-            onChange={onChange}
             type={type}
             placeholder={placeholder}
             fullWidth={fullWidth}

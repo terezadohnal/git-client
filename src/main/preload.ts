@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import { CHANELS } from '../constants';
 
-export type Channels = 'ipc-example';
+// export type Channels = 'ipc-example';
 
 const API = {
   ipcRenderer: {
@@ -25,9 +26,9 @@ const API = {
     },
 
     cloneRepository: (args: { repoPath: string; path: string }) =>
-      ipcRenderer.invoke('clone', args),
+      ipcRenderer.invoke(CHANELS.CLONE, args),
 
-    openDialog: () => ipcRenderer.invoke('dialog:openFile'),
+    openDialog: () => ipcRenderer.invoke(CHANELS.OPEN_FILE),
   },
 };
 
