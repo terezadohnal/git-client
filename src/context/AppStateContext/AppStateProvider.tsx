@@ -1,3 +1,4 @@
+import { CommitDTO } from 'helpers/types';
 import {
   ReactElement,
   useReducer,
@@ -9,6 +10,7 @@ import { StateAction } from './types';
 
 interface AppState {
   repositoryPath: string;
+  commits: CommitDTO[];
 }
 
 interface SetRepositoryPathAction {
@@ -18,7 +20,14 @@ interface SetRepositoryPathAction {
   };
 }
 
-export type AppStateAction = SetRepositoryPathAction;
+interface SetCommitsAction {
+  type: StateAction.SET_COMMITS;
+  payload: {
+    commits: CommitDTO[];
+  };
+}
+
+export type AppStateAction = SetRepositoryPathAction | SetCommitsAction;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -32,6 +41,11 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
         ...state,
         repositoryPath: action.payload.repositoryPath,
       };
+    case StateAction.SET_COMMITS:
+      return {
+        ...state,
+        commits: action.payload.commits,
+      };
     default:
       return state;
   }
@@ -39,6 +53,7 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
 
 const initialAppState: AppState = {
   repositoryPath: '',
+  commits: [],
 };
 
 export default function AppStateProvider(props: { children: ReactElement }) {

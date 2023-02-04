@@ -25,7 +25,6 @@ export const Home = () => {
         remote: data.repository,
         target: appState.repositoryPath,
       });
-      console.log(response);
       if (response) {
         navigate('/repository', { replace: true });
       }

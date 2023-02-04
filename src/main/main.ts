@@ -51,7 +51,7 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (event, arg) => {
       const branches = await git.branch();
       return JSON.stringify({
         status: status ?? null,
-        logOfCommits: logOfCommits ? logOfCommits.all : null,
+        commits: logOfCommits ? logOfCommits.all : null,
         branches: branches ? branches.all : null,
       });
     }
