@@ -33,12 +33,29 @@ ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
     });
     if (filesLength === 0) {
       await git.clone(`${arg.remote}`, arg.target);
-      await git.cwd({ path: arg.target, root: true });
-      const status = await git.status();
-      console.log('status', status ?? 'empty');
       return 'Repository cloned';
     }
     throw new Error('Directory is not empty');
+  } catch (err) {
+    return err;
+  }
+});
+
+ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (event, arg) => {
+  const git: SimpleGit = simpleGit({ baseDir: arg.path });
+  try {
+    const isRepo = await git.checkIsRepo();
+    if (isRepo) {
+      const status = await git.status();
+      const logOfCommits = await git.log();
+      const branches = await git.branch();
+      return JSON.stringify({
+        status: status ?? null,
+        logOfCommits: logOfCommits ? logOfCommits.all : null,
+        branches: branches ? branches.all : null,
+      });
+    }
+    return 'Not a repository';
   } catch (err) {
     return err;
   }

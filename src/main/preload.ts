@@ -29,6 +29,9 @@ const API = {
       ipcRenderer.invoke(CHANELS.CLONE, args),
 
     openDialog: () => ipcRenderer.invoke(CHANELS.OPEN_FILE),
+
+    fetchDirectoryStatus: (args: { path: string }) =>
+      ipcRenderer.invoke(CHANELS.FETCH_DIRECTORY_STATUS, args),
   },
 };
 
