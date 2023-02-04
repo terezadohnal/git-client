@@ -3,7 +3,7 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import { simpleGit } from 'simple-git';
+import { SimpleGit, simpleGit } from 'simple-git';
 import fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
@@ -24,15 +24,18 @@ ipcMain.on('message', (event, arg) => {
 });
 
 ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
-  const git = simpleGit();
+  const git: SimpleGit = simpleGit();
   try {
-    const dir = arg.path;
+    const dir = arg.target;
     let filesLength = 0;
     fs.readdir(dir, (_, files) => {
       filesLength = files.length;
     });
     if (filesLength === 0) {
-      await git.clone(`${arg.repoPath}`, arg.path);
+      await git.clone(`${arg.remote}`, arg.target);
+      await git.cwd({ path: arg.target, root: true });
+      const status = await git.status();
+      console.log('status', status ?? 'empty');
       return 'Repository cloned';
     }
     throw new Error('Directory is not empty');

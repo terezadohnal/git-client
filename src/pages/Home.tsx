@@ -20,8 +20,8 @@ export const Home = () => {
   const onSubmit = async (data: { repository: string }) => {
     if (appState.repositoryPath) {
       const response = await window.electron.ipcRenderer.cloneRepository({
-        repoPath: data.repository,
-        path: appState.repositoryPath,
+        remote: data.repository,
+        target: appState.repositoryPath,
       });
       console.log(response);
     }
