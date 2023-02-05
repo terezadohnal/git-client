@@ -13,7 +13,7 @@ body {
     #a97ebb 129.35%
   ); */
   font-family: sans-serif;
-  overflow-y: hidden;
+  overflow-y: scroll;
   display: flex;
   justify-content: center;
   align-items: center;
