@@ -11,6 +11,7 @@ import { StateAction } from './types';
 interface AppState {
   repositoryPath: string;
   commits: CommitDTO[];
+  commitHash: string;
 }
 
 interface SetRepositoryPathAction {
@@ -26,8 +27,17 @@ interface SetCommitsAction {
     commits: CommitDTO[];
   };
 }
+interface SetCommitAction {
+  type: StateAction.SET_COMMIT;
+  payload: {
+    commitHash: string;
+  };
+}
 
-export type AppStateAction = SetRepositoryPathAction | SetCommitsAction;
+export type AppStateAction =
+  | SetRepositoryPathAction
+  | SetCommitsAction
+  | SetCommitAction;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -46,6 +56,11 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
         ...state,
         commits: action.payload.commits,
       };
+    case StateAction.SET_COMMIT:
+      return {
+        ...state,
+        commitHash: action.payload.commitHash,
+      };
     default:
       return state;
   }
@@ -54,6 +69,7 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
 const initialAppState: AppState = {
   repositoryPath: '',
   commits: [],
+  commitHash: '',
 };
 
 export default function AppStateProvider(props: { children: ReactElement }) {

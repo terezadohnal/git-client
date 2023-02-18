@@ -15,3 +15,22 @@ export type Directory = {
   commits: CommitDTO[];
   branches: BranchSummary;
 };
+
+export type Edge = {
+  attributes: {
+    size: number;
+  };
+  key: string;
+  source: string;
+  target: string;
+};
+
+export type Node = {
+  attributes: {
+    label: string;
+    size: number;
+    x: number;
+    y: number;
+  };
+  key: string;
+};

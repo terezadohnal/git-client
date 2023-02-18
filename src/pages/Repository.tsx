@@ -1,4 +1,4 @@
-import { Grid, Text } from '@nextui-org/react';
+import { Grid, Text, Button } from '@nextui-org/react';
 import {
   StateAction,
   useAppState,
@@ -6,25 +6,14 @@ import {
 } from 'context/AppStateContext/AppStateProvider';
 import { Directory } from 'helpers/types';
 import { useCallback, useEffect, useMemo } from 'react';
-import { MultiGraph } from 'graphology';
-import { SigmaContainer, useLoadGraph } from '@react-sigma/core';
+import { SigmaContainer } from '@react-sigma/core';
 import '@react-sigma/core/lib/react-sigma.min.css';
-
-const LoadGraph = (props: { data: any }) => {
-  const { data } = props;
-  const loadGraph = useLoadGraph();
-
-  useEffect(() => {
-    const graph = new MultiGraph();
-    graph.import(data);
-    loadGraph(graph);
-  }, [loadGraph, data]);
-
-  return null;
-};
+import { useNavigate } from 'react-router-dom';
+import { LoadGraph } from 'components/LoadGraph/LoadGraph';
 
 export const Repository = () => {
   const appState = useAppState();
+  const navigate = useNavigate();
   const appStateDispatch = useAppStateDispatch();
 
   const fetchDirectory = useCallback(async () => {
@@ -71,9 +60,19 @@ export const Repository = () => {
     };
   }, [commits]);
 
+  const onBackPress = () => {
+    window.localStorage.removeItem('repo');
+    navigate('/', { replace: true });
+  };
+
   return (
     <Grid.Container css={{ h: '100vh', w: '1024px' }} justify="center">
-      <Text h4>Repository page</Text>
+      <Grid justify="space-between" direction="row" css={{ margin: 10 }}>
+        <Button size="sm" color="secondary" rounded flat onPress={onBackPress}>
+          Back
+        </Button>
+        <Text h4>Repository page</Text>
+      </Grid>
       <SigmaContainer
         style={{
           height: '3000px',
@@ -82,8 +81,8 @@ export const Repository = () => {
           padding: 0,
         }}
         settings={{
-          maxCameraRatio: 1,
-          minCameraRatio: 1,
+          maxCameraRatio: 2,
+          minCameraRatio: 0,
           defaultNodeColor: '#BC9EC1',
           defaultEdgeColor: '#BC9EC1',
         }}
