@@ -102,6 +102,7 @@
     "graphology-types": "^0.24.7",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
+    "react-diff-view": "^2.5.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.42.1",
     "react-router-dom": "^6.4.0",

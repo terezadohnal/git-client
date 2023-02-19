@@ -32,6 +32,12 @@ const API = {
 
     fetchDirectoryStatus: (args: { path: string }) =>
       ipcRenderer.invoke(CHANELS.FETCH_DIRECTORY_STATUS, args),
+
+    getCommitDiff: (args: {
+      path: string;
+      commitHash: string;
+      previousCommitHash: string;
+    }) => ipcRenderer.invoke(CHANELS.GET_COMMIT_DIFF, args),
   },
 };
 

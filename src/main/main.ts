@@ -61,6 +61,21 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (event, arg) => {
   }
 });
 
+ipcMain.handle(CHANELS.GET_COMMIT_DIFF, async (event, arg) => {
+  const git: SimpleGit = simpleGit({ baseDir: arg.path });
+  try {
+    const diff = await git.diff([arg.commitHash, arg.previousCommitHash]);
+    const diffSummary = await git.diffSummary();
+
+    return JSON.stringify({
+      diffSummary: diffSummary ?? null,
+      diff: diff ?? null,
+    });
+  } catch (error) {
+    return error;
+  }
+});
+
 const handleFileOpen = async () => {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openDirectory', 'createDirectory'],

@@ -4,6 +4,7 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { NextUIProvider } from '@nextui-org/react';
 import './App.css';
 import AppStateProvider from 'context/AppStateContext/AppStateProvider';
+import { CommitDetail } from 'pages/CommitDetail';
 
 export default function App() {
   return (
@@ -12,6 +13,10 @@ export default function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route
+              path="/repository/commits/:hash"
+              element={<CommitDetail />}
+            />
             <Route path="/repository" element={<Repository />} />
           </Routes>
         </Router>
