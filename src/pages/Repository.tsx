@@ -36,23 +36,52 @@ export const Repository = () => {
   const { commits } = appState;
 
   const data = useMemo(() => {
+    const commitsCoordinates: Record<string, { x: number; y: number }> = {};
+    let x = 1;
+    let y = 0;
+    const parentsMap: Record<string, string[]> = {};
     return {
-      nodes: commits.reverse().map((commit, index) => ({
-        key: commit.hash,
-        attributes: {
-          label: commit.message,
-          x: 0,
-          y: index,
-          size: 10,
-        },
-      })),
+      nodes: commits.reverse().map((commit) => {
+        let xOverride;
+        if (parentsMap[commit.parentHashes] === undefined) {
+          parentsMap[commit.parentHashes] = [commit.hash];
+        } else if (
+          parentsMap[commit.parentHashes] &&
+          !parentsMap[commit.parentHashes].includes(commit.hash)
+        ) {
+          parentsMap[commit.parentHashes].push(commit.hash);
+          xOverride = parentsMap[commit.parentHashes].length;
+        }
+
+        if (commitsCoordinates[commit.parentHashes]) {
+          y = commitsCoordinates[commit.parentHashes].y;
+          x = commitsCoordinates[commit.parentHashes].x;
+        }
+
+        commitsCoordinates[commit.hash] = {
+          x: xOverride || x,
+          y: y + 1,
+        };
+
+        console.log(commit.hash, commit.parentHashes, parentsMap);
+
+        return {
+          key: commit.hash,
+          attributes: {
+            label: commit.message,
+            x: commitsCoordinates[commit.hash].x,
+            y: commitsCoordinates[commit.hash].y,
+            size: 10,
+          },
+        };
+      }),
       edges: commits
         .reverse()
         .slice(0, commits.length - 1)
-        .map((commit, index) => ({
+        .map((commit) => ({
           key: commit.hash,
           source: commit.hash,
-          target: commits[index + 1]?.hash,
+          target: commit.parentHashes,
           attributes: {
             size: 5,
           },

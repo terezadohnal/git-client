@@ -42,13 +42,25 @@ ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
 });
 
 ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (event, arg) => {
-  const git: SimpleGit = simpleGit({ baseDir: arg.path });
+  const git: SimpleGit = simpleGit({ baseDir: arg.path, trimmed: false });
   try {
     const isRepo = await git.checkIsRepo();
     if (isRepo) {
       const status = await git.status();
-      const logOfCommits = await git.log();
+      const logOfCommits = await git.log({
+        format: {
+          hash: '%H',
+          parentHashes: '%P',
+          author_email: '%ae',
+          author_name: '%an',
+          message: '%s',
+          tree: '%T',
+          refs: '%D',
+        },
+        '--all': null,
+      });
       const branches = await git.branch();
+
       return JSON.stringify({
         status: status ?? null,
         commits: logOfCommits ? logOfCommits.all : null,

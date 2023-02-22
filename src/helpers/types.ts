@@ -8,6 +8,8 @@ export type CommitDTO = {
   body: string;
   author_name: string;
   author_email: string;
+  parentHashes: string;
+  tree: string;
 };
 
 export type Directory = {
