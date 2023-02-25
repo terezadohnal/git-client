@@ -1,5 +1,6 @@
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { useCallback, useEffect, useState } from 'react';
+// @ts-ignore
 import { parseDiff, Diff, Hunk } from 'react-diff-view';
 import 'react-diff-view/style/index.css';
 import { useNavigate, useParams } from 'react-router-dom';

@@ -1,44 +1,16 @@
-import { AppInput } from 'components/AppInput/AppInput';
-import {
-  Grid,
-  Text,
-  Container,
-  Input,
-  Spacer,
-  Collapse,
-} from '@nextui-org/react';
-import { AppButton } from 'components/AppButton/AppButton';
-import { useForm, FormProvider } from 'react-hook-form';
+import { Grid, Text, Collapse } from '@nextui-org/react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { CloningRepoContent } from 'components/CloningRepoContent';
+import { ExistingRepoContent } from 'components/ExistingRepoContent';
 import {
-  useAppState,
   useAppStateDispatch,
   StateAction,
 } from '../context/AppStateContext/AppStateProvider';
 
 export const Home = () => {
-  const appState = useAppState();
   const navigate = useNavigate();
   const appStateDispatch = useAppStateDispatch();
-  const methods = useForm({
-    defaultValues: {
-      repository: '',
-    },
-  });
-
-  const onSubmit = async (data: { repository: string }) => {
-    if (appState.repositoryPath) {
-      const response = await window.electron.ipcRenderer.cloneRepository({
-        remote: data.repository,
-        target: appState.repositoryPath,
-      });
-      if (response) {
-        window.localStorage.setItem('repo', appState.repositoryPath);
-        navigate('/repository', { replace: true });
-      }
-    }
-  };
 
   const onOpenFolder = async () => {
     const filePath = await window.electron.ipcRenderer.openDialog();
@@ -89,108 +61,13 @@ export const Home = () => {
         </Text>
       </Grid.Container>
       <Grid.Container direction="column" alignItems="center">
-        <Grid>
+        <Grid style={{ width: '50%' }}>
           <Collapse.Group shadow>
-            <Collapse title="Clone remote repo">
-              <Grid.Container
-                direction="row"
-                justify="center"
-                alignItems="center"
-              >
-                <Grid>
-                  <Input
-                    readOnly
-                    placeholder="Where"
-                    value={appState.repositoryPath}
-                  />
-                </Grid>
-                <Spacer x={1} />
-                <Grid>
-                  <AppButton
-                    flat
-                    color="secondary"
-                    size="sm"
-                    onPress={onOpenFolder}
-                  >
-                    Open folder
-                  </AppButton>
-                </Grid>
-              </Grid.Container>
-              <Spacer y={2} />
-              <FormProvider {...methods}>
-                <form onSubmit={methods.handleSubmit(onSubmit)}>
-                  <Container
-                    fluid
-                    display="flex"
-                    justify="center"
-                    alignItems="center"
-                    direction="column"
-                  >
-                    {/* @ts-ignore */}
-                    <AppInput
-                      name="repository"
-                      id="repository"
-                      labelPlaceholder="Repository name"
-                      type="text"
-                      clearable
-                      fullWidth
-                      disabled={!appState.repositoryPath}
-                    />
-                    <Spacer y={1} />
-                    <AppButton
-                      color="gradient"
-                      shadow
-                      type="submit"
-                      disabled={
-                        !appState.repositoryPath &&
-                        methods.getValues().repository === ''
-                      }
-                    >
-                      Clone
-                    </AppButton>
-                  </Container>
-                </form>
-              </FormProvider>
-            </Collapse>
-            <Collapse title="Open existing repository">
-              <Grid.Container direction="column" alignItems="center">
-                <Grid.Container
-                  direction="row"
-                  justify="center"
-                  alignItems="center"
-                >
-                  <Grid>
-                    <Input
-                      readOnly
-                      placeholder="From"
-                      value={appState.repositoryPath}
-                    />
-                  </Grid>
-                  <Spacer x={1} />
-                  <Grid>
-                    <AppButton
-                      flat
-                      color="secondary"
-                      size="sm"
-                      onPress={onOpenFolder}
-                    >
-                      Open folder
-                    </AppButton>
-                  </Grid>
-                </Grid.Container>
-                <Spacer y={1} />
-                <Grid>
-                  <AppButton
-                    color="gradient"
-                    shadow
-                    size="md"
-                    onPress={onOpenRepository}
-                  >
-                    Open
-                  </AppButton>
-                </Grid>
-              </Grid.Container>
-            </Collapse>
+            <CloningRepoContent onOpenFolder={onOpenFolder} />
+            <ExistingRepoContent
+              onOpenFolder={onOpenFolder}
+              onOpenRepository={onOpenRepository}
+            />
           </Collapse.Group>
         </Grid>
       </Grid.Container>
