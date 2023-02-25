@@ -5,6 +5,7 @@ import { NextUIProvider } from '@nextui-org/react';
 import './App.css';
 import AppStateProvider from 'context/AppStateContext/AppStateProvider';
 import { CommitDetail } from 'pages/CommitDetail';
+import { NewCommit } from 'pages/NewCommit';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
               path="/repository/commits/:hash"
               element={<CommitDetail />}
             />
+            <Route path="/repository/create-commit" element={<NewCommit />} />
             <Route path="/repository" element={<Repository />} />
           </Routes>
         </Router>

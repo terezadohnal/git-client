@@ -14,13 +14,13 @@ export const RepositoryHeader = () => {
     navigate('/', { replace: true });
   };
   const onPullPress = () => {
-    console.log('pulling');
+    console.log('pulling hello');
   };
   const onPushPress = () => {
     console.log('pushing');
   };
   const onCommitPress = () => {
-    console.log('committing');
+    navigate('/repository/create-commit', { replace: true });
   };
   const onMergePress = () => {
     console.log('merging');
@@ -29,7 +29,11 @@ export const RepositoryHeader = () => {
     console.log('branching');
   };
   return (
-    <Grid justify="space-between" direction="row" className="repository-header">
+    <Grid
+      justify="space-between"
+      direction="row"
+      className="header repository-header"
+    >
       <Button
         size="sm"
         color="secondary"

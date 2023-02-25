@@ -1,4 +1,4 @@
-import { StatusResult, BranchSummary } from 'simple-git';
+import { StatusResult, BranchSummary, DiffResult } from 'simple-git';
 
 export type CommitDTO = {
   hash: string;
@@ -10,6 +10,39 @@ export type CommitDTO = {
   author_email: string;
   parentHashes: string;
   tree: string;
+};
+
+export type CommitDiffDTO = { diffSummary: DiffResult; diff: string };
+
+export type DiffChange = {
+  content: string;
+  isNormal: boolean;
+  newLineNumber: number;
+  oldLineNumber: number;
+  type: string;
+};
+
+export type DiffHunk = {
+  changes: DiffChange[];
+  content: string;
+  isPlain: boolean;
+  newLines: number;
+  newStart: number;
+  oldLines: number;
+  oldStart: number;
+};
+
+export type DiffFile = {
+  hunks: DiffHunk[];
+  newEndingNewLine: boolean;
+  newMode: string;
+  newPath: string;
+  newRevision: string;
+  oldEndingNewLine: boolean;
+  oldMode: string;
+  oldPath: string;
+  oldRevision: string;
+  type: string;
 };
 
 export type Directory = {
