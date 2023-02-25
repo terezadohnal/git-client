@@ -69,12 +69,25 @@ export const Home = () => {
   });
 
   return (
-    <Grid.Container gap={2} justify="center" sm={12}>
+    <Grid.Container
+      gap={2}
+      justify="center"
+      alignContent="center"
+      sm={12}
+      style={{
+        height: '100vh',
+        display: 'flex',
+      }}
+      className="home"
+    >
       <Grid.Container justify="center" direction="column" alignItems="center">
-        <Text h3>Here is your best Git app</Text>
-        <Text h5>Clone your repo</Text>
+        <Text h3 color="white">
+          Here is your best Git app
+        </Text>
+        <Text h5 color="white">
+          Clone or open your existing repo
+        </Text>
       </Grid.Container>
-      <Spacer y={1} />
       <Grid.Container direction="column" alignItems="center">
         <Grid>
           <Collapse.Group shadow>

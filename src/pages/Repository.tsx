@@ -1,4 +1,4 @@
-import { Grid, Text, Button } from '@nextui-org/react';
+import { Grid } from '@nextui-org/react';
 import {
   StateAction,
   useAppState,
@@ -8,12 +8,12 @@ import { Directory } from 'helpers/types';
 import { useCallback, useEffect, useMemo } from 'react';
 import { SigmaContainer } from '@react-sigma/core';
 import '@react-sigma/core/lib/react-sigma.min.css';
-import { useNavigate } from 'react-router-dom';
 import { LoadGraph } from 'components/LoadGraph/LoadGraph';
+
+import { RepositoryHeader } from 'components/RepositoryHeader';
 
 export const Repository = () => {
   const appState = useAppState();
-  const navigate = useNavigate();
   const appStateDispatch = useAppStateDispatch();
 
   const fetchDirectory = useCallback(async () => {
@@ -89,19 +89,9 @@ export const Repository = () => {
     };
   }, [commits]);
 
-  const onBackPress = () => {
-    window.localStorage.removeItem('repo');
-    navigate('/', { replace: true });
-  };
-
   return (
-    <Grid.Container css={{ h: '100vh', w: '1024px' }} justify="center">
-      <Grid justify="space-between" direction="row" css={{ margin: 10 }}>
-        <Button size="sm" color="secondary" rounded flat onPress={onBackPress}>
-          Back
-        </Button>
-        <Text h4>Repository page</Text>
-      </Grid>
+    <Grid.Container css={{ h: '100vh', w: '1014px' }} justify="center">
+      <RepositoryHeader />
       <SigmaContainer
         style={{
           height: '3000px',
