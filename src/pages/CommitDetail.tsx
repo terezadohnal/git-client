@@ -5,18 +5,19 @@ import { parseDiff, Diff, Hunk } from 'react-diff-view';
 import 'react-diff-view/style/index.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Grid, Text, Collapse } from '@nextui-org/react';
-import { CommitDiffDTO, DiffFile, DiffHunk } from 'helpers/types';
+import { CommitDiffDTO, CommitDTO, DiffFile, DiffHunk } from 'helpers/types';
 
 export const CommitDetail = () => {
   const appState = useAppState();
   const [commitDiff, setCommitDiff] = useState<CommitDiffDTO | null>(null);
+  const [commit, setCommit] = useState<CommitDTO | null>(null);
   const files = parseDiff(commitDiff?.diff ?? '');
   const { hash: commitHash } = useParams();
   const navigate = useNavigate();
 
   const fetchCommitDiff = useCallback(async () => {
     const currentCommitIndex = appState.commits.findIndex(
-      (commit) => commit.hash === commitHash
+      (c) => c.hash === commitHash
     );
 
     const response = await window.electron.ipcRenderer.getCommitDiff({
@@ -25,7 +26,7 @@ export const CommitDetail = () => {
       previousCommitHash: appState.commits[currentCommitIndex + 1].hash ?? '',
     });
     const parsedResponse = JSON.parse(response) as CommitDiffDTO;
-
+    setCommit(appState.commits[currentCommitIndex]);
     setCommitDiff(parsedResponse);
   }, [appState.commits, appState.repositoryPath, commitHash]);
 
@@ -54,11 +55,11 @@ export const CommitDetail = () => {
   };
 
   return (
-    <Grid.Container css={{ h: '100vh', w: '1014px' }} justify="center">
+    <Grid.Container css={{ h: '100%', w: '1014px' }} justify="center">
       <Grid
         justify="space-between"
         direction="row"
-        className="header commit-detail-header"
+        className="header repository-header"
       >
         <Button
           size="sm"
@@ -72,6 +73,16 @@ export const CommitDetail = () => {
           Back
         </Button>
         <Text h3>Commit detail</Text>
+      </Grid>
+      <Grid style={{ width: '100%', paddingLeft: 30 }} justify="flex-start">
+        {commit?.author_name && (
+          <Text>
+            Created by: {commit?.author_name} ({commit.author_email})
+          </Text>
+        )}
+        {commit?.date && <Text>Created at: {commit?.date}</Text>}
+        {commit?.message && <Text>Message: {commit?.message}</Text>}
+        {commit?.hash && <Text>Hash: {commit?.hash}</Text>}
       </Grid>
       <Grid style={{ height: '100%', width: '100%', padding: 20 }}>
         <Collapse.Group accordion={false}>

@@ -81,7 +81,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
             />
             <Spacer y={1} />
             <AppButton
-              color="gradient"
+              color="primary"
               shadow
               type="submit"
               disabled={
@@ -93,6 +93,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
               {isLoading && (
                 <Loading type="points" color="currentColor" size="sm" />
               )}
+              Clone repository
             </AppButton>
           </Grid.Container>
         </form>

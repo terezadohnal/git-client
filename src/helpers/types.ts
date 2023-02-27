@@ -62,7 +62,7 @@ export type Edge = {
 
 export type Node = {
   attributes: {
-    label: string;
+    label?: string;
     size: number;
     x: number;
     y: number;

@@ -6,10 +6,11 @@ import './App.css';
 import AppStateProvider from 'context/AppStateContext/AppStateProvider';
 import { CommitDetail } from 'pages/CommitDetail';
 import { NewCommit } from 'pages/NewCommit';
+import { theme } from 'theme';
 
 export default function App() {
   return (
-    <NextUIProvider>
+    <NextUIProvider theme={theme}>
       <AppStateProvider>
         <Router>
           <Routes>

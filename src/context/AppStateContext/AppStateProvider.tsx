@@ -6,12 +6,14 @@ import {
   createContext,
   Dispatch,
 } from 'react';
+import { StatusResult } from 'simple-git';
 import { StateAction } from './types';
 
 interface AppState {
   repositoryPath: string;
   commits: CommitDTO[];
   commitHash: string;
+  status: StatusResult;
 }
 
 interface SetRepositoryPathAction {
@@ -33,11 +35,18 @@ interface SetCommitAction {
     commitHash: string;
   };
 }
+interface SetStatusAction {
+  type: StateAction.SET_STATUS;
+  payload: {
+    status: StatusResult;
+  };
+}
 
 export type AppStateAction =
   | SetRepositoryPathAction
   | SetCommitsAction
-  | SetCommitAction;
+  | SetCommitAction
+  | SetStatusAction;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -61,6 +70,11 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
         ...state,
         commitHash: action.payload.commitHash,
       };
+    case StateAction.SET_STATUS:
+      return {
+        ...state,
+        status: action.payload.status,
+      };
     default:
       return state;
   }
@@ -70,6 +84,7 @@ const initialAppState: AppState = {
   repositoryPath: '',
   commits: [],
   commitHash: '',
+  status: {} as StatusResult,
 };
 
 export default function AppStateProvider(props: { children: ReactElement }) {

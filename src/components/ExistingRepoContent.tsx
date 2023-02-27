@@ -32,7 +32,7 @@ export const ExistingRepoContent: FC<ExistingRepoContentProps> = ({
         <Spacer y={1} />
         <Grid>
           <AppButton
-            color="gradient"
+            color="primary"
             shadow
             size="md"
             onPress={onOpenRepository}

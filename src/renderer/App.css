@@ -46,43 +46,21 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: sticky;
 }
 
 .repository-header {
-  border-bottom: 2px solid #ffe2ad;
+  border-bottom: 2px solid #faf4ff;
   background: hsla(0, 0%, 100%, 1);
-  background: linear-gradient(
-    -90deg,
-    hsla(0, 0%, 100%, 1) 37%,
-    hsla(39, 100%, 80%, 1) 120%
-  );
+  background: linear-gradient(-90deg, hsla(0, 0%, 100%, 1) 37%, #faf4ff 120%);
   background: -moz-linear-gradient(
     -90deg,
     hsla(0, 0%, 100%, 1) 37%,
-    hsla(39, 100%, 80%, 1) 120%
+    #faf4ff 120%
   );
   background: -webkit-linear-gradient(
     -90deg,
     hsla(0, 0%, 100%, 1) 37%,
-    hsla(39, 100%, 80%, 1) 120%
-  );
-}
-
-.commit-detail-header {
-  border-bottom: 2px solid #5d9d68;
-  background: linear-gradient(
-    -90deg,
-    hsla(0, 0%, 100%, 1) 37%,
-    hsla(130, 26%, 49%, 1) 120%
-  );
-  background: -moz-linear-gradient(
-    -90deg,
-    hsla(0, 0%, 100%, 1) 37%,
-    hsla(130, 26%, 49%, 1) 120%
-  );
-  background: -webkit-linear-gradient(
-    -90deg,
-    hsla(0, 0%, 100%, 1) 37%,
-    hsla(130, 26%, 49%, 1) 120%
+    #faf4ff 120%
   );
 }

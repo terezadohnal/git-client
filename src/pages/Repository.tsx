@@ -27,6 +27,12 @@ export const Repository = () => {
         commits: parsedDir.commits,
       },
     });
+    appStateDispatch({
+      type: StateAction.SET_STATUS,
+      payload: {
+        status: parsedDir.status,
+      },
+    });
   }, [appState.repositoryPath, appStateDispatch]);
 
   useEffect(() => {
@@ -63,15 +69,15 @@ export const Repository = () => {
           y: y + 1,
         };
 
-        console.log(commit.hash, commit.parentHashes, parentsMap);
+        // console.log(commit.hash, commit.parentHashes, parentsMap);
 
         return {
           key: commit.hash,
           attributes: {
-            label: commit.message,
             x: commitsCoordinates[commit.hash].x,
             y: commitsCoordinates[commit.hash].y,
             size: 10,
+            label: commit.message,
           },
         };
       }),
@@ -104,6 +110,7 @@ export const Repository = () => {
           minCameraRatio: 0,
           defaultNodeColor: '#BC9EC1',
           defaultEdgeColor: '#BC9EC1',
+          renderLabels: false,
         }}
       >
         <LoadGraph data={data} />
