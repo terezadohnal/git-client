@@ -9,8 +9,8 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { SigmaContainer } from '@react-sigma/core';
 import '@react-sigma/core/lib/react-sigma.min.css';
 import { LoadGraph } from 'components/LoadGraph/LoadGraph';
-
 import { RepositoryHeader } from 'components/RepositoryHeader';
+import { drawHover } from 'helpers/globalHelpers';
 
 export const Repository = () => {
   const appState = useAppState();
@@ -69,8 +69,6 @@ export const Repository = () => {
           y: y + 1,
         };
 
-        // console.log(commit.hash, commit.parentHashes, parentsMap);
-
         return {
           key: commit.hash,
           attributes: {
@@ -78,6 +76,10 @@ export const Repository = () => {
             y: commitsCoordinates[commit.hash].y,
             size: 10,
             label: commit.message,
+            author_name: commit.author_name,
+            author_email: commit.author_email,
+            date: commit.date,
+            hash: commit.hash,
           },
         };
       }),
@@ -111,6 +113,9 @@ export const Repository = () => {
           defaultNodeColor: '#BC9EC1',
           defaultEdgeColor: '#BC9EC1',
           renderLabels: false,
+          hoverRenderer(context, values, settings) {
+            drawHover(context, values, settings);
+          },
         }}
       >
         <LoadGraph data={data} />

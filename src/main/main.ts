@@ -54,6 +54,7 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (event, arg) => {
           author_email: '%ae',
           author_name: '%an',
           message: '%s',
+          date: '%ai',
           tree: '%T',
           refs: '%D',
         },
