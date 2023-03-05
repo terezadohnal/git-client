@@ -100,6 +100,33 @@ ipcMain.handle(CHANELS.COMMIT, async (event, args) => {
   }
 });
 
+ipcMain.handle(CHANELS.GET_REMOTES, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  try {
+    return await git.getRemotes(true);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
+ipcMain.handle(CHANELS.ADD_REMOTE, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  try {
+    return await git.addRemote(args.remoteName, args.remoteUrl);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
+ipcMain.handle(CHANELS.PUSH, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  try {
+    return await git.push(args.remoteName, args.branch, ['-u']);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
 const handleFileOpen = async () => {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openDirectory', 'createDirectory'],

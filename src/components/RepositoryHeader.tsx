@@ -1,13 +1,18 @@
-import { Button, Grid } from '@nextui-org/react';
+import { Badge, Button, Grid } from '@nextui-org/react';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BranchIcon } from '../../assets/icons/branch';
 import { CommitIcon } from '../../assets/icons/commit';
 import { MergeIcon } from '../../assets/icons/merge';
 import { PullIcon } from '../../assets/icons/pull';
 import { PushIcon } from '../../assets/icons/push';
+import { PushModalContainer } from './PushModalContainer';
 
 export const RepositoryHeader = () => {
   const navigate = useNavigate();
+  const appState = useAppState();
+  const [visible, setVisible] = useState(false);
 
   const onBackPress = () => {
     window.localStorage.removeItem('repo');
@@ -16,9 +21,9 @@ export const RepositoryHeader = () => {
   const onPullPress = () => {
     console.log('pulling hello');
   };
-  const onPushPress = () => {
-    console.log('pushing');
-  };
+  const openPushModal = () => setVisible(true);
+  const closePushModal = () => setVisible(false);
+
   const onCommitPress = () => {
     navigate('/repository/create-commit', { replace: true });
   };
@@ -34,6 +39,7 @@ export const RepositoryHeader = () => {
       direction="row"
       className="header repository-header"
     >
+      <PushModalContainer visible={visible} closePushModal={closePushModal} />
       <Button
         size="sm"
         color="secondary"
@@ -56,28 +62,40 @@ export const RepositoryHeader = () => {
       >
         Commit
       </Button>
-      <Button
-        auto
-        color="secondary"
-        flat
-        rounded
-        animated
-        icon={<PullIcon />}
-        onPress={onPullPress}
+      <Badge
+        color="error"
+        content={appState.status.ahead}
+        isInvisible={appState.status.ahead === 0}
       >
-        Pull
-      </Button>
-      <Button
-        auto
-        color="secondary"
-        flat
-        rounded
-        animated
-        icon={<PushIcon />}
-        onPress={onPushPress}
+        <Button
+          auto
+          color="secondary"
+          flat
+          rounded
+          animated
+          icon={<PushIcon />}
+          onPress={openPushModal}
+        >
+          Push
+        </Button>
+      </Badge>
+      <Badge
+        color="error"
+        content={appState.status.behind}
+        isInvisible={appState.status.behind === 0}
       >
-        Push
-      </Button>
+        <Button
+          auto
+          color="secondary"
+          flat
+          rounded
+          animated
+          icon={<PullIcon />}
+          onPress={onPullPress}
+        >
+          Pull
+        </Button>
+      </Badge>
       <Button
         auto
         color="secondary"

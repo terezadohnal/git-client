@@ -28,6 +28,18 @@ const API = {
       files: string | Set<React.Key> | null;
       message: string;
     }) => ipcRenderer.invoke(CHANELS.COMMIT, args),
+
+    getRemote: (args: { path: string }) =>
+      ipcRenderer.invoke(CHANELS.GET_REMOTES, args),
+
+    addRemote: (args: {
+      path: string;
+      remoteName: string;
+      remoteUrl: string;
+    }) => ipcRenderer.invoke(CHANELS.ADD_REMOTE, args),
+
+    push: (args: { path: string; remoteName: string; branch: string }) =>
+      ipcRenderer.invoke(CHANELS.PUSH, args),
   },
 };
 
