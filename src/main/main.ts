@@ -127,6 +127,15 @@ ipcMain.handle(CHANELS.PUSH, async (_, args) => {
   }
 });
 
+ipcMain.handle(CHANELS.PULL, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  try {
+    return await git.pull(args.remoteName, args.branch);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
 const handleFileOpen = async () => {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openDirectory', 'createDirectory'],

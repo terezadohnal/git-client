@@ -7,22 +7,23 @@ import { CommitIcon } from '../../assets/icons/commit';
 import { MergeIcon } from '../../assets/icons/merge';
 import { PullIcon } from '../../assets/icons/pull';
 import { PushIcon } from '../../assets/icons/push';
+import { PullModal } from './PullModal';
 import { PushModalContainer } from './PushModalContainer';
 
 export const RepositoryHeader = () => {
   const navigate = useNavigate();
   const appState = useAppState();
-  const [visible, setVisible] = useState(false);
+  const [pushVisible, setPushVisible] = useState(false);
+  const [pullVisible, setPullVisible] = useState(false);
 
   const onBackPress = () => {
     window.localStorage.removeItem('repo');
     navigate('/', { replace: true });
   };
-  const onPullPress = () => {
-    console.log('pulling hello');
-  };
-  const openPushModal = () => setVisible(true);
-  const closePushModal = () => setVisible(false);
+
+  const togglePullModal = () => setPullVisible(!pushVisible);
+
+  const togglePushModal = () => setPushVisible(!pushVisible);
 
   const onCommitPress = () => {
     navigate('/repository/create-commit', { replace: true });
@@ -39,7 +40,11 @@ export const RepositoryHeader = () => {
       direction="row"
       className="header repository-header"
     >
-      <PushModalContainer visible={visible} closePushModal={closePushModal} />
+      <PushModalContainer
+        visible={pushVisible}
+        closePushModal={togglePushModal}
+      />
+      <PullModal visible={pullVisible} closePullModal={togglePullModal} />
       <Button
         size="sm"
         color="secondary"
@@ -74,7 +79,7 @@ export const RepositoryHeader = () => {
           rounded
           animated
           icon={<PushIcon />}
-          onPress={openPushModal}
+          onPress={togglePushModal}
         >
           Push
         </Button>
@@ -91,7 +96,7 @@ export const RepositoryHeader = () => {
           rounded
           animated
           icon={<PullIcon />}
-          onPress={onPullPress}
+          onPress={togglePullModal}
         >
           Pull
         </Button>

@@ -40,6 +40,9 @@ const API = {
 
     push: (args: { path: string; remoteName: string; branch: string }) =>
       ipcRenderer.invoke(CHANELS.PUSH, args),
+
+    pull: (args: { path: string; remoteName: string; branch: string }) =>
+      ipcRenderer.invoke(CHANELS.PULL, args),
   },
 };
 

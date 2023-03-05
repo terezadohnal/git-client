@@ -7,4 +7,5 @@ export const CHANELS = {
   ADD_REMOTE: 'add-remote',
   COMMIT: 'commit',
   PUSH: 'push',
+  PULL: 'pull',
 } as const;
