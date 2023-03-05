@@ -3,7 +3,7 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import { SimpleGit, simpleGit } from 'simple-git';
+import { SimpleGit, simpleGit, CommitResult } from 'simple-git';
 import fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
@@ -18,10 +18,6 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-ipcMain.on('message', (event, arg) => {
-  console.log(arg);
-});
 
 ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
   const git: SimpleGit = simpleGit();
@@ -84,8 +80,23 @@ ipcMain.handle(CHANELS.GET_COMMIT_DIFF, async (event, arg) => {
       diffSummary: diffSummary ?? null,
       diff: diff ?? null,
     });
-  } catch (error) {
-    return error;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+});
+
+ipcMain.handle(CHANELS.COMMIT, async (event, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  const files =
+    args.files !== 'all'
+      ? Array.from(args.files).map((key: any) => key.toString())
+      : '.';
+  try {
+    await git.add(files);
+    const commitResponse: CommitResult = await git.commit(args.message);
+    return commitResponse;
+  } catch (e: any) {
+    throw new Error(e);
   }
 });
 
