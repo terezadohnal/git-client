@@ -7,8 +7,7 @@ import { CommitIcon } from '../../assets/icons/commit';
 import { MergeIcon } from '../../assets/icons/merge';
 import { PullIcon } from '../../assets/icons/pull';
 import { PushIcon } from '../../assets/icons/push';
-import { PullModal } from './PullModal';
-import { PushModalContainer } from './PushModalContainer';
+import { ModalContainer } from './ModalContainer';
 
 export const RepositoryHeader = () => {
   const navigate = useNavigate();
@@ -20,10 +19,6 @@ export const RepositoryHeader = () => {
     window.localStorage.removeItem('repo');
     navigate('/', { replace: true });
   };
-
-  const togglePullModal = () => setPullVisible(!pushVisible);
-
-  const togglePushModal = () => setPushVisible(!pushVisible);
 
   const onCommitPress = () => {
     navigate('/repository/create-commit', { replace: true });
@@ -40,11 +35,16 @@ export const RepositoryHeader = () => {
       direction="row"
       className="header repository-header"
     >
-      <PushModalContainer
+      <ModalContainer
         visible={pushVisible}
-        closePushModal={togglePushModal}
+        closeModal={setPushVisible}
+        type="push"
       />
-      <PullModal visible={pullVisible} closePullModal={togglePullModal} />
+      <ModalContainer
+        visible={pullVisible}
+        closeModal={setPullVisible}
+        type="pull"
+      />
       <Button
         size="sm"
         color="secondary"
@@ -79,7 +79,7 @@ export const RepositoryHeader = () => {
           rounded
           animated
           icon={<PushIcon />}
-          onPress={togglePushModal}
+          onPress={() => setPushVisible(true)}
         >
           Push
         </Button>
@@ -96,7 +96,7 @@ export const RepositoryHeader = () => {
           rounded
           animated
           icon={<PullIcon />}
-          onPress={togglePullModal}
+          onPress={() => setPullVisible(true)}
         >
           Pull
         </Button>

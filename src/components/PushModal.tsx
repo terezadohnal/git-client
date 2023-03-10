@@ -10,15 +10,8 @@ import {
 } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { FC, useMemo, useState, Key } from 'react';
-import { RemoteWithRefs } from 'simple-git';
 import { AddRemoteForm } from './AddRemoteForm';
-
-type PushModalProps = {
-  visible: boolean;
-  remotes: RemoteWithRefs[];
-  closePushModal: () => void;
-  onAddRemote: () => void;
-};
+import { PushModalProps } from './types';
 
 export const PushModal: FC<PushModalProps> = ({
   visible,
@@ -50,7 +43,7 @@ export const PushModal: FC<PushModalProps> = ({
       console.log(error);
     } finally {
       setIsLoading(false);
-      closePushModal();
+      closePushModal(false);
     }
   };
 
@@ -60,7 +53,7 @@ export const PushModal: FC<PushModalProps> = ({
       blur
       aria-labelledby="modal-title"
       open={visible}
-      onClose={closePushModal}
+      // onClose={closePushModal}
     >
       <Modal.Header>
         <Text h3>Push changes</Text>
@@ -111,7 +104,13 @@ export const PushModal: FC<PushModalProps> = ({
         </Col>
       </Modal.Body>
       <Modal.Footer>
-        <Button auto flat color="secondary" rounded onPress={closePushModal}>
+        <Button
+          auto
+          flat
+          color="secondary"
+          rounded
+          onPress={() => closePushModal(false)}
+        >
           Close
         </Button>
         <Button

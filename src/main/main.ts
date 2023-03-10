@@ -37,7 +37,7 @@ ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
   }
 });
 
-ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (event, arg) => {
+ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, arg) => {
   const git: SimpleGit = simpleGit({ baseDir: arg.path, trimmed: false });
   try {
     const isRepo = await git.checkIsRepo();
@@ -70,7 +70,7 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (event, arg) => {
   }
 });
 
-ipcMain.handle(CHANELS.GET_COMMIT_DIFF, async (event, arg) => {
+ipcMain.handle(CHANELS.GET_COMMIT_DIFF, async (_, arg) => {
   const git: SimpleGit = simpleGit({ baseDir: arg.path });
   try {
     const diff = await git.diff([arg.commitHash, arg.previousCommitHash]);
@@ -85,7 +85,7 @@ ipcMain.handle(CHANELS.GET_COMMIT_DIFF, async (event, arg) => {
   }
 });
 
-ipcMain.handle(CHANELS.COMMIT, async (event, args) => {
+ipcMain.handle(CHANELS.COMMIT, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   const files =
     args.files !== 'all'
@@ -104,6 +104,16 @@ ipcMain.handle(CHANELS.GET_REMOTES, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   try {
     return await git.getRemotes(true);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
+ipcMain.handle(CHANELS.GET_REMOTE_BRANCHES, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  try {
+    const response = await git.branch(['-r']);
+    return response;
   } catch (e: any) {
     throw new Error(e);
   }
@@ -130,7 +140,9 @@ ipcMain.handle(CHANELS.PUSH, async (_, args) => {
 ipcMain.handle(CHANELS.PULL, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   try {
-    return await git.pull(args.remoteName, args.branch);
+    const splittedRemote = args.remoteBranch.split('/');
+    const remoteBranch = splittedRemote[splittedRemote.length - 1];
+    return await git.pull(args.remoteName, remoteBranch);
   } catch (e: any) {
     throw new Error(e);
   }

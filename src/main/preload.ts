@@ -32,6 +32,9 @@ const API = {
     getRemote: (args: { path: string }) =>
       ipcRenderer.invoke(CHANELS.GET_REMOTES, args),
 
+    getRemoteBranches: (args: { path: string }) =>
+      ipcRenderer.invoke(CHANELS.GET_REMOTE_BRANCHES, args),
+
     addRemote: (args: {
       path: string;
       remoteName: string;
@@ -41,7 +44,7 @@ const API = {
     push: (args: { path: string; remoteName: string; branch: string }) =>
       ipcRenderer.invoke(CHANELS.PUSH, args),
 
-    pull: (args: { path: string; remoteName: string; branch: string }) =>
+    pull: (args: { path: string; remoteName: string; remoteBranch: string }) =>
       ipcRenderer.invoke(CHANELS.PULL, args),
   },
 };

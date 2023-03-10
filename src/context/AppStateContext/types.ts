@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 export enum StateAction {
   SET_REPOSITORY_PATH = 'SET_REPOSITORY_PATH',
   SET_COMMITS = 'SET_COMMITS',
   SET_COMMIT = 'SET_COMMIT',
   SET_STATUS = 'SET_STATUS',
+  SET_REMOTE_BRANCHES = 'SET_REMOTE_BRANCHES',
 }

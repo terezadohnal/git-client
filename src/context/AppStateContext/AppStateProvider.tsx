@@ -14,6 +14,7 @@ interface AppState {
   commits: CommitDTO[];
   commitHash: string;
   status: StatusResult;
+  remoteBranches: string[];
 }
 
 interface SetRepositoryPathAction {
@@ -42,11 +43,19 @@ interface SetStatusAction {
   };
 }
 
+interface SetRemoteBranches {
+  type: StateAction.SET_REMOTE_BRANCHES;
+  payload: {
+    remoteBranches: string[];
+  };
+}
+
 export type AppStateAction =
   | SetRepositoryPathAction
   | SetCommitsAction
   | SetCommitAction
-  | SetStatusAction;
+  | SetStatusAction
+  | SetRemoteBranches;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -75,6 +84,11 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
         ...state,
         status: action.payload.status,
       };
+    case StateAction.SET_REMOTE_BRANCHES:
+      return {
+        ...state,
+        remoteBranches: action.payload.remoteBranches,
+      };
     default:
       return state;
   }
@@ -85,6 +99,7 @@ const initialAppState: AppState = {
   commits: [],
   commitHash: '',
   status: {} as StatusResult,
+  remoteBranches: [],
 };
 
 export default function AppStateProvider(props: { children: ReactElement }) {

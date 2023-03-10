@@ -4,6 +4,7 @@ export const CHANELS = {
   FETCH_DIRECTORY_STATUS: 'fetch-directory-status',
   GET_COMMIT_DIFF: 'get-commit-diff',
   GET_REMOTES: 'get-remotes',
+  GET_REMOTE_BRANCHES: 'get-remote-branches',
   ADD_REMOTE: 'add-remote',
   COMMIT: 'commit',
   PUSH: 'push',
