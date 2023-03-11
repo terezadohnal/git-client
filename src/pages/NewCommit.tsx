@@ -23,7 +23,6 @@ export const NewCommit = () => {
       message: data.message,
     });
     if (response) {
-      console.log(response);
       navigate('/repository', { replace: true });
     }
   };

@@ -20,6 +20,7 @@ export const Repository = () => {
     const directory = await window.electron.ipcRenderer.fetchDirectoryStatus({
       path: appState.repositoryPath,
     });
+
     const parsedDir = JSON.parse(directory) as Directory;
     appStateDispatch({
       type: StateAction.SET_COMMITS,
@@ -31,6 +32,12 @@ export const Repository = () => {
       type: StateAction.SET_STATUS,
       payload: {
         status: parsedDir.status,
+      },
+    });
+    appStateDispatch({
+      type: StateAction.SET_LOCAL_BRANCHES,
+      payload: {
+        localBranches: parsedDir.branches,
       },
     });
   }, [appState.repositoryPath, appStateDispatch]);

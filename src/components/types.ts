@@ -20,3 +20,16 @@ export type PullModalProps = {
   remoteBranches: string[];
   closePullModal: (val: boolean) => void;
 };
+
+export type BranchModalProps = {
+  visible: boolean;
+  closeBranchModal: (val: boolean) => void;
+};
+
+export type CreateBranchBodyProps = {
+  onClose: (val: boolean) => void;
+};
+
+export type DeleteBranchBodyProps = {
+  onClose: (val: boolean) => void;
+};

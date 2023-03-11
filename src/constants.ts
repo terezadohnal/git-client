@@ -6,6 +6,8 @@ export const CHANELS = {
   GET_REMOTES: 'get-remotes',
   GET_REMOTE_BRANCHES: 'get-remote-branches',
   ADD_REMOTE: 'add-remote',
+  CREATE_BRANCH: 'create-branch',
+  DELETE_BRANCH: 'delete-branch',
   COMMIT: 'commit',
   PUSH: 'push',
   PULL: 'pull',

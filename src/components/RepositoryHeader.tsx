@@ -7,6 +7,7 @@ import { CommitIcon } from '../../assets/icons/commit';
 import { MergeIcon } from '../../assets/icons/merge';
 import { PullIcon } from '../../assets/icons/pull';
 import { PushIcon } from '../../assets/icons/push';
+import { BranchModal } from './Branch/BranchModal';
 import { ModalContainer } from './ModalContainer';
 
 export const RepositoryHeader = () => {
@@ -14,6 +15,7 @@ export const RepositoryHeader = () => {
   const appState = useAppState();
   const [pushVisible, setPushVisible] = useState(false);
   const [pullVisible, setPullVisible] = useState(false);
+  const [branchVisible, setBranchVisible] = useState(false);
 
   const onBackPress = () => {
     window.localStorage.removeItem('repo');
@@ -26,9 +28,7 @@ export const RepositoryHeader = () => {
   const onMergePress = () => {
     console.log('merging');
   };
-  const onBranchPress = () => {
-    console.log('branching');
-  };
+
   return (
     <Grid
       justify="space-between"
@@ -44,6 +44,10 @@ export const RepositoryHeader = () => {
         visible={pullVisible}
         closeModal={setPullVisible}
         type="pull"
+      />
+      <BranchModal
+        visible={branchVisible}
+        closeBranchModal={setBranchVisible}
       />
       <Button
         size="sm"
@@ -108,7 +112,7 @@ export const RepositoryHeader = () => {
         rounded
         animated
         icon={<BranchIcon />}
-        onPress={onBranchPress}
+        onPress={() => setBranchVisible(true)}
       >
         Branch
       </Button>

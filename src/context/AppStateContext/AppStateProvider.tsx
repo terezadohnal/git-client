@@ -6,7 +6,7 @@ import {
   createContext,
   Dispatch,
 } from 'react';
-import { StatusResult } from 'simple-git';
+import { BranchSummary, StatusResult } from 'simple-git';
 import { StateAction } from './types';
 
 interface AppState {
@@ -15,6 +15,7 @@ interface AppState {
   commitHash: string;
   status: StatusResult;
   remoteBranches: string[];
+  localBranches: BranchSummary;
 }
 
 interface SetRepositoryPathAction {
@@ -49,13 +50,20 @@ interface SetRemoteBranches {
     remoteBranches: string[];
   };
 }
+interface SetLocalBranches {
+  type: StateAction.SET_LOCAL_BRANCHES;
+  payload: {
+    localBranches: BranchSummary;
+  };
+}
 
 export type AppStateAction =
   | SetRepositoryPathAction
   | SetCommitsAction
   | SetCommitAction
   | SetStatusAction
-  | SetRemoteBranches;
+  | SetRemoteBranches
+  | SetLocalBranches;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -89,6 +97,11 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
         ...state,
         remoteBranches: action.payload.remoteBranches,
       };
+    case StateAction.SET_LOCAL_BRANCHES:
+      return {
+        ...state,
+        localBranches: action.payload.localBranches,
+      };
     default:
       return state;
   }
@@ -100,6 +113,7 @@ const initialAppState: AppState = {
   commitHash: '',
   status: {} as StatusResult,
   remoteBranches: [],
+  localBranches: {} as BranchSummary,
 };
 
 export default function AppStateProvider(props: { children: ReactElement }) {

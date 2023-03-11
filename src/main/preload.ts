@@ -46,6 +46,18 @@ const API = {
 
     pull: (args: { path: string; remoteName: string; remoteBranch: string }) =>
       ipcRenderer.invoke(CHANELS.PULL, args),
+
+    createBranch: (args: {
+      path: string;
+      name: string;
+      commit?: string;
+      checkout?: boolean;
+    }) => ipcRenderer.invoke(CHANELS.CREATE_BRANCH, args),
+
+    deleteBranch: (args: {
+      path: string;
+      branches: string | Set<React.Key> | null | string[];
+    }) => ipcRenderer.invoke(CHANELS.DELETE_BRANCH, args),
   },
 };
 

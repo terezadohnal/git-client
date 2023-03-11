@@ -64,3 +64,9 @@ body {
     #faf4ff 120%
   );
 }
+
+.textOverflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

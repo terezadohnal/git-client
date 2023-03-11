@@ -56,12 +56,12 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, arg) => {
         },
         '--all': null,
       });
-      const branches = await git.branch();
+      const branches = await git.branchLocal();
 
       return JSON.stringify({
         status: status ?? null,
         commits: logOfCommits ? logOfCommits.all : null,
-        branches: branches ? branches.all : null,
+        branches: branches ?? null,
       });
     }
     return 'Not a repository';
@@ -143,6 +143,32 @@ ipcMain.handle(CHANELS.PULL, async (_, args) => {
     const splittedRemote = args.remoteBranch.split('/');
     const remoteBranch = splittedRemote[splittedRemote.length - 1];
     return await git.pull(args.remoteName, remoteBranch);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
+ipcMain.handle(CHANELS.CREATE_BRANCH, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  console.log(args);
+  try {
+    if (args.commit) {
+      return await git.checkoutBranch(args.name, args.commit);
+    }
+    return await git.checkoutLocalBranch(args.name);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
+ipcMain.handle(CHANELS.DELETE_BRANCH, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  const branches =
+    args.branches !== 'all'
+      ? Array.from(args.branches).map((key: any) => key.toString())
+      : args.branches;
+  try {
+    return await git.deleteLocalBranches(branches);
   } catch (e: any) {
     throw new Error(e);
   }
