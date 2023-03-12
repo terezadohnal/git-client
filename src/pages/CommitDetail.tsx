@@ -3,9 +3,10 @@ import { useCallback, useEffect, useState } from 'react';
 // @ts-ignore
 import { parseDiff, Diff, Hunk } from 'react-diff-view';
 import 'react-diff-view/style/index.css';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Grid, Text, Collapse } from '@nextui-org/react';
+import { useParams } from 'react-router-dom';
+import { Grid, Text, Collapse } from '@nextui-org/react';
 import { CommitDiffDTO, CommitDTO, DiffFile, DiffHunk } from 'helpers/types';
+import { BackButton } from 'components/BackButton';
 
 export const CommitDetail = () => {
   const appState = useAppState();
@@ -13,7 +14,6 @@ export const CommitDetail = () => {
   const [commit, setCommit] = useState<CommitDTO | null>(null);
   const files = parseDiff(commitDiff?.diff ?? '');
   const { hash: commitHash } = useParams();
-  const navigate = useNavigate();
 
   const fetchCommitDiff = useCallback(async () => {
     const currentCommitIndex = appState.commits.findIndex(
@@ -61,17 +61,7 @@ export const CommitDetail = () => {
         direction="row"
         className="header repository-header"
       >
-        <Button
-          size="sm"
-          color="secondary"
-          rounded
-          animated
-          flat
-          style={{ height: 40 }}
-          onPress={() => navigate('/repository', { replace: true })}
-        >
-          Back
-        </Button>
+        <BackButton />
         <Text h3>Commit detail</Text>
       </Grid>
       <Grid style={{ width: '100%', paddingLeft: 30 }} justify="flex-start">

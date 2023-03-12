@@ -118,3 +118,16 @@ export function drawHover(
     data.y + size / 3 + 3 + 3 * subLabelSize
   );
 }
+
+export const formatKey = (key: KeyboardEvent): string => {
+  let pressed = '';
+  const specialKeyList = ['altKey', 'ctrlKey', 'shiftKey', 'metaKey'];
+  specialKeyList.forEach((val: string) => {
+    // @ts-ignore
+    if (key[val]) {
+      const code = val.replace('Key', '');
+      pressed += code[0].toUpperCase() + code.substring(1);
+    }
+  });
+  return pressed + key.code;
+};

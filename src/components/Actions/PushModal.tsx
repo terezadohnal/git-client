@@ -53,7 +53,7 @@ export const PushModal: FC<PushModalProps> = ({
       blur
       aria-labelledby="modal-title"
       open={visible}
-      // onClose={closePushModal}
+      onClose={() => closePushModal(false)}
     >
       <Modal.Header>
         <Text h3>Push changes</Text>

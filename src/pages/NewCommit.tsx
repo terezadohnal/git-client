@@ -1,4 +1,5 @@
 import { Button, Grid, Spacer, Text, Textarea, Table } from '@nextui-org/react';
+import { BackButton } from 'components/BackButton';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -33,17 +34,7 @@ export const NewCommit = () => {
         direction="row"
         className="header repository-header"
       >
-        <Button
-          size="sm"
-          color="secondary"
-          rounded
-          animated
-          flat
-          style={{ height: 40 }}
-          onPress={() => navigate('/repository', { replace: true })}
-        >
-          Back
-        </Button>
+        <BackButton />
         <Text h3>New commit</Text>
       </Grid>
       <form onSubmit={handleSubmit(onHandleSubmit)}>

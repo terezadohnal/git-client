@@ -1,6 +1,7 @@
 import { Badge, Button, Grid } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
-import { useState } from 'react';
+import { formatKey } from 'helpers/globalHelpers';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BranchIcon } from '../../assets/icons/branch';
 import { CommitIcon } from '../../assets/icons/commit';
@@ -10,6 +11,7 @@ import { PushIcon } from '../../assets/icons/push';
 import { BranchModal } from './Actions/Branch/BranchModal';
 import { MergeModal } from './Actions/MergeModal';
 import { ModalContainer } from './Actions/ModalContainer';
+import { BackButton } from './BackButton';
 
 export const RepositoryHeader = () => {
   const navigate = useNavigate();
@@ -20,22 +22,57 @@ export const RepositoryHeader = () => {
   const [branchVisible, setBranchVisible] = useState(false);
   const [mergeVisible, setMergeVisible] = useState(false);
 
-  const onBackPress = () => {
-    window.localStorage.removeItem('repo');
-    navigate('/', { replace: true });
-  };
-
-  const onCommitPress = () => {
-    navigate('/repository/create-commit', { replace: true });
-  };
+  const onCommitPress = useCallback(() => {
+    navigate('/repository/create-commit');
+  }, [navigate]);
 
   const onSwitchPress = () => {
     if (location.pathname === '/repository') {
-      navigate('/repository/secret', { replace: true });
+      navigate('/repository/secret');
     } else if (location.pathname === '/repository/secret') {
-      navigate('/repository', { replace: true });
+      navigate('/repository');
     }
   };
+
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      const pressed = formatKey(event);
+      switch (pressed) {
+        case 'KeyC':
+          onCommitPress();
+          break;
+        case 'KeyM':
+          setMergeVisible(true);
+          break;
+        case 'KeyB':
+          setBranchVisible(true);
+          break;
+        case 'KeyP':
+          setPushVisible(true);
+          break;
+        case 'KeyL':
+          setPullVisible(true);
+          break;
+        case 'KeyQ':
+          if (mergeVisible) setMergeVisible(false);
+          if (branchVisible) setBranchVisible(false);
+          if (pushVisible) setPushVisible(false);
+          if (pullVisible) setPullVisible(false);
+          break;
+        default:
+          break;
+      }
+    },
+    [branchVisible, mergeVisible, onCommitPress, pullVisible, pushVisible]
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleKeyPress]);
 
   return (
     <Grid
@@ -58,17 +95,7 @@ export const RepositoryHeader = () => {
         closeBranchModal={setBranchVisible}
       />
       <MergeModal visible={mergeVisible} closeMergeModal={setMergeVisible} />
-      <Button
-        size="sm"
-        color="secondary"
-        rounded
-        animated
-        flat
-        style={{ height: 40 }}
-        onPress={onBackPress}
-      >
-        Back
-      </Button>
+      <BackButton />
       <Button
         auto
         color="secondary"

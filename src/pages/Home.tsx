@@ -24,7 +24,7 @@ export const Home = () => {
   };
 
   const onOpenRepository = () => {
-    navigate('/repository', { replace: true });
+    navigate('/repository');
   };
 
   useEffect(() => {
