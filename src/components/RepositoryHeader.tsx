@@ -1,7 +1,7 @@
 import { Badge, Button, Grid } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { BranchIcon } from '../../assets/icons/branch';
 import { CommitIcon } from '../../assets/icons/commit';
 import { MergeIcon } from '../../assets/icons/merge';
@@ -12,6 +12,7 @@ import { ModalContainer } from './ModalContainer';
 
 export const RepositoryHeader = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const appState = useAppState();
   const [pushVisible, setPushVisible] = useState(false);
   const [pullVisible, setPullVisible] = useState(false);
@@ -25,8 +26,17 @@ export const RepositoryHeader = () => {
   const onCommitPress = () => {
     navigate('/repository/create-commit', { replace: true });
   };
+
   const onMergePress = () => {
     console.log('merging');
+  };
+
+  const onSwitchPress = () => {
+    if (location.pathname === '/repository') {
+      navigate('/repository/secret', { replace: true });
+    } else if (location.pathname === '/repository/secret') {
+      navigate('/repository', { replace: true });
+    }
   };
 
   return (
@@ -126,6 +136,16 @@ export const RepositoryHeader = () => {
         onPress={onMergePress}
       >
         Merge
+      </Button>
+      <Button
+        auto
+        color="secondary"
+        flat
+        rounded
+        animated
+        onPress={onSwitchPress}
+      >
+        S
       </Button>
     </Grid>
   );
