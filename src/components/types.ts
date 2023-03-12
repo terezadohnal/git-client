@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { AlertProps, SnackbarProps } from '@mui/material';
 import { RemoteWithRefs } from 'simple-git';
 
 export type ModalContainerProps = {
@@ -37,4 +38,11 @@ export type CreateBranchBodyProps = {
 
 export type DeleteBranchBodyProps = {
   onClose: (val: boolean) => void;
+};
+
+export type AppSnackbarProps = {
+  snackbarProps?: SnackbarProps;
+  alertProps?: AlertProps;
+  message: string;
+  isOpen?: boolean;
 };

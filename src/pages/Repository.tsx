@@ -11,6 +11,7 @@ import '@react-sigma/core/lib/react-sigma.min.css';
 import { LoadGraph } from 'components/LoadGraph/LoadGraph';
 import { RepositoryHeader } from 'components/RepositoryHeader';
 import { drawHover } from 'helpers/globalHelpers';
+import { AppSnackbar } from 'components/AppSnackbar';
 
 export const Repository = () => {
   const appState = useAppState();
@@ -107,6 +108,11 @@ export const Repository = () => {
   return (
     <Grid.Container css={{ h: '100vh', w: '1014px' }} justify="center">
       <RepositoryHeader />
+      <AppSnackbar
+        isOpen={appState.commits.length > 0}
+        message="Repository successfully opened"
+        snackbarProps={{ autoHideDuration: 3000 }}
+      />
       <SigmaContainer
         style={{
           height: '3000px',
