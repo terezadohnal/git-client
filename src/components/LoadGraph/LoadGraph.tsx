@@ -18,13 +18,16 @@ export const LoadGraph: FC<LoadGraphProps> = ({ data }) => {
   );
 
   useEffect(() => {
-    const graph = new MultiGraph();
-    graph.import(data);
-    loadGraph(graph);
-
-    registerEvents({
-      clickNode: (event) => onNodeClick(event),
-    });
+    try {
+      const graph = new MultiGraph();
+      graph.import(data);
+      loadGraph(graph);
+      registerEvents({
+        clickNode: (event) => onNodeClick(event),
+      });
+    } catch (e: any) {
+      console.log(e);
+    }
   }, [loadGraph, data, registerEvents, onNodeClick]);
 
   return null;

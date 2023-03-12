@@ -89,7 +89,7 @@ export const CreateBranchBody: FC<CreateBranchBodyProps> = ({ onClose }) => {
           </Dropdown>
         </Row>
         <Checkbox
-          defaultChecked
+          defaultSelected
           size="sm"
           color="secondary"
           onChange={() => setCheckout(!checkout)}

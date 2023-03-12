@@ -10,8 +10,8 @@ import {
 } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { FC, useMemo, useState, Key } from 'react';
-import { AddRemoteForm } from './AddRemoteForm';
-import { PushModalProps } from './types';
+import { AddRemoteForm } from '../AddRemoteForm';
+import { PushModalProps } from '../types';
 
 export const PushModal: FC<PushModalProps> = ({
   visible,

@@ -150,7 +150,6 @@ ipcMain.handle(CHANELS.PULL, async (_, args) => {
 
 ipcMain.handle(CHANELS.CREATE_BRANCH, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
-  console.log(args);
   try {
     if (args.commit) {
       return await git.checkoutBranch(args.name, args.commit);
@@ -169,6 +168,18 @@ ipcMain.handle(CHANELS.DELETE_BRANCH, async (_, args) => {
       : args.branches;
   try {
     return await git.deleteLocalBranches(branches);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
+ipcMain.handle(CHANELS.MERGE, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  try {
+    return await git.merge([
+      args.branch,
+      `-m 'Merge ${args.branch} to ${args.current}'`,
+    ]);
   } catch (e: any) {
     throw new Error(e);
   }

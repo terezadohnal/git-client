@@ -10,7 +10,7 @@ export const NewCommit = () => {
   const [selectedFiles, setSelectedFiles] = useState<
     string | Set<React.Key> | null
   >(null);
-  const { handleSubmit, register, getValues } = useForm({
+  const { handleSubmit, register } = useForm({
     defaultValues: {
       message: '',
     },
@@ -102,7 +102,7 @@ export const NewCommit = () => {
               color="secondary"
               style={{ height: 40 }}
               type="submit"
-              disabled={!appState.status.files || getValues('message') === ''}
+              disabled={!appState.status.files}
               rounded
             >
               Commit

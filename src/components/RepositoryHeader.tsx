@@ -7,8 +7,9 @@ import { CommitIcon } from '../../assets/icons/commit';
 import { MergeIcon } from '../../assets/icons/merge';
 import { PullIcon } from '../../assets/icons/pull';
 import { PushIcon } from '../../assets/icons/push';
-import { BranchModal } from './Branch/BranchModal';
-import { ModalContainer } from './ModalContainer';
+import { BranchModal } from './Actions/Branch/BranchModal';
+import { MergeModal } from './Actions/MergeModal';
+import { ModalContainer } from './Actions/ModalContainer';
 
 export const RepositoryHeader = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export const RepositoryHeader = () => {
   const [pushVisible, setPushVisible] = useState(false);
   const [pullVisible, setPullVisible] = useState(false);
   const [branchVisible, setBranchVisible] = useState(false);
+  const [mergeVisible, setMergeVisible] = useState(false);
 
   const onBackPress = () => {
     window.localStorage.removeItem('repo');
@@ -25,10 +27,6 @@ export const RepositoryHeader = () => {
 
   const onCommitPress = () => {
     navigate('/repository/create-commit', { replace: true });
-  };
-
-  const onMergePress = () => {
-    console.log('merging');
   };
 
   const onSwitchPress = () => {
@@ -59,6 +57,7 @@ export const RepositoryHeader = () => {
         visible={branchVisible}
         closeBranchModal={setBranchVisible}
       />
+      <MergeModal visible={mergeVisible} closeMergeModal={setMergeVisible} />
       <Button
         size="sm"
         color="secondary"
@@ -133,7 +132,7 @@ export const RepositoryHeader = () => {
         rounded
         animated
         icon={<MergeIcon />}
-        onPress={onMergePress}
+        onPress={() => setMergeVisible(true)}
       >
         Merge
       </Button>

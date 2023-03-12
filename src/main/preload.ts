@@ -58,6 +58,9 @@ const API = {
       path: string;
       branches: string | Set<React.Key> | null | string[];
     }) => ipcRenderer.invoke(CHANELS.DELETE_BRANCH, args),
+
+    merge: (args: { path: string; branch: string; current: string }) =>
+      ipcRenderer.invoke(CHANELS.MERGE, args),
   },
 };
 

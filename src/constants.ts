@@ -11,4 +11,5 @@ export const CHANELS = {
   COMMIT: 'commit',
   PUSH: 'push',
   PULL: 'pull',
+  MERGE: 'merge',
 } as const;

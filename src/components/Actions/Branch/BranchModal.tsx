@@ -1,6 +1,6 @@
 import { Button, Col, Modal, Text } from '@nextui-org/react';
 import { FC, useState } from 'react';
-import { BranchModalProps } from '../types';
+import { BranchModalProps } from '../../types';
 import { CreateBranchBody } from './CreateBranchBody';
 import { DeleteBranchBody } from './DeleteBranchBody';
 

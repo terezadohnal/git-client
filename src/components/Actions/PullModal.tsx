@@ -10,7 +10,7 @@ import {
 } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { FC, Key, useMemo, useState } from 'react';
-import { PullModalProps } from './types';
+import { PullModalProps } from '../types';
 
 export const PullModal: FC<PullModalProps> = ({
   visible,
@@ -96,7 +96,7 @@ export const PullModal: FC<PullModalProps> = ({
             </Dropdown>
           </Row>
           <Spacer y={1} />
-          <Row>
+          <Row align="center">
             <Text h5>Remote branch to pull:</Text>
             <Spacer x={0.5} />
             <Dropdown>

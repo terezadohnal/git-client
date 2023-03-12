@@ -26,6 +26,11 @@ export type BranchModalProps = {
   closeBranchModal: (val: boolean) => void;
 };
 
+export type MergeModalProps = {
+  visible: boolean;
+  closeMergeModal: (val: boolean) => void;
+};
+
 export type CreateBranchBodyProps = {
   onClose: (val: boolean) => void;
 };
