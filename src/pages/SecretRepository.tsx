@@ -47,15 +47,14 @@ export const SecretRepository = () => {
   const { commits } = appState;
 
   const simpleGraph = useMemo(() => {
-    return commits.map((commit) => ({
-      refs: commit.refs.split(', '),
+    return commits.reverse().map((commit) => ({
       hash: commit.hash,
       hashAbbrev: commit.hash.slice(0, 7),
-      tree: commit.tree,
+      tree: commit.tree.split(' ')[0],
       treeAbbrev: commit.tree.slice(0, 7),
-      parents: commit.parentHashes.split(', '),
+      parents: commit.parentHashes.split(' '),
       parentsAbbrev: commit.parentHashes
-        .split(', ')
+        .split(' ')
         .map((hash) => hash.slice(0, 7)),
       author: {
         name: commit.author_name,
@@ -71,6 +70,7 @@ export const SecretRepository = () => {
       body: '',
       stats: [],
       notes: '',
+      refs: commit.refs ? commit.refs.split(', ') : [''],
     }));
   }, [commits]);
 
@@ -78,17 +78,11 @@ export const SecretRepository = () => {
     <Grid.Container css={{ h: '100vh', w: '1014px' }} justify="center">
       <RepositoryHeader />
       {simpleGraph.length ? (
-        <div
-          style={{
-            width: '100%',
+        <Gitgraph>
+          {(gitgraph) => {
+            gitgraph.import(simpleGraph);
           }}
-        >
-          <Gitgraph>
-            {(gitgraph) => {
-              gitgraph.import(simpleGraph);
-            }}
-          </Gitgraph>
-        </div>
+        </Gitgraph>
       ) : null}
     </Grid.Container>
   );
