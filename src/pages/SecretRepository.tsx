@@ -75,7 +75,7 @@ export const SecretRepository = () => {
   }, [commits]);
 
   return (
-    <Grid.Container css={{ h: '100vh', w: '1014px' }} justify="center">
+    <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
       <RepositoryHeader />
       {simpleGraph.length ? (
         <Gitgraph>

@@ -4,9 +4,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { parseDiff, Diff, Hunk } from 'react-diff-view';
 import 'react-diff-view/style/index.css';
 import { useParams } from 'react-router-dom';
-import { Grid, Text, Collapse } from '@nextui-org/react';
+import { Grid, Text, Collapse, Card } from '@nextui-org/react';
 import { CommitDiffDTO, CommitDTO, DiffFile, DiffHunk } from 'helpers/types';
 import { BackButton } from 'components/Buttons/BackButton';
+import { format } from 'date-fns';
 
 export const CommitDetail = () => {
   const appState = useAppState();
@@ -38,9 +39,12 @@ export const CommitDetail = () => {
     const { oldRevision, newRevision, type, hunks, newPath } = file;
 
     if (!newPath) return null;
-
     return (
-      <Collapse title={newPath} key={`${oldRevision}-${newRevision}`}>
+      <Collapse
+        title={newPath}
+        subtitle={`Type: ${type}`}
+        key={`${oldRevision}-${newRevision}`}
+      >
         <Grid>
           <Diff viewType="split" diffType={type} hunks={hunks}>
             {() =>
@@ -55,7 +59,7 @@ export const CommitDetail = () => {
   };
 
   return (
-    <Grid.Container css={{ h: '100%', w: '1014px' }} justify="center">
+    <Grid.Container css={{ h: '100%', w: '100%' }} justify="center">
       <Grid
         justify="space-between"
         direction="row"
@@ -64,18 +68,38 @@ export const CommitDetail = () => {
         <BackButton />
         <Text h3>Commit detail</Text>
       </Grid>
-      <Grid style={{ width: '100%', paddingLeft: 30 }} justify="flex-start">
-        {commit?.author_name && (
-          <Text>
-            Created by: {commit?.author_name} ({commit.author_email})
-          </Text>
-        )}
-        {commit?.date && <Text>Created at: {commit?.date}</Text>}
-        {commit?.message && <Text>Message: {commit?.message}</Text>}
-        {commit?.hash && <Text>Hash: {commit?.hash}</Text>}
+      <Grid style={{ width: '100%', padding: 30 }} justify="flex-start">
+        <Card isHoverable variant="flat" css={{ mw: '100%' }}>
+          <Card.Body>
+            {commit?.author_name && (
+              <Text>
+                <span style={{ fontWeight: 'bold' }}>Created by:</span>
+                {commit?.author_name} ({commit.author_email})
+              </Text>
+            )}
+            {commit?.date && (
+              <Text>
+                <span style={{ fontWeight: 'bold' }}>Created at:</span>
+                {format(new Date(commit?.date), 'dd/MM/yyyy H:m')}
+              </Text>
+            )}
+            {commit?.message && (
+              <Text>
+                <span style={{ fontWeight: 'bold' }}>Message:</span>
+                {commit?.message}
+              </Text>
+            )}
+            {commit?.hash && (
+              <Text>
+                <span style={{ fontWeight: 'bold' }}>Hash:</span>
+                {commit?.hash}
+              </Text>
+            )}
+          </Card.Body>
+        </Card>
       </Grid>
       <Grid style={{ height: '100%', width: '100%', padding: 20 }}>
-        <Collapse.Group accordion={false}>
+        <Collapse.Group accordion={false} shadow>
           {files.map(renderFile)}
         </Collapse.Group>
       </Grid>
