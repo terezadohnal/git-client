@@ -24,9 +24,7 @@ export const LoadGraph: FC<LoadGraphProps> = ({ data }) => {
       loadGraph(graph);
       registerEvents({
         clickNode: (event) => onNodeClick(event),
-        wheelStage: (event) => {
-          event.preventSigmaDefault();
-        },
+        wheelStage: (event) => event.preventSigmaDefault(),
       });
     } catch (e: any) {
       console.log(e);

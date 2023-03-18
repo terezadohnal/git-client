@@ -1,3 +1,4 @@
+import { templateExtend, TemplateName } from '@gitgraph/react';
 import { Settings } from 'sigma/settings';
 import { NodeDisplayData, PartialButFor } from 'sigma/types';
 
@@ -130,4 +131,31 @@ export const formatKey = (key: KeyboardEvent): string => {
     }
   });
   return pressed + key.code;
+};
+
+export const options = {
+  template: templateExtend(TemplateName.Metro, {
+    colors: [
+      '#F94144',
+      '#F3722C',
+      '#F8961E',
+      '#F9844A',
+      '#F9C74F',
+      '#90BE6D',
+      '#43AA8B',
+      '#4D908E',
+      '#577590',
+      '#277DA1',
+      '#3C1874',
+      '#891E67',
+      '#F032E6',
+      '#B5179E',
+      '#FFB627',
+      '#FF7F11',
+      '#FF1A9E',
+      '#BFDBFE',
+      '#2B2D42',
+      '#8D99AE',
+    ],
+  }),
 };

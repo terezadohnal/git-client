@@ -14,6 +14,9 @@ const API = {
 
     openDialog: () => ipcRenderer.invoke(CHANELS.OPEN_FILE),
 
+    isRepository: (args: { path: string }) =>
+      ipcRenderer.invoke(CHANELS.IS_REPO, args),
+
     fetchDirectoryStatus: (args: { path: string }) =>
       ipcRenderer.invoke(CHANELS.FETCH_DIRECTORY_STATUS, args),
 

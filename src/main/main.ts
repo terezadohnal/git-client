@@ -32,8 +32,8 @@ ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
       return 'Repository cloned';
     }
     throw new Error('Directory is not empty');
-  } catch (err) {
-    return err;
+  } catch (err: any) {
+    throw new Error(err);
   }
 });
 
@@ -65,8 +65,8 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, arg) => {
       });
     }
     return 'Not a repository';
-  } catch (err) {
-    return err;
+  } catch (err: any) {
+    throw new Error(err);
   }
 });
 
@@ -180,6 +180,15 @@ ipcMain.handle(CHANELS.MERGE, async (_, args) => {
       args.branch,
       `-m 'Merge ${args.branch} to ${args.current}'`,
     ]);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
+ipcMain.handle(CHANELS.IS_REPO, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  try {
+    return await git.checkIsRepo();
   } catch (e: any) {
     throw new Error(e);
   }

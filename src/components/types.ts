@@ -3,6 +3,11 @@ import { AlertProps, SnackbarProps } from '@mui/material';
 import { ReactElement } from 'react';
 import { RemoteWithRefs } from 'simple-git';
 
+export type CloningRepoContentProps = {
+  onOpenFolder: () => void;
+  onClone: (data: { repository: string }) => void;
+};
+
 export type ModalContainerProps = {
   visible: boolean;
   closeModal: (val: boolean) => void;

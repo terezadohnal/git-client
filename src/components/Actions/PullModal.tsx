@@ -80,7 +80,7 @@ export const PullModal: FC<PullModalProps> = ({
                 color="secondary"
                 css={{ tt: 'capitalize' }}
               >
-                {selectedValue}
+                {selectedValue || 'Select..'}
               </Dropdown.Button>
               <Dropdown.Menu
                 color="secondary"

@@ -71,3 +71,14 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.graphContainer {
+  height: calc(100vh - 140px);
+  overflow: scroll;
+  width: 100%;
+}
+
+.footerContainer {
+  height: '70px';
+  position: static;
+}

@@ -1,6 +1,7 @@
 export const CHANELS = {
   CLONE: 'clone',
   OPEN_FILE: 'open-file',
+  IS_REPO: 'is-repo',
   FETCH_DIRECTORY_STATUS: 'fetch-directory-status',
   GET_COMMIT_DIFF: 'get-commit-diff',
   GET_REMOTES: 'get-remotes',
