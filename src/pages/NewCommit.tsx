@@ -1,5 +1,5 @@
 import { Button, Grid, Spacer, Text, Textarea, Table } from '@nextui-org/react';
-import { BackButton } from 'components/BackButton';
+import { BackButton } from 'components/Buttons/BackButton';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -48,9 +48,7 @@ export const NewCommit = () => {
               selectionMode="multiple"
               defaultSelectedKeys="all"
               selectedKeys={selectedFiles ?? []}
-              onSelectionChange={(keys) => {
-                setSelectedFiles(keys);
-              }}
+              onSelectionChange={setSelectedFiles}
               color="secondary"
               css={{
                 height: 'auto',

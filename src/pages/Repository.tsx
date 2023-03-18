@@ -111,6 +111,8 @@ export const Repository = () => {
   //   };
   // }, [commits]);
 
+  console.log('commits', commits);
+
   const simpleGraph = useMemo(() => {
     return commits.reverse().map((commit) => ({
       hash: commit.hash,
@@ -143,13 +145,20 @@ export const Repository = () => {
   myGitgraph.getUserApi().import(simpleGraph);
   const renderData = myGitgraph.getRenderedData();
 
+  console.log('renderData', renderData);
+
+  // TODO vypocitat vysku canvasu na kterem zobrazit commity
+  // TODO Nastavit dynamickou velikost canvasu
+  // TODO Optimalizace - zobrazit jenom ty commity, ktere se vejde na canvas
+  // TODO Loadingy pri nacitani dat
+
   const data = useMemo(() => {
     return {
-      nodes: renderData.commits.reverse().map((commit) => {
+      nodes: renderData.commits.map((commit) => {
         return {
           key: commit.hash,
           attributes: {
-            x: commit.x * 2,
+            x: commit.x * 3,
             y: commit.y,
             size: 10,
             label: commit.subject,
@@ -161,25 +170,35 @@ export const Repository = () => {
         };
       }),
       edges: renderData.commits
-        .reverse()
-        .slice(0, commits.length - 1)
         .map((commit) =>
-          commit.parents.map((parentHash) => ({
-            key: `${commit.hash}-${parentHash}`,
-            source: commit.hash,
-            target: parentHash,
-            attributes: {
-              size: 5,
-            },
-          }))
+          commit.parents.map((parentHash) => {
+            const parent = renderData.commits.find(
+              (c) => c.hash === parentHash
+            );
+
+            return {
+              key: `${commit.hash}-${parentHash}`,
+              source: commit.hash,
+              target: parentHash,
+              attributes: {
+                size: 10,
+                color:
+                  (parent?.parents?.length === 1 && parent?.style?.color) ||
+                  commit.style?.color,
+              },
+            };
+          })
         )
-        .flat(),
+        .flat()
+        .filter((e) => e.target !== ''),
     };
-  }, [commits.length, renderData.commits]);
+  }, [renderData.commits]);
   console.log('second', data);
 
+  const numOfCommits = renderData.commits.length;
+
   return (
-    <Grid.Container css={{ h: '100vh', w: '1014px' }} justify="center">
+    <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
       <RepositoryHeader />
       <AppSnackbar
         isOpen={appState.commits.length > 0}
@@ -188,7 +207,8 @@ export const Repository = () => {
       />
       <SigmaContainer
         style={{
-          height: '3000px',
+          height: `${numOfCommits * 40}px`,
+          maxHeight: '10000px',
           width: '100%',
           overflow: 'scroll',
           padding: 0,

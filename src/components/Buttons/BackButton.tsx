@@ -18,7 +18,7 @@ export const BackButton = () => {
     (event: KeyboardEvent) => {
       const pressed = formatKey(event);
       switch (pressed) {
-        case 'KeyB':
+        case 'MetaKeyB':
           onBackPress();
           break;
         default:

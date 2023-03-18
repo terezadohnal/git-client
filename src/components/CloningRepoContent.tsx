@@ -1,10 +1,15 @@
-import { Collapse, Grid, Input, Loading, Spacer } from '@nextui-org/react';
+import {
+  Button,
+  Collapse,
+  Grid,
+  Input,
+  Loading,
+  Spacer,
+} from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { FC, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { AppButton } from './AppButton/AppButton';
-import { AppInput } from './AppInput/AppInput';
 
 type CloningRepoContentProps = {
   onOpenFolder: () => void;
@@ -51,7 +56,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
           fullWidth
         />
         <Spacer x={1} />
-        <AppButton
+        <Button
           flat
           color="secondary"
           size="sm"
@@ -59,7 +64,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
           onPress={onOpenFolder}
         >
           Open folder
-        </AppButton>
+        </Button>
       </Grid.Container>
       <Spacer y={2} />
       <FormProvider {...methods}>
@@ -69,8 +74,8 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
             justify="center"
             alignItems="center"
           >
-            {/* @ts-ignore */}
-            <AppInput
+            @ts-ignore
+            <Input
               name="repository"
               id="repository"
               labelPlaceholder="Repository name"
@@ -80,7 +85,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
               disabled={!appState.repositoryPath}
             />
             <Spacer y={1} />
-            <AppButton
+            <Button
               color="primary"
               shadow
               type="submit"
@@ -94,7 +99,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
                 <Loading type="points" color="currentColor" size="sm" />
               )}
               Clone repository
-            </AppButton>
+            </Button>
           </Grid.Container>
         </form>
       </FormProvider>

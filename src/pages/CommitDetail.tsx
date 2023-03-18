@@ -6,7 +6,7 @@ import 'react-diff-view/style/index.css';
 import { useParams } from 'react-router-dom';
 import { Grid, Text, Collapse } from '@nextui-org/react';
 import { CommitDiffDTO, CommitDTO, DiffFile, DiffHunk } from 'helpers/types';
-import { BackButton } from 'components/BackButton';
+import { BackButton } from 'components/Buttons/BackButton';
 
 export const CommitDetail = () => {
   const appState = useAppState();

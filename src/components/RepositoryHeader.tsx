@@ -1,4 +1,4 @@
-import { Badge, Button, Grid } from '@nextui-org/react';
+import { Button, Grid } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { formatKey } from 'helpers/globalHelpers';
 import { useCallback, useEffect, useState } from 'react';
@@ -11,7 +11,8 @@ import { PushIcon } from '../../assets/icons/push';
 import { BranchModal } from './Actions/Branch/BranchModal';
 import { MergeModal } from './Actions/MergeModal';
 import { ModalContainer } from './Actions/ModalContainer';
-import { BackButton } from './BackButton';
+import { BackButton } from './Buttons/BackButton';
+import { ButtonWithBadge } from './Buttons/ButtonWithBadge';
 
 export const RepositoryHeader = () => {
   const navigate = useNavigate();
@@ -38,22 +39,22 @@ export const RepositoryHeader = () => {
     (event: KeyboardEvent) => {
       const pressed = formatKey(event);
       switch (pressed) {
-        case 'KeyC':
+        case 'MetaKeyC':
           onCommitPress();
           break;
-        case 'KeyM':
+        case 'MetaKeyM':
           setMergeVisible(true);
           break;
-        case 'KeyB':
+        case 'MetaKeyB':
           setBranchVisible(true);
           break;
-        case 'KeyP':
+        case 'MetaKeyP':
           setPushVisible(true);
           break;
-        case 'KeyL':
+        case 'MetaKeyL':
           setPullVisible(true);
           break;
-        case 'KeyQ':
+        case 'ShiftKeyQ':
           if (mergeVisible) setMergeVisible(false);
           if (branchVisible) setBranchVisible(false);
           if (pushVisible) setPushVisible(false);
@@ -73,6 +74,10 @@ export const RepositoryHeader = () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, [handleKeyPress]);
+
+  if (!appState.status) {
+    return null;
+  }
 
   return (
     <Grid
@@ -107,40 +112,18 @@ export const RepositoryHeader = () => {
       >
         Commit
       </Button>
-      <Badge
-        color="error"
-        content={appState.status.ahead}
-        isInvisible={appState.status.ahead === 0}
-      >
-        <Button
-          auto
-          color="secondary"
-          flat
-          rounded
-          animated
-          icon={<PushIcon />}
-          onPress={() => setPushVisible(true)}
-        >
-          Push
-        </Button>
-      </Badge>
-      <Badge
-        color="error"
-        content={appState.status.behind}
-        isInvisible={appState.status.behind === 0}
-      >
-        <Button
-          auto
-          color="secondary"
-          flat
-          rounded
-          animated
-          icon={<PullIcon />}
-          onPress={() => setPullVisible(true)}
-        >
-          Pull
-        </Button>
-      </Badge>
+      <ButtonWithBadge
+        icon={<PushIcon />}
+        label="Push"
+        onButtonPress={() => setPushVisible(true)}
+        badgeNumber={appState.status.ahead}
+      />
+      <ButtonWithBadge
+        icon={<PullIcon />}
+        label="Pull"
+        onButtonPress={() => setPullVisible(true)}
+        badgeNumber={appState.status.behind}
+      />
       <Button
         auto
         color="secondary"
