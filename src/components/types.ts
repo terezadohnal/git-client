@@ -59,3 +59,41 @@ export type ButtonWithBadgeProps = {
   label: string;
   badgeNumber?: number | null;
 };
+
+export type TooltipCommit = {
+  refs: string[];
+  x: number;
+  y: number;
+  author: {
+    name: string;
+    email: string;
+    timestamp: number;
+  };
+  committer: {
+    name: string;
+    email: string;
+    timestamp: number;
+  };
+  subject: string;
+  body: string;
+  hash: string;
+  hashAbbrev: string;
+  parents: string[];
+  parentsAbbrev: string[];
+  style: {
+    spacing: number;
+    hasTooltipInCompactMode: boolean;
+    dot: {
+      size: number;
+      strokeWidth: number;
+      font: string;
+    };
+    message: {
+      display: boolean;
+      displayAuthor: boolean;
+      displayHash: boolean;
+      font: string;
+    };
+  };
+  branches: string[];
+};

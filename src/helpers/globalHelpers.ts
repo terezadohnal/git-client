@@ -111,7 +111,7 @@ export function drawHover(
     );
   }
 
-  context.fillStyle = data.color;
+  context.fillStyle = '#694a83';
   context.font = `${weight} ${subLabelSize}px ${font}`;
   context.fillText(
     `${name} (${email})`,
@@ -134,6 +134,7 @@ export const formatKey = (key: KeyboardEvent): string => {
 };
 
 export const options = {
+  // mode: Mode.Compact,
   template: templateExtend(TemplateName.Metro, {
     colors: [
       '#F94144',
@@ -144,18 +145,37 @@ export const options = {
       '#90BE6D',
       '#43AA8B',
       '#4D908E',
-      '#577590',
+      '#4e80ad',
       '#277DA1',
       '#3C1874',
       '#891E67',
-      '#F032E6',
-      '#B5179E',
+      '#d42c72',
+      '#e695da',
       '#FFB627',
       '#FF7F11',
-      '#FF1A9E',
+      '#c74e94',
       '#BFDBFE',
-      '#2B2D42',
-      '#8D99AE',
+      '#616bcf',
+      '#82a4e0',
     ],
+
+    branch: {
+      lineWidth: 4,
+      label: {
+        display: true,
+      },
+    },
+    commit: {
+      dot: {
+        size: 10,
+      },
+      message: {
+        color: 'transparent',
+        display: false,
+        displayAuthor: false,
+        displayHash: false,
+      },
+      hasTooltipInCompactMode: true,
+    },
   }),
 };

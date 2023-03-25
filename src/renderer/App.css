@@ -82,3 +82,15 @@ body {
   height: '70px';
   position: static;
 }
+
+.tooltip {
+  height: fit-content;
+  background: linear-gradient(180deg, hsla(0, 0%, 100%, 1) 37%, #faf4ff 120%);
+  transition: opacity 0.3s ease;
+  color: black;
+  z-index: 1000;
+}
+
+.tooltip-title {
+  font-weight: 600;
+}

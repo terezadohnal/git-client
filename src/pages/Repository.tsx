@@ -18,6 +18,7 @@ export const Repository = () => {
   const appState = useAppState();
   const appStateDispatch = useAppStateDispatch();
   const [error, setError] = useState<string | null>(null);
+  const { performance } = window;
 
   const fetchDirectory = useCallback(async () => {
     try {
@@ -49,74 +50,18 @@ export const Repository = () => {
   }, [appState.repositoryPath, appStateDispatch]);
 
   useEffect(() => {
+    const startFetchingTime = performance.now();
+
     fetchDirectory();
-  }, [fetchDirectory]);
+    const endFetchingTime = performance.now();
+    console.log(
+      `Time taken to fetch all commits: ${
+        endFetchingTime - startFetchingTime
+      }ms`
+    );
+  }, [fetchDirectory, performance]);
 
   const { commits } = appState;
-
-  // const data = useMemo(() => {
-  //   const commitsCoordinates: Record<string, { x: number; y: number }> = {};
-  //   let x = 1;
-  //   let y = 0;
-  //   const parentsMap: Record<string, string[]> = {};
-  //   return {
-  //     nodes: commits.map((commit) => {
-  //       let xOverride;
-  //       if (parentsMap[commit.parentHashes] === undefined) {
-  //         parentsMap[commit.parentHashes] = [commit.hash];
-  //       } else if (
-  //         parentsMap[commit.parentHashes] &&
-  //         !parentsMap[commit.parentHashes].includes(commit.hash)
-  //       ) {
-  //         parentsMap[commit.parentHashes].push(commit.hash);
-  //         xOverride = parentsMap[commit.parentHashes].length;
-  //       }
-
-  //       if (commitsCoordinates[commit.parentHashes]) {
-  //         y = commitsCoordinates[commit.parentHashes].y;
-  //         x = commitsCoordinates[commit.parentHashes].x;
-  //       }
-
-  //       commitsCoordinates[commit.hash] = {
-  //         x: xOverride || x,
-  //         y: y + 1,
-  //       };
-
-  //       return {
-  //         key: commit.hash,
-  //         attributes: {
-  //           x: commitsCoordinates[commit.hash].x,
-  //           y: commitsCoordinates[commit.hash].y,
-  //           size: 10,
-  //           label: commit.message,
-  //           author_name: commit.author_name,
-  //           author_email: commit.author_email,
-  //           date: commit.date,
-  //           hash: commit.hash,
-  //         },
-  //       };
-  //     }),
-  //     edges: commits
-  //       .map((commit) => {
-  //         return { ...commit, parentHashes: commit.parentHashes.split(' ') };
-  //       })
-  //       .reverse()
-  //       .slice(0, commits.length - 1)
-  //       .map((commit) =>
-  //         commit.parentHashes.map((parentHash) => ({
-  //           key: `${commit.hash}-${parentHash}`,
-  //           source: commit.hash,
-  //           target: parentHash,
-  //           attributes: {
-  //             size: 5,
-  //           },
-  //         }))
-  //       )
-  //       .flat(),
-  //   };
-  // }, [commits]);
-
-  console.log('commits', commits);
 
   const simpleGraph = useMemo(() => {
     return commits.reverse().map((commit) => ({
@@ -146,19 +91,20 @@ export const Repository = () => {
     }));
   }, [commits]);
 
+  const startParsingTime = performance.now();
+
   const myGitgraph = new GitgraphCore(options);
   myGitgraph.getUserApi().import(simpleGraph);
   const renderData = myGitgraph.getRenderedData();
 
+  const endParsingTime = performance.now();
+  console.log(
+    `Time taken to calculate positions: ${endParsingTime - startParsingTime}ms`
+  );
+
   const numOfCommits = renderData.commits.length;
 
-  console.log('renderData', renderData);
-
-  // TODO vypocitat vysku canvasu na kterem zobrazit commity
-  // TODO Nastavit dynamickou velikost canvasu
-  // TODO Optimalizace - zobrazit jenom ty commity, ktere se vejde na canvas
-  // TODO Loadingy pri nacitani dat
-
+  const startRenderingTime = performance.now();
   const data = useMemo(() => {
     return {
       nodes: renderData.commits.map((commit) => {
@@ -200,7 +146,14 @@ export const Repository = () => {
         .filter((e) => e.target !== ''),
     };
   }, [numOfCommits, renderData.commits]);
-  console.log('second', data);
+
+  // console.log('second', data);
+  const endRenderingTime = performance.now();
+  console.log(
+    `Time taken to parse renderCommits into Sigma data structure: ${
+      endRenderingTime - startRenderingTime
+    }ms`
+  );
 
   return (
     <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
@@ -224,7 +177,10 @@ export const Repository = () => {
             padding: 0,
           }}
           settings={{
+            minCameraRatio: 0.1,
+            maxCameraRatio: 0.8,
             defaultNodeColor: '#EBEBEB',
+
             renderLabels: false,
             hoverRenderer(context, values, settings) {
               drawHover(context, values, settings);
