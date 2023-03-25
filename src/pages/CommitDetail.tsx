@@ -8,11 +8,13 @@ import { Grid, Text, Collapse, Card } from '@nextui-org/react';
 import { CommitDiffDTO, CommitDTO, DiffFile, DiffHunk } from 'helpers/types';
 import { BackButton } from 'components/Buttons/BackButton';
 import { format } from 'date-fns';
+import { AppSnackbar } from 'components/AppSnackbar';
 
 export const CommitDetail = () => {
   const appState = useAppState();
   const [commitDiff, setCommitDiff] = useState<CommitDiffDTO | null>(null);
   const [commit, setCommit] = useState<CommitDTO | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const files = parseDiff(commitDiff?.diff ?? '');
   const { hash: commitHash } = useParams();
 
@@ -20,15 +22,19 @@ export const CommitDetail = () => {
     const currentCommitIndex = appState.commits.findIndex(
       (c) => c.hash === commitHash
     );
-
-    const response = await window.electron.ipcRenderer.getCommitDiff({
-      path: appState.repositoryPath,
-      commitHash: commitHash || '',
-      previousCommitHash: appState.commits[currentCommitIndex + 1].hash ?? '',
-    });
-    const parsedResponse = JSON.parse(response) as CommitDiffDTO;
-    setCommit(appState.commits[currentCommitIndex]);
-    setCommitDiff(parsedResponse);
+    try {
+      const response = await window.electron.ipcRenderer.getCommitDiff({
+        path: appState.repositoryPath,
+        commitHash: commitHash || '',
+        previousCommitHash:
+          appState.commits[currentCommitIndex + 1]?.hash ?? '',
+      });
+      const parsedResponse = JSON.parse(response) as CommitDiffDTO;
+      setCommit(appState.commits[currentCommitIndex]);
+      setCommitDiff(parsedResponse);
+    } catch (err: any) {
+      setError(err.message);
+    }
   }, [appState.commits, appState.repositoryPath, commitHash]);
 
   useEffect(() => {
@@ -39,6 +45,7 @@ export const CommitDetail = () => {
     const { oldRevision, newRevision, type, hunks, newPath } = file;
 
     if (!newPath) return null;
+
     return (
       <Collapse
         title={newPath}
@@ -60,14 +67,21 @@ export const CommitDetail = () => {
 
   return (
     <Grid.Container css={{ h: '100%', w: '100%' }} justify="center">
+      <AppSnackbar
+        message={error ?? ''}
+        isOpen={!!error}
+        snackbarProps={{ autoHideDuration: 5000 }}
+        alertProps={{ severity: 'error' }}
+      />
       <Grid
         justify="space-between"
         direction="row"
-        className="header repository-header"
+        className=" navbars repo-header nav-background"
       >
         <BackButton />
         <Text h3>Commit detail</Text>
       </Grid>
+
       <Grid style={{ width: '100%', padding: 30 }} justify="flex-start">
         <Card isHoverable variant="flat" css={{ mw: '100%' }}>
           <Card.Body>

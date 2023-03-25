@@ -1,4 +1,4 @@
-import { Grid, Text } from '@nextui-org/react';
+import { Grid } from '@nextui-org/react';
 import {
   StateAction,
   useAppState,
@@ -13,6 +13,7 @@ import { RepositoryHeader } from 'components/RepositoryHeader';
 import { drawHover, options } from 'helpers/globalHelpers';
 import { AppSnackbar } from 'components/AppSnackbar';
 import { GitgraphCore } from '@gitgraph/core';
+import { RepositoryFooter } from 'components/RepositoryFooter';
 
 export const Repository = () => {
   const appState = useAppState();
@@ -190,12 +191,7 @@ export const Repository = () => {
           <LoadGraph data={data ?? {}} />
         </SigmaContainer>
       </div>
-      <Grid className="footerContainer">
-        <Text>
-          <span style={{ fontWeight: 'bold' }}>On branch </span>
-          {appState.status.current}
-        </Text>
-      </Grid>
+      <RepositoryFooter />
     </Grid.Container>
   );
 };

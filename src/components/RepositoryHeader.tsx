@@ -83,7 +83,7 @@ export const RepositoryHeader = () => {
     <Grid
       justify="space-between"
       direction="row"
-      className="header repository-header"
+      className="navbars repo-header nav-background"
     >
       <ModalContainer
         visible={pushVisible}
