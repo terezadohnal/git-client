@@ -13,6 +13,8 @@ export const ExistingRepoContent: FC<ExistingRepoContentProps> = ({
 }) => {
   const appState = useAppState();
 
+  console.log(appState.repositoryPath);
+
   return (
     <Collapse title="Open existing repository">
       <Grid.Container direction="column" alignItems="center">
@@ -26,7 +28,13 @@ export const ExistingRepoContent: FC<ExistingRepoContentProps> = ({
         </Grid.Container>
         <Spacer y={1} />
         <Grid>
-          <Button color="primary" shadow size="md" onPress={onOpenRepository}>
+          <Button
+            color="primary"
+            shadow
+            size="md"
+            onPress={onOpenRepository}
+            disabled={!appState.repositoryPath}
+          >
             Open
           </Button>
         </Grid>

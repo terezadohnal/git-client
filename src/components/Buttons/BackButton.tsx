@@ -1,4 +1,8 @@
 import { Button } from '@nextui-org/react';
+import {
+  StateAction,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { formatKey } from 'helpers/globalHelpers';
 import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -6,13 +10,20 @@ import { useLocation, useNavigate } from 'react-router-dom';
 export const BackButton = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const appStateDispatch = useAppStateDispatch();
 
   const onBackPress = useCallback(() => {
     if (location.pathname === '/repository') {
       window.localStorage.removeItem('repo');
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_PATH,
+        payload: {
+          repositoryPath: '',
+        },
+      });
     }
     navigate(-1);
-  }, [location.pathname, navigate]);
+  }, [appStateDispatch, location.pathname, navigate]);
 
   const handleKeyPress = useCallback(
     (event: KeyboardEvent) => {

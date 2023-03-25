@@ -51,7 +51,6 @@ export const Home = () => {
           remote: data.repository,
           target: appState.repositoryPath,
         });
-        console.log(response);
         if (response) {
           window.localStorage.setItem('repo', appState.repositoryPath);
           navigate('/repository');
@@ -107,7 +106,7 @@ export const Home = () => {
       </Grid.Container>
       <Grid.Container direction="column" alignItems="center">
         <Grid style={{ width: '50%' }}>
-          <Collapse.Group shadow>
+          <Collapse.Group shadow accordion>
             <CloningRepoContent onOpenFolder={onOpenFolder} onClone={onClone} />
             <ExistingRepoContent
               onOpenFolder={onOpenExistingRepo}

@@ -42,6 +42,7 @@ export const CommitDetail = () => {
     return (
       <Collapse
         title={newPath}
+        css={{ h3: { fontSize: '18px' } }}
         subtitle={`Type: ${type}`}
         key={`${oldRevision}-${newRevision}`}
       >
