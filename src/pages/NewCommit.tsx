@@ -24,7 +24,7 @@ export const NewCommit = () => {
       message: data.message,
     });
     if (response) {
-      navigate('/repository', { replace: true });
+      navigate('/repository');
     }
   };
   return (
