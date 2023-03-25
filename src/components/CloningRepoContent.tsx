@@ -17,7 +17,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const appState = useAppState();
-  const { handleSubmit, register, watch, getValues } = useForm({
+  const { handleSubmit, register, watch } = useForm({
     defaultValues: {
       repository: '',
     },
@@ -33,8 +33,6 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
       setIsLoading(false);
     }
   };
-
-  console.log(getValues('repository'));
 
   return (
     <Collapse title="Clone remote repo">
