@@ -10,12 +10,17 @@ import {
   Input,
 } from '@nextui-org/react';
 import { CreateBranchBodyProps } from 'components/types';
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { FC, Key, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const CreateBranchBody: FC<CreateBranchBodyProps> = ({ onClose }) => {
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [specificCommit, setSpecificCommit] = useState(false);
   const [checkout, setCheckout] = useState(true);
@@ -38,9 +43,21 @@ export const CreateBranchBody: FC<CreateBranchBodyProps> = ({ onClose }) => {
         commit: selectedValue,
         checkout,
       });
-      console.log(response);
+      if (response) {
+        appStateDispatch({
+          type: StateAction.SET_REPOSITORY_SUCCESS,
+          payload: {
+            repositorySuccess: `Branch ${data?.name} successfully created`,
+          },
+        });
+      }
     } catch (error: any) {
-      throw new Error(error);
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_ERROR,
+        payload: {
+          repositoryError: error.message,
+        },
+      });
     } finally {
       setIsLoading(false);
       onClose(false);

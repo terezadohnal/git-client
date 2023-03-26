@@ -1,10 +1,15 @@
 import { Button, Loading, Modal, Table } from '@nextui-org/react';
 import { DeleteBranchBodyProps } from 'components/types';
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { FC, useState } from 'react';
 
 export const DeleteBranchBody: FC<DeleteBranchBodyProps> = ({ onClose }) => {
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const mappedBranches: { key: number; name: string }[] =
@@ -29,9 +34,24 @@ export const DeleteBranchBody: FC<DeleteBranchBodyProps> = ({ onClose }) => {
             ? selectedBranches
             : appState.localBranches.all,
       });
-      console.log(response);
+
+      if (response) {
+        appStateDispatch({
+          type: StateAction.SET_REPOSITORY_SUCCESS,
+          payload: {
+            repositorySuccess: `${
+              selectedBranches === 'all' ? 'Branches' : 'Branch'
+            } successfully deleted`,
+          },
+        });
+      }
     } catch (error: any) {
-      throw new Error(error);
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_ERROR,
+        payload: {
+          repositoryError: error.message,
+        },
+      });
     } finally {
       setIsLoading(false);
       onClose(false);

@@ -1,4 +1,8 @@
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { useCallback, useEffect, useState } from 'react';
 // @ts-ignore
 import { parseDiff, Diff, Hunk } from 'react-diff-view';
@@ -12,9 +16,9 @@ import { AppSnackbar } from 'components/AppSnackbar';
 
 export const CommitDetail = () => {
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [commitDiff, setCommitDiff] = useState<CommitDiffDTO | null>(null);
   const [commit, setCommit] = useState<CommitDTO | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const files = parseDiff(commitDiff?.diff ?? '');
   const { hash: commitHash } = useParams();
 
@@ -26,16 +30,20 @@ export const CommitDetail = () => {
       const response = await window.electron.ipcRenderer.getCommitDiff({
         path: appState.repositoryPath,
         commitHash: commitHash || '',
-        previousCommitHash:
-          appState.commits[currentCommitIndex + 1]?.hash ?? '',
+        previousCommitHash: appState.commits[currentCommitIndex + 1].hash ?? '',
       });
       const parsedResponse = JSON.parse(response) as CommitDiffDTO;
       setCommit(appState.commits[currentCommitIndex]);
       setCommitDiff(parsedResponse);
     } catch (err: any) {
-      setError(err.message);
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_ERROR,
+        payload: {
+          repositoryError: err.message,
+        },
+      });
     }
-  }, [appState.commits, appState.repositoryPath, commitHash]);
+  }, [appState.commits, appState.repositoryPath, appStateDispatch, commitHash]);
 
   useEffect(() => {
     fetchCommitDiff();
@@ -69,8 +77,8 @@ export const CommitDetail = () => {
   return (
     <Grid.Container css={{ h: '100%', w: '100%' }} justify="center">
       <AppSnackbar
-        message={error ?? ''}
-        isOpen={!!error}
+        message={appState.repositoryError ?? ''}
+        isOpen={!!appState.repositoryError}
         snackbarProps={{ autoHideDuration: 5000 }}
         alertProps={{ severity: 'error' }}
       />
@@ -82,7 +90,12 @@ export const CommitDetail = () => {
         <BackButton />
         <Text h3>Commit detail</Text>
       </Grid>
-
+      <AppSnackbar
+        isOpen={!!appState.repositoryError}
+        message={appState.repositoryError ?? 'Unknown error'}
+        snackbarProps={{ autoHideDuration: 3000 }}
+        alertProps={{ severity: 'error' }}
+      />
       <Grid style={{ width: '100%', padding: 30 }} justify="flex-start">
         <Card isHoverable variant="flat" css={{ mw: '100%' }}>
           <Card.Body>

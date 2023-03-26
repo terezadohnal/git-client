@@ -8,7 +8,11 @@ import {
   Spacer,
   Text,
 } from '@nextui-org/react';
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { FC, Key, useMemo, useState } from 'react';
 import { PullModalProps } from '../types';
 
@@ -19,6 +23,7 @@ export const PullModal: FC<PullModalProps> = ({
   closePullModal,
 }) => {
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [selected, setSelected] = useState<Set<Key> | 'all'>(
     new Set([remotes[0].name])
   );
@@ -50,9 +55,21 @@ export const PullModal: FC<PullModalProps> = ({
         remoteName: selectedValue,
         remoteBranch: selectedRemoteBranch,
       });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+      if (response) {
+        appStateDispatch({
+          type: StateAction.SET_REPOSITORY_SUCCESS,
+          payload: {
+            repositorySuccess: `Branch ${selectedRemoteBranch} successfully pulled`,
+          },
+        });
+      }
+    } catch (error: any) {
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_ERROR,
+        payload: {
+          repositoryError: error.message,
+        },
+      });
     } finally {
       setIsLoading(false);
       closePullModal(false);

@@ -20,7 +20,6 @@ export const Repository = () => {
   const appState = useAppState();
   const appStateDispatch = useAppStateDispatch();
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<TooltipCommit | null>(null);
   const { performance } = window;
 
@@ -55,8 +54,21 @@ export const Repository = () => {
           localBranches: parsedDir.branches,
         },
       });
+      if (parsedDir.commits.length) {
+        appStateDispatch({
+          type: StateAction.SET_REPOSITORY_SUCCESS,
+          payload: {
+            repositorySuccess: `Successfully fetched ${parsedDir.commits.length} commits`,
+          },
+        });
+      }
     } catch (err: any) {
-      setError(err.message);
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_PATH,
+        payload: {
+          repositoryPath: err.message,
+        },
+      });
     }
   }, [appState.repositoryPath, appStateDispatch]);
 
@@ -114,13 +126,13 @@ export const Repository = () => {
     <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
       <RepositoryHeader />
       <AppSnackbar
-        isOpen={appState.commits.length > 0}
-        message="Repository successfully loaded"
+        isOpen={!!appState.repositorySuccess}
+        message={appState.repositorySuccess ?? 'Unknown success'}
         snackbarProps={{ autoHideDuration: 3000 }}
       />
       <AppSnackbar
-        isOpen={!!error}
-        message={error ?? 'Unknown error'}
+        isOpen={!!appState.repositoryError}
+        message={appState.repositoryError ?? 'Unknown error'}
         snackbarProps={{ autoHideDuration: 3000 }}
         alertProps={{ severity: 'error' }}
       />

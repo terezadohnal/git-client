@@ -8,7 +8,11 @@ import {
   Spacer,
   Loading,
 } from '@nextui-org/react';
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { FC, useMemo, useState, Key } from 'react';
 import { AddRemoteForm } from '../AddRemoteForm';
 import { PushModalProps } from '../types';
@@ -20,6 +24,7 @@ export const PushModal: FC<PushModalProps> = ({
   onAddRemote,
 }) => {
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [selected, setSelected] = useState<Set<Key> | 'all'>(
     new Set([remotes[0].name])
   );
@@ -34,13 +39,26 @@ export const PushModal: FC<PushModalProps> = ({
   const onPushPress = async () => {
     try {
       setIsLoading(true);
-      await window.electron.ipcRenderer.push({
+      const response = await window.electron.ipcRenderer.push({
         path: appState.repositoryPath,
         remoteName: selectedValue,
         branch: appState.status.current ?? '',
       });
-    } catch (error) {
-      console.log(error);
+      if (response) {
+        appStateDispatch({
+          type: StateAction.SET_REPOSITORY_SUCCESS,
+          payload: {
+            repositorySuccess: `Successfully pushed to ${selectedValue}`,
+          },
+        });
+      }
+    } catch (error: any) {
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_ERROR,
+        payload: {
+          repositoryError: error.message,
+        },
+      });
     } finally {
       setIsLoading(false);
       closePushModal(false);

@@ -1,8 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { CHANELS } from '../constants';
 
-// export type Channels = 'ipc-example';
-
 const API = {
   ipcRenderer: {
     sendMessage: (args: string) => {
