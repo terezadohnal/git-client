@@ -11,7 +11,7 @@ export type CloningRepoContentProps = {
 export type ModalContainerProps = {
   visible: boolean;
   closeModal: (val: boolean) => void;
-  type: 'push' | 'pull';
+  type: 'push' | 'pull' | 'checkout';
 };
 
 export type PushModalProps = {
@@ -96,4 +96,10 @@ export type TooltipCommit = {
     };
   };
   branches: string[];
+};
+
+export type CheckoutModalProps = {
+  closeCheckoutModal: (value: boolean) => void;
+  visible: boolean;
+  remoteBranches: string[];
 };

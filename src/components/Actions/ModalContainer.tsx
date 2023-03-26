@@ -8,6 +8,7 @@ import { RemoteWithRefs } from 'simple-git';
 import { PullModal } from './PullModal';
 import { PushModal } from './PushModal';
 import { ModalContainerProps } from '../types';
+import { CheckoutModal } from './CheckoutModal';
 
 export const ModalContainer: FC<ModalContainerProps> = ({
   visible,
@@ -67,6 +68,16 @@ export const ModalContainer: FC<ModalContainerProps> = ({
         remotes={remotes}
         remoteBranches={remoteBranches}
         closePullModal={closeModal}
+      />
+    );
+  }
+
+  if (type === 'checkout') {
+    return (
+      <CheckoutModal
+        closeCheckoutModal={closeModal}
+        visible={visible}
+        remoteBranches={remoteBranches}
       />
     );
   }

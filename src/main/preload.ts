@@ -62,6 +62,9 @@ const API = {
 
     merge: (args: { path: string; branch: string; current: string }) =>
       ipcRenderer.invoke(CHANELS.MERGE, args),
+
+    checkout: (args: { path: string; branch: string; isRemote: boolean }) =>
+      ipcRenderer.invoke(CHANELS.CHECKOUT, args),
   },
 };
 

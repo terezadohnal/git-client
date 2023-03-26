@@ -40,18 +40,26 @@ body {
   );
 }
 
-.header {
+.navbars {
   padding: 15px;
   width: 100%;
   height: 70px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   position: static;
 }
 
-.repository-header {
+.repo-header {
   border-bottom: 2px solid #faf4ff;
+  justify-content: space-between;
+}
+
+.repo-footer {
+  border-top: 2px solid #faf4ff;
+  justify-content: space-between;
+}
+
+.nav-background {
   background: hsla(0, 0%, 100%, 1);
   background: linear-gradient(-90deg, hsla(0, 0%, 100%, 1) 37%, #faf4ff 120%);
   background: -moz-linear-gradient(

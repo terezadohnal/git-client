@@ -13,4 +13,5 @@ export const CHANELS = {
   PUSH: 'push',
   PULL: 'pull',
   MERGE: 'merge',
+  CHECKOUT: 'checkout',
 } as const;

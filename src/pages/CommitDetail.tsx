@@ -23,10 +23,10 @@ export const CommitDetail = () => {
   const { hash: commitHash } = useParams();
 
   const fetchCommitDiff = useCallback(async () => {
+    const currentCommitIndex = appState.commits.findIndex(
+      (c) => c.hash === commitHash
+    );
     try {
-      const currentCommitIndex = appState.commits.findIndex(
-        (c) => c.hash === commitHash
-      );
       const response = await window.electron.ipcRenderer.getCommitDiff({
         path: appState.repositoryPath,
         commitHash: commitHash || '',
@@ -53,6 +53,7 @@ export const CommitDetail = () => {
     const { oldRevision, newRevision, type, hunks, newPath } = file;
 
     if (!newPath) return null;
+
     return (
       <Collapse
         title={newPath}
@@ -75,10 +76,16 @@ export const CommitDetail = () => {
 
   return (
     <Grid.Container css={{ h: '100%', w: '100%' }} justify="center">
+      <AppSnackbar
+        message={appState.repositoryError ?? ''}
+        isOpen={!!appState.repositoryError}
+        snackbarProps={{ autoHideDuration: 5000 }}
+        alertProps={{ severity: 'error' }}
+      />
       <Grid
         justify="space-between"
         direction="row"
-        className="header repository-header"
+        className=" navbars repo-header nav-background"
       >
         <BackButton />
         <Text h3>Commit detail</Text>
