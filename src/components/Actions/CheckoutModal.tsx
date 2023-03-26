@@ -1,5 +1,6 @@
 import {
   Button,
+  Col,
   Dropdown,
   Loading,
   Modal,
@@ -18,6 +19,7 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
 }) => {
   const appState = useAppState();
   const [isLoading, setIsLoading] = useState(false);
+  const [isRemote, setIsRemote] = useState(false);
   const [selectedLocal, setSelectedLocal] = useState<Set<Key> | string>(
     new Set([''])
   );
@@ -34,12 +36,14 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
     [selectedRemote]
   );
 
-  console.log(remoteBranches);
-
-  const onCheckoutPress = () => {
+  const onCheckoutPress = async () => {
     try {
       setIsLoading(true);
-      console.log('checkout');
+      await window.electron.ipcRenderer.checkout({
+        path: appState.repositoryPath,
+        branch: isRemote ? selectedRemoteVal : selectedLocalVal,
+        isRemote,
+      });
     } catch (err: any) {
       console.log(err);
     } finally {
@@ -55,69 +59,96 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
       onClose={() => closeCheckoutModal(false)}
     >
       <Modal.Header>
-        <Text h3>Checkout Branch</Text>
+        <Col>
+          <Text h3>Checkout Branch</Text>
+          <Button.Group size="sm" color="secondary" rounded bordered>
+            <Button
+              onPress={() => {
+                setIsRemote(false);
+                setSelectedRemote(new Set(['']));
+              }}
+              animated
+            >
+              Checkout local
+            </Button>
+            <Button
+              onPress={() => {
+                setIsRemote(true);
+                setSelectedLocal(new Set(['']));
+              }}
+              animated
+            >
+              Checkout remote
+            </Button>
+          </Button.Group>
+        </Col>
       </Modal.Header>
       <Modal.Body>
-        <Row align="center" justify="space-between">
-          <Text>Checkout local:</Text>
-          <Spacer x={0.5} />
-          <Dropdown>
-            <Dropdown.Button color="secondary" size="sm" flat rounded>
-              <div style={{ width: '150px' }} className="textOverflow">
-                {selectedLocalVal || 'Select branch'}
-              </div>
-            </Dropdown.Button>
-            <Dropdown.Menu
-              color="secondary"
-              selectionMode="single"
-              selectedKeys={selectedLocal}
-              onSelectionChange={setSelectedLocal}
-            >
-              {appState.localBranches?.all?.map((branch) => (
-                <Dropdown.Item
-                  css={{
-                    width: '150px',
-                  }}
-                  className="textOverflow"
-                  showFullDescription
-                  key={branch}
-                >
-                  <Text>{branch}</Text>
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-        </Row>
-        <Row align="center" justify="space-between">
-          <Text>Checkout remote:</Text>
-          <Spacer x={0.5} />
-          <Dropdown>
-            <Dropdown.Button color="secondary" size="sm" flat rounded>
-              <div style={{ width: '150px' }} className="textOverflow">
-                {selectedRemoteVal || 'Select branch'}
-              </div>
-            </Dropdown.Button>
-            <Dropdown.Menu
-              color="secondary"
-              selectionMode="single"
-              selectedKeys={selectedRemote}
-              onSelectionChange={setSelectedRemote}
-            >
-              {remoteBranches.map((branch) => (
-                <Dropdown.Item
-                  css={{
-                    width: '250px',
-                  }}
-                  className="textOverflow"
-                  showFullDescription
-                  key={branch}
-                >
-                  {branch}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-        </Row>
+        {isRemote ? (
+          <Row align="center" justify="space-between">
+            <Text>Checkout remote:</Text>
+            <Spacer x={0.5} />
+            <Dropdown>
+              <Dropdown.Button color="secondary" size="sm" flat rounded>
+                <div style={{ width: '150px' }} className="textOverflow">
+                  {selectedRemoteVal || 'Select remote branch'}
+                </div>
+              </Dropdown.Button>
+              <Dropdown.Menu
+                color="secondary"
+                selectionMode="single"
+                selectedKeys={selectedRemote}
+                onSelectionChange={setSelectedRemote}
+              >
+                {remoteBranches.map((branch) => (
+                  <Dropdown.Item
+                    css={{
+                      maxWidth: '250px',
+                    }}
+                    className="textOverflow"
+                    showFullDescription
+                    key={branch}
+                    textValue={branch}
+                  >
+                    {branch}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </Row>
+        ) : (
+          <Row align="center" justify="space-between">
+            <Text>Checkout local:</Text>
+            <Spacer x={0.5} />
+            <Dropdown>
+              <Dropdown.Button color="secondary" size="sm" flat rounded>
+                <div style={{ width: '150px' }} className="textOverflow">
+                  {selectedLocalVal || 'Select local branch'}
+                </div>
+              </Dropdown.Button>
+              <Dropdown.Menu
+                color="secondary"
+                selectionMode="single"
+                selectedKeys={selectedLocal}
+                onSelectionChange={setSelectedLocal}
+              >
+                {appState.localBranches?.all?.map((branch) => (
+                  <Dropdown.Item
+                    css={{
+                      maxWidth: '250px',
+                    }}
+                    className="textOverflow"
+                    showFullDescription
+                    key={branch}
+                    textValue={branch}
+                  >
+                    <Text>{branch}</Text>
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </Row>
+        )}
       </Modal.Body>
       <Modal.Footer>
         <Button
@@ -137,7 +168,7 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
           disabled={isLoading}
           onPress={onCheckoutPress}
         >
-          {isLoading ? <Loading size="sm" type="points" /> : 'Merge'}
+          {isLoading ? <Loading size="sm" type="points" /> : 'Checkout'}
         </Button>
       </Modal.Footer>
     </Modal>

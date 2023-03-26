@@ -24,7 +24,7 @@ export const RepositoryFooter = () => {
       </Button>
       <Text>
         <span style={{ fontWeight: 'bold' }}>On branch </span>
-        {appState.status.current}
+        {appState.status.current ?? 'loading...'}
       </Text>
     </Grid>
   );

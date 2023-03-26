@@ -14,6 +14,7 @@ import { GitgraphCore } from '@gitgraph/core';
 import { Gitgraph } from '@gitgraph/react';
 import { useNavigate } from 'react-router-dom';
 import { TooltipCommit } from 'components/types';
+import { RepositoryFooter } from 'components/RepositoryFooter';
 
 export const Repository = () => {
   const appState = useAppState();
@@ -159,12 +160,7 @@ export const Repository = () => {
           </Gitgraph>
         ) : null}
       </Grid>
-      <Grid className="footerContainer">
-        <Text>
-          <span style={{ fontWeight: 'bold' }}>On branch </span>
-          {appState.status.current}
-        </Text>
-      </Grid>
+      <RepositoryFooter />
     </Grid.Container>
   );
 };

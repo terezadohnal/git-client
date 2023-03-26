@@ -185,6 +185,15 @@ ipcMain.handle(CHANELS.MERGE, async (_, args) => {
   }
 });
 
+ipcMain.handle(CHANELS.CHECKOUT, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path });
+  try {
+    return await git.checkout(args.branch, [args.isRemote ? '-b' : '']);
+  } catch (e: any) {
+    throw new Error(e);
+  }
+});
+
 ipcMain.handle(CHANELS.IS_REPO, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   try {
