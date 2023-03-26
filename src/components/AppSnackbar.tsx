@@ -1,5 +1,5 @@
 import { Alert, Snackbar } from '@mui/material';
-import { useToggle } from 'helpers/useToggle';
+import { useToggle } from 'hooks/useToggle';
 import { FC, useEffect } from 'react';
 import { AppSnackbarProps } from './types';
 

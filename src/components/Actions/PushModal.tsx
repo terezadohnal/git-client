@@ -8,11 +8,9 @@ import {
   Spacer,
   Loading,
 } from '@nextui-org/react';
-import {
-  StateAction,
-  useAppState,
-  useAppStateDispatch,
-} from 'context/AppStateContext/AppStateProvider';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import { MessageTypes } from 'helpers/types';
+import useSnackbar from 'hooks/useSnackbar';
 import { FC, useMemo, useState, Key } from 'react';
 import { AddRemoteForm } from '../AddRemoteForm';
 import { PushModalProps } from '../types';
@@ -24,7 +22,7 @@ export const PushModal: FC<PushModalProps> = ({
   onAddRemote,
 }) => {
   const appState = useAppState();
-  const appStateDispatch = useAppStateDispatch();
+  const { showSnackbar } = useSnackbar();
   const [selected, setSelected] = useState<Set<Key> | 'all'>(
     new Set([remotes[0].name])
   );
@@ -45,19 +43,14 @@ export const PushModal: FC<PushModalProps> = ({
         branch: appState.status.current ?? '',
       });
       if (response) {
-        appStateDispatch({
-          type: StateAction.SET_REPOSITORY_SUCCESS,
-          payload: {
-            repositorySuccess: `Successfully pushed to ${selectedValue}`,
-          },
+        showSnackbar({
+          message: `Successfully pushed to ${selectedValue}`,
         });
       }
     } catch (error: any) {
-      appStateDispatch({
-        type: StateAction.SET_REPOSITORY_ERROR,
-        payload: {
-          repositoryError: error.message,
-        },
+      showSnackbar({
+        message: error.message,
+        type: MessageTypes.ERROR,
       });
     } finally {
       setIsLoading(false);

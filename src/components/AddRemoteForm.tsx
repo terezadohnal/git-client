@@ -1,5 +1,7 @@
 import { Button, Card, Col, Input, Spacer } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import { MessageTypes } from 'helpers/types';
+import useSnackbar from 'hooks/useSnackbar';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -14,6 +16,7 @@ export const AddRemoteForm: FC<AddRemoteFormProps> = ({
   onAddRemote,
 }) => {
   const appState = useAppState();
+  const { showSnackbar } = useSnackbar();
   const { handleSubmit, register } = useForm({
     defaultValues: {
       remoteName: '',
@@ -33,8 +36,11 @@ export const AddRemoteForm: FC<AddRemoteFormProps> = ({
       });
       onAddRemote();
       closeForm(false);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      showSnackbar({
+        message: error.message,
+        type: MessageTypes.ERROR,
+      });
     }
   };
 

@@ -1,10 +1,8 @@
-import {
-  StateAction,
-  useAppState,
-  useAppStateDispatch,
-} from 'context/AppStateContext/AppStateProvider';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { RemoteWithRefs } from 'simple-git';
+import useSnackbar from 'hooks/useSnackbar';
+import { MessageTypes } from 'helpers/types';
 import { PullModal } from './PullModal';
 import { PushModal } from './PushModal';
 import { ModalContainerProps } from '../types';
@@ -16,7 +14,7 @@ export const ModalContainer: FC<ModalContainerProps> = ({
   type,
 }) => {
   const appState = useAppState();
-  const appStateDispatch = useAppStateDispatch();
+  const { showSnackbar } = useSnackbar();
   const [remotes, setRemotes] = useState<RemoteWithRefs[]>([]);
   const [remoteBranches, setRemoteBranches] = useState<string[]>([]);
 
@@ -33,14 +31,12 @@ export const ModalContainer: FC<ModalContainerProps> = ({
       setRemotes(response);
       setRemoteBranches(getRemotesBranches.all);
     } catch (error: any) {
-      appStateDispatch({
-        type: StateAction.SET_REPOSITORY_ERROR,
-        payload: {
-          repositoryError: error.message,
-        },
+      showSnackbar({
+        message: error.message,
+        type: MessageTypes.ERROR,
       });
     }
-  }, [appState.repositoryPath, appStateDispatch]);
+  }, [appState.repositoryPath, showSnackbar]);
 
   useEffect(() => {
     getRemotes();

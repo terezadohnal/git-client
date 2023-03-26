@@ -1,11 +1,6 @@
 import { Grid, Text } from '@nextui-org/react';
-import {
-  StateAction,
-  useAppState,
-  useAppStateDispatch,
-} from 'context/AppStateContext/AppStateProvider';
-import { Directory } from 'helpers/types';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import { useEffect, useMemo } from 'react';
 import '@react-sigma/core/lib/react-sigma.min.css';
 import { RepositoryHeader } from 'components/RepositoryHeader';
 import { drawHover, options } from 'helpers/globalHelpers';
@@ -13,41 +8,11 @@ import { GitgraphCore } from '@gitgraph/core';
 import { AppSnackbar } from 'components/AppSnackbar';
 import { SigmaContainer } from '@react-sigma/core';
 import { LoadGraph } from 'components/LoadGraph/LoadGraph';
+import useRepository from 'hooks/useRepository';
 
 export const SecretRepository = () => {
   const appState = useAppState();
-  const appStateDispatch = useAppStateDispatch();
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchDirectory = useCallback(async () => {
-    try {
-      const directory = await window.electron.ipcRenderer.fetchDirectoryStatus({
-        path: appState.repositoryPath,
-      });
-
-      const parsedDir = JSON.parse(directory) as Directory;
-      appStateDispatch({
-        type: StateAction.SET_COMMITS,
-        payload: {
-          commits: parsedDir.commits,
-        },
-      });
-      appStateDispatch({
-        type: StateAction.SET_STATUS,
-        payload: {
-          status: parsedDir.status,
-        },
-      });
-      appStateDispatch({
-        type: StateAction.SET_LOCAL_BRANCHES,
-        payload: {
-          localBranches: parsedDir.branches,
-        },
-      });
-    } catch (err: any) {
-      setError(err.message);
-    }
-  }, [appState.repositoryPath, appStateDispatch]);
+  const { fetchDirectory } = useRepository();
 
   useEffect(() => {
     fetchDirectory();
@@ -150,15 +115,9 @@ export const SecretRepository = () => {
     <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
       <RepositoryHeader />
       <AppSnackbar
-        isOpen={appState.commits.length > 0}
-        message="Repository successfully opened"
-        snackbarProps={{ autoHideDuration: 3000 }}
-      />
-      <AppSnackbar
-        isOpen={!!error}
-        message={error ?? 'Unknown error'}
-        snackbarProps={{ autoHideDuration: 3000 }}
-        alertProps={{ severity: 'error' }}
+        isOpen={!!appState.snackbar.message}
+        message={appState.snackbar.message}
+        alertProps={{ severity: appState.snackbar.type }}
       />
       <div className="graphContainer">
         <SigmaContainer

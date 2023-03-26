@@ -69,3 +69,17 @@ export type Node = {
   };
   key: string;
 };
+
+export const MessageTypes = {
+  ERROR: 'error',
+  SUCCESS: 'success',
+  INFO: 'info',
+  WARNING: 'warning',
+} as const;
+
+export type SnackbarType = (typeof MessageTypes)[keyof typeof MessageTypes];
+
+export type Snackbar = {
+  message: string;
+  type?: SnackbarType;
+};

@@ -9,11 +9,8 @@ import {
   Spacer,
   Text,
 } from '@nextui-org/react';
-import {
-  StateAction,
-  useAppState,
-  useAppStateDispatch,
-} from 'context/AppStateContext/AppStateProvider';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import useBranch from 'hooks/useBranch';
 import { FC, Key, useMemo, useState } from 'react';
 import { MergeModalProps } from '../types';
 
@@ -22,7 +19,7 @@ export const MergeModal: FC<MergeModalProps> = ({
   closeMergeModal,
 }) => {
   const appState = useAppState();
-  const appStateDispatch = useAppStateDispatch();
+  const { mergeBranch } = useBranch();
   const [isLoading, setIsLoading] = useState(false);
   const [checkout, setCheckout] = useState(true);
   const [selected, setSelected] = useState<Set<Key> | string>(new Set(['']));
@@ -35,26 +32,7 @@ export const MergeModal: FC<MergeModalProps> = ({
   const onMergePress = async () => {
     try {
       setIsLoading(true);
-      const response = await window.electron.ipcRenderer.merge({
-        path: appState.repositoryPath,
-        branch: selectedValue,
-        current: appState.status?.current ?? '',
-      });
-      if (response) {
-        appStateDispatch({
-          type: StateAction.SET_REPOSITORY_SUCCESS,
-          payload: {
-            repositorySuccess: `Branch ${selectedValue} successfully merged`,
-          },
-        });
-      }
-    } catch (error: any) {
-      appStateDispatch({
-        type: StateAction.SET_REPOSITORY_ERROR,
-        payload: {
-          repositoryError: error.message,
-        },
-      });
+      await mergeBranch(selectedValue);
     } finally {
       setIsLoading(false);
       closeMergeModal(false);

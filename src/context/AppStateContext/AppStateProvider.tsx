@@ -1,4 +1,4 @@
-import { CommitDTO } from 'helpers/types';
+import { CommitDTO, MessageTypes, Snackbar } from 'helpers/types';
 import {
   ReactElement,
   useReducer,
@@ -16,8 +16,7 @@ interface AppState {
   status: StatusResult;
   remoteBranches: string[];
   localBranches: BranchSummary;
-  repositoryError: string;
-  repositorySuccess: string;
+  snackbar: Snackbar;
 }
 
 interface SetRepositoryPathAction {
@@ -58,16 +57,10 @@ interface SetLocalBranches {
     localBranches: BranchSummary;
   };
 }
-interface SetRepositoryError {
-  type: StateAction.SET_REPOSITORY_ERROR;
+interface SetSnackbar {
+  type: StateAction.SET_SNACKBAR;
   payload: {
-    repositoryError: string;
-  };
-}
-interface SetRepositorySuccess {
-  type: StateAction.SET_REPOSITORY_SUCCESS;
-  payload: {
-    repositorySuccess: string;
+    snackbar: Snackbar;
   };
 }
 
@@ -78,8 +71,7 @@ export type AppStateAction =
   | SetStatusAction
   | SetRemoteBranches
   | SetLocalBranches
-  | SetRepositoryError
-  | SetRepositorySuccess;
+  | SetSnackbar;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -118,16 +110,12 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
         ...state,
         localBranches: action.payload.localBranches,
       };
-    case StateAction.SET_REPOSITORY_ERROR:
+    case StateAction.SET_SNACKBAR:
       return {
         ...state,
-        repositoryError: action.payload.repositoryError,
+        snackbar: action.payload.snackbar,
       };
-    case StateAction.SET_REPOSITORY_SUCCESS:
-      return {
-        ...state,
-        repositorySuccess: action.payload.repositorySuccess,
-      };
+
     default:
       return state;
   }
@@ -140,8 +128,10 @@ const initialAppState: AppState = {
   status: {} as StatusResult,
   remoteBranches: [],
   localBranches: {} as BranchSummary,
-  repositoryError: '',
-  repositorySuccess: '',
+  snackbar: {
+    message: '',
+    type: MessageTypes.SUCCESS,
+  },
 };
 
 export default function AppStateProvider(props: { children: ReactElement }) {

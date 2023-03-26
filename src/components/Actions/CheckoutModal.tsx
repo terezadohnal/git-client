@@ -9,11 +9,10 @@ import {
   Text,
 } from '@nextui-org/react';
 import { CheckoutModalProps } from 'components/types';
-import {
-  StateAction,
-  useAppState,
-  useAppStateDispatch,
-} from 'context/AppStateContext/AppStateProvider';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import { MessageTypes } from 'helpers/types';
+import useRepository from 'hooks/useRepository';
+import useSnackbar from 'hooks/useSnackbar';
 import { FC, Key, useMemo, useState } from 'react';
 
 export const CheckoutModal: FC<CheckoutModalProps> = ({
@@ -22,7 +21,8 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
   remoteBranches,
 }) => {
   const appState = useAppState();
-  const appStateDispatch = useAppStateDispatch();
+  const { showSnackbar } = useSnackbar();
+  const { fetchDirectory } = useRepository();
   const [isLoading, setIsLoading] = useState(false);
   const [isRemote, setIsRemote] = useState(false);
   const [selectedLocal, setSelectedLocal] = useState<Set<Key> | string>(
@@ -50,19 +50,21 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
         isRemote,
       });
       if (response) {
-        appStateDispatch({
-          type: StateAction.SET_REPOSITORY_SUCCESS,
-          payload: {
-            repositorySuccess: `Branch ${selectedRemoteVal} successfully checked out`,
-          },
+        showSnackbar({
+          message: response,
+        });
+      } else {
+        showSnackbar({
+          message: `Branch ${
+            isRemote ? selectedRemoteVal : selectedLocalVal
+          } successfully checked out`,
         });
       }
+      await fetchDirectory();
     } catch (err: any) {
-      appStateDispatch({
-        type: StateAction.SET_REPOSITORY_ERROR,
-        payload: {
-          repositoryError: err.message,
-        },
+      showSnackbar({
+        message: err.message,
+        type: MessageTypes.ERROR,
       });
     } finally {
       setIsLoading(false);

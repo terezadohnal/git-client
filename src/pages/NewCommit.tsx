@@ -1,19 +1,14 @@
 import { Button, Grid, Spacer, Text, Textarea, Table } from '@nextui-org/react';
 import { AppSnackbar } from 'components/AppSnackbar';
 import { BackButton } from 'components/Buttons/BackButton';
-import {
-  StateAction,
-  useAppState,
-  useAppStateDispatch,
-} from 'context/AppStateContext/AppStateProvider';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import useCommit from 'hooks/useCommit';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 
 export const NewCommit = () => {
-  const navigate = useNavigate();
   const appState = useAppState();
-  const appStateDispatch = useAppStateDispatch();
+  const { createCommit } = useCommit();
   const [selectedFiles, setSelectedFiles] = useState<
     string | Set<React.Key> | null
   >(null);
@@ -24,29 +19,10 @@ export const NewCommit = () => {
   });
 
   const onHandleSubmit = async (data: { message: string }) => {
-    try {
-      const response = await window.electron.ipcRenderer.commit({
-        path: appState.repositoryPath,
-        files: selectedFiles,
-        message: data.message,
-      });
-      if (response) {
-        appStateDispatch({
-          type: StateAction.SET_REPOSITORY_SUCCESS,
-          payload: {
-            repositorySuccess: 'Commit successfully created',
-          },
-        });
-        navigate('/repository');
-      }
-    } catch (err: any) {
-      appStateDispatch({
-        type: StateAction.SET_REPOSITORY_ERROR,
-        payload: {
-          repositoryError: err.message,
-        },
-      });
-    }
+    await createCommit({
+      files: selectedFiles,
+      message: data.message,
+    });
   };
   return (
     <Grid>
@@ -59,10 +35,9 @@ export const NewCommit = () => {
         <Text h3>New commit</Text>
       </Grid>
       <AppSnackbar
-        isOpen={!!appState.repositoryError}
-        message={appState.repositoryError ?? 'Unknown error'}
-        snackbarProps={{ autoHideDuration: 3000 }}
-        alertProps={{ severity: 'error' }}
+        isOpen={!!appState.snackbar.message}
+        message={appState.snackbar.message}
+        alertProps={{ severity: appState.snackbar.type }}
       />
       <form onSubmit={handleSubmit(onHandleSubmit)}>
         <Grid style={{ width: '100%', padding: 30 }}>

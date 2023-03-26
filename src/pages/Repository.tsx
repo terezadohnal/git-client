@@ -1,12 +1,6 @@
 import { Card, Grid, Text } from '@nextui-org/react';
-import {
-  StateAction,
-  useAppState,
-  useAppStateDispatch,
-} from 'context/AppStateContext/AppStateProvider';
-import { Directory } from 'helpers/types';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import '@react-sigma/core/lib/react-sigma.min.css';
 import { RepositoryHeader } from 'components/RepositoryHeader';
 import { options } from 'helpers/globalHelpers';
 import { AppSnackbar } from 'components/AppSnackbar';
@@ -15,10 +9,11 @@ import { Gitgraph } from '@gitgraph/react';
 import { useNavigate } from 'react-router-dom';
 import { CommitEvent } from 'components/types';
 import { RepositoryFooter } from 'components/RepositoryFooter';
+import useRepository from 'hooks/useRepository';
 
 export const Repository = () => {
   const appState = useAppState();
-  const appStateDispatch = useAppStateDispatch();
+  const { fetchDirectory } = useRepository();
   const navigate = useNavigate();
   const [tooltip, setTooltip] = useState<CommitEvent | null>(null);
   const { performance } = window;
@@ -29,48 +24,6 @@ export const Repository = () => {
     },
     [navigate]
   );
-
-  const fetchDirectory = useCallback(async () => {
-    try {
-      const directory = await window.electron.ipcRenderer.fetchDirectoryStatus({
-        path: appState.repositoryPath,
-      });
-      const parsedDir = JSON.parse(directory) as Directory;
-      appStateDispatch({
-        type: StateAction.SET_COMMITS,
-        payload: {
-          commits: parsedDir.commits,
-        },
-      });
-      appStateDispatch({
-        type: StateAction.SET_STATUS,
-        payload: {
-          status: parsedDir.status,
-        },
-      });
-      appStateDispatch({
-        type: StateAction.SET_LOCAL_BRANCHES,
-        payload: {
-          localBranches: parsedDir.branches,
-        },
-      });
-      if (parsedDir.commits.length) {
-        appStateDispatch({
-          type: StateAction.SET_REPOSITORY_SUCCESS,
-          payload: {
-            repositorySuccess: `Successfully fetched ${parsedDir.commits.length} commits`,
-          },
-        });
-      }
-    } catch (err: any) {
-      appStateDispatch({
-        type: StateAction.SET_REPOSITORY_PATH,
-        payload: {
-          repositoryPath: err.message,
-        },
-      });
-    }
-  }, [appState.repositoryPath, appStateDispatch]);
 
   useEffect(() => {
     const startFetchingTime = performance.now();
@@ -126,15 +79,9 @@ export const Repository = () => {
     <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
       <RepositoryHeader />
       <AppSnackbar
-        isOpen={!!appState.repositorySuccess}
-        message={appState.repositorySuccess ?? 'Unknown success'}
-        snackbarProps={{ autoHideDuration: 3000 }}
-      />
-      <AppSnackbar
-        isOpen={!!appState.repositoryError}
-        message={appState.repositoryError ?? 'Unknown error'}
-        snackbarProps={{ autoHideDuration: 3000 }}
-        alertProps={{ severity: 'error' }}
+        isOpen={!!appState.snackbar.message}
+        message={appState.snackbar.message}
+        alertProps={{ severity: appState.snackbar.type }}
       />
       {tooltip && (
         <Card
