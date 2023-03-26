@@ -1,4 +1,8 @@
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { useCallback, useEffect, useState } from 'react';
 // @ts-ignore
 import { parseDiff, Diff, Hunk } from 'react-diff-view';
@@ -8,28 +12,38 @@ import { Grid, Text, Collapse, Card } from '@nextui-org/react';
 import { CommitDiffDTO, CommitDTO, DiffFile, DiffHunk } from 'helpers/types';
 import { BackButton } from 'components/Buttons/BackButton';
 import { format } from 'date-fns';
+import { AppSnackbar } from 'components/AppSnackbar';
 
 export const CommitDetail = () => {
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [commitDiff, setCommitDiff] = useState<CommitDiffDTO | null>(null);
   const [commit, setCommit] = useState<CommitDTO | null>(null);
   const files = parseDiff(commitDiff?.diff ?? '');
   const { hash: commitHash } = useParams();
 
   const fetchCommitDiff = useCallback(async () => {
-    const currentCommitIndex = appState.commits.findIndex(
-      (c) => c.hash === commitHash
-    );
-
-    const response = await window.electron.ipcRenderer.getCommitDiff({
-      path: appState.repositoryPath,
-      commitHash: commitHash || '',
-      previousCommitHash: appState.commits[currentCommitIndex + 1].hash ?? '',
-    });
-    const parsedResponse = JSON.parse(response) as CommitDiffDTO;
-    setCommit(appState.commits[currentCommitIndex]);
-    setCommitDiff(parsedResponse);
-  }, [appState.commits, appState.repositoryPath, commitHash]);
+    try {
+      const currentCommitIndex = appState.commits.findIndex(
+        (c) => c.hash === commitHash
+      );
+      const response = await window.electron.ipcRenderer.getCommitDiff({
+        path: appState.repositoryPath,
+        commitHash: commitHash || '',
+        previousCommitHash: appState.commits[currentCommitIndex + 1].hash ?? '',
+      });
+      const parsedResponse = JSON.parse(response) as CommitDiffDTO;
+      setCommit(appState.commits[currentCommitIndex]);
+      setCommitDiff(parsedResponse);
+    } catch (err: any) {
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_ERROR,
+        payload: {
+          repositoryError: err.message,
+        },
+      });
+    }
+  }, [appState.commits, appState.repositoryPath, appStateDispatch, commitHash]);
 
   useEffect(() => {
     fetchCommitDiff();
@@ -69,6 +83,12 @@ export const CommitDetail = () => {
         <BackButton />
         <Text h3>Commit detail</Text>
       </Grid>
+      <AppSnackbar
+        isOpen={!!appState.repositoryError}
+        message={appState.repositoryError ?? 'Unknown error'}
+        snackbarProps={{ autoHideDuration: 3000 }}
+        alertProps={{ severity: 'error' }}
+      />
       <Grid style={{ width: '100%', padding: 30 }} justify="flex-start">
         <Card isHoverable variant="flat" css={{ mw: '100%' }}>
           <Card.Body>

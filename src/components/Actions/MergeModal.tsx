@@ -9,7 +9,11 @@ import {
   Spacer,
   Text,
 } from '@nextui-org/react';
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { FC, Key, useMemo, useState } from 'react';
 import { MergeModalProps } from '../types';
 
@@ -18,6 +22,7 @@ export const MergeModal: FC<MergeModalProps> = ({
   closeMergeModal,
 }) => {
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [checkout, setCheckout] = useState(true);
   const [selected, setSelected] = useState<Set<Key> | string>(new Set(['']));
@@ -35,9 +40,21 @@ export const MergeModal: FC<MergeModalProps> = ({
         branch: selectedValue,
         current: appState.status?.current ?? '',
       });
-      console.log(response);
+      if (response) {
+        appStateDispatch({
+          type: StateAction.SET_REPOSITORY_SUCCESS,
+          payload: {
+            repositorySuccess: `Branch ${selectedValue} successfully merged`,
+          },
+        });
+      }
     } catch (error: any) {
-      console.log(error);
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_ERROR,
+        payload: {
+          repositoryError: error.message,
+        },
+      });
     } finally {
       setIsLoading(false);
       closeMergeModal(false);

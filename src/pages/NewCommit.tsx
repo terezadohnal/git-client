@@ -1,6 +1,11 @@
 import { Button, Grid, Spacer, Text, Textarea, Table } from '@nextui-org/react';
+import { AppSnackbar } from 'components/AppSnackbar';
 import { BackButton } from 'components/Buttons/BackButton';
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 export const NewCommit = () => {
   const navigate = useNavigate();
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [selectedFiles, setSelectedFiles] = useState<
     string | Set<React.Key> | null
   >(null);
@@ -18,13 +24,28 @@ export const NewCommit = () => {
   });
 
   const onHandleSubmit = async (data: { message: string }) => {
-    const response = await window.electron.ipcRenderer.commit({
-      path: appState.repositoryPath,
-      files: selectedFiles,
-      message: data.message,
-    });
-    if (response) {
-      navigate('/repository');
+    try {
+      const response = await window.electron.ipcRenderer.commit({
+        path: appState.repositoryPath,
+        files: selectedFiles,
+        message: data.message,
+      });
+      if (response) {
+        appStateDispatch({
+          type: StateAction.SET_REPOSITORY_SUCCESS,
+          payload: {
+            repositorySuccess: 'Commit successfully created',
+          },
+        });
+        navigate('/repository');
+      }
+    } catch (err: any) {
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_ERROR,
+        payload: {
+          repositoryError: err.message,
+        },
+      });
     }
   };
   return (
@@ -37,6 +58,12 @@ export const NewCommit = () => {
         <BackButton />
         <Text h3>New commit</Text>
       </Grid>
+      <AppSnackbar
+        isOpen={!!appState.repositoryError}
+        message={appState.repositoryError ?? 'Unknown error'}
+        snackbarProps={{ autoHideDuration: 3000 }}
+        alertProps={{ severity: 'error' }}
+      />
       <form onSubmit={handleSubmit(onHandleSubmit)}>
         <Grid style={{ width: '100%', padding: 30 }}>
           <Text h5>Select files you want to stage</Text>

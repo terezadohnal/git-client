@@ -16,6 +16,8 @@ interface AppState {
   status: StatusResult;
   remoteBranches: string[];
   localBranches: BranchSummary;
+  repositoryError: string;
+  repositorySuccess: string;
 }
 
 interface SetRepositoryPathAction {
@@ -56,6 +58,18 @@ interface SetLocalBranches {
     localBranches: BranchSummary;
   };
 }
+interface SetRepositoryError {
+  type: StateAction.SET_REPOSITORY_ERROR;
+  payload: {
+    repositoryError: string;
+  };
+}
+interface SetRepositorySuccess {
+  type: StateAction.SET_REPOSITORY_SUCCESS;
+  payload: {
+    repositorySuccess: string;
+  };
+}
 
 export type AppStateAction =
   | SetRepositoryPathAction
@@ -63,7 +77,9 @@ export type AppStateAction =
   | SetCommitAction
   | SetStatusAction
   | SetRemoteBranches
-  | SetLocalBranches;
+  | SetLocalBranches
+  | SetRepositoryError
+  | SetRepositorySuccess;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -102,6 +118,16 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
         ...state,
         localBranches: action.payload.localBranches,
       };
+    case StateAction.SET_REPOSITORY_ERROR:
+      return {
+        ...state,
+        repositoryError: action.payload.repositoryError,
+      };
+    case StateAction.SET_REPOSITORY_SUCCESS:
+      return {
+        ...state,
+        repositorySuccess: action.payload.repositorySuccess,
+      };
     default:
       return state;
   }
@@ -114,6 +140,8 @@ const initialAppState: AppState = {
   status: {} as StatusResult,
   remoteBranches: [],
   localBranches: {} as BranchSummary,
+  repositoryError: '',
+  repositorySuccess: '',
 };
 
 export default function AppStateProvider(props: { children: ReactElement }) {
