@@ -12,7 +12,7 @@ export const LoadGraph: FC<LoadGraphProps> = ({ data }) => {
 
   const onNodeClick = useCallback(
     (event: SigmaNodeEventPayload) => {
-      navigate(`/repository/commits/${event.node}`, { replace: true });
+      navigate(`/repository/commits/${event.node}`);
     },
     [navigate]
   );

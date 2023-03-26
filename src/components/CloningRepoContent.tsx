@@ -17,7 +17,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const appState = useAppState();
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, watch } = useForm({
     defaultValues: {
       repository: '',
     },
@@ -62,7 +62,11 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
             color="primary"
             shadow
             type="submit"
-            disabled={!appState.repositoryPath || isLoading}
+            disabled={
+              !appState.repositoryPath ||
+              watch('repository') === '' ||
+              isLoading
+            }
           >
             {isLoading && (
               <Loading type="points" color="currentColor" size="sm" />

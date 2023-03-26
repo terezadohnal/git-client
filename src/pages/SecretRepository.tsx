@@ -1,4 +1,4 @@
-import { Grid, Text, Card } from '@nextui-org/react';
+import { Grid, Text } from '@nextui-org/react';
 import {
   StateAction,
   useAppState,
@@ -8,49 +8,45 @@ import { Directory } from 'helpers/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import '@react-sigma/core/lib/react-sigma.min.css';
 import { RepositoryHeader } from 'components/RepositoryHeader';
-import { Gitgraph } from '@gitgraph/react';
-import { options } from 'helpers/globalHelpers';
-import { useNavigate } from 'react-router-dom';
-import { TooltipCommit } from 'components/types';
-// import { GitgraphCore } from '@gitgraph/core';
+import { drawHover, options } from 'helpers/globalHelpers';
+import { GitgraphCore } from '@gitgraph/core';
+import { AppSnackbar } from 'components/AppSnackbar';
+import { SigmaContainer } from '@react-sigma/core';
+import { LoadGraph } from 'components/LoadGraph/LoadGraph';
 
 export const SecretRepository = () => {
   const appState = useAppState();
   const appStateDispatch = useAppStateDispatch();
-  const navigate = useNavigate();
-  const [tooltip, setTooltip] = useState<TooltipCommit | null>(null);
-
-  const onNodeClick = useCallback(
-    (event: any) => {
-      navigate(`/repository/commits/${event.hash}`);
-    },
-    [navigate]
-  );
+  const [error, setError] = useState<string | null>(null);
 
   const fetchDirectory = useCallback(async () => {
-    const directory = await window.electron.ipcRenderer.fetchDirectoryStatus({
-      path: appState.repositoryPath,
-    });
+    try {
+      const directory = await window.electron.ipcRenderer.fetchDirectoryStatus({
+        path: appState.repositoryPath,
+      });
 
-    const parsedDir = JSON.parse(directory) as Directory;
-    appStateDispatch({
-      type: StateAction.SET_COMMITS,
-      payload: {
-        commits: parsedDir.commits,
-      },
-    });
-    appStateDispatch({
-      type: StateAction.SET_STATUS,
-      payload: {
-        status: parsedDir.status,
-      },
-    });
-    appStateDispatch({
-      type: StateAction.SET_LOCAL_BRANCHES,
-      payload: {
-        localBranches: parsedDir.branches,
-      },
-    });
+      const parsedDir = JSON.parse(directory) as Directory;
+      appStateDispatch({
+        type: StateAction.SET_COMMITS,
+        payload: {
+          commits: parsedDir.commits,
+        },
+      });
+      appStateDispatch({
+        type: StateAction.SET_STATUS,
+        payload: {
+          status: parsedDir.status,
+        },
+      });
+      appStateDispatch({
+        type: StateAction.SET_LOCAL_BRANCHES,
+        payload: {
+          localBranches: parsedDir.branches,
+        },
+      });
+    } catch (err: any) {
+      setError(err.message);
+    }
   }, [appState.repositoryPath, appStateDispatch]);
 
   useEffect(() => {
@@ -84,57 +80,112 @@ export const SecretRepository = () => {
       stats: [],
       notes: '',
       refs: commit.refs ? commit.refs.split(', ') : [''],
-      onClick: (event: TooltipCommit) => onNodeClick(event),
-      onMouseOver: (event: TooltipCommit) => setTooltip(event),
-      onMouseOut: () => setTooltip(null),
     }));
-  }, [commits, onNodeClick]);
+  }, [commits]);
 
-  // const myGitgraph = new GitgraphCore(options);
-  // myGitgraph.getUserApi().import(simpleGraph);
-  // const renderData = myGitgraph.getRenderedData();
+  const startParsingTime = performance.now();
+
+  const myGitgraph = new GitgraphCore(options);
+  myGitgraph.getUserApi().import(simpleGraph);
+  const renderData = myGitgraph.getRenderedData();
+
+  const endParsingTime = performance.now();
+  console.log(
+    `Time taken to calculate positions: ${endParsingTime - startParsingTime}ms`
+  );
+
+  const numOfCommits = renderData.commits.length;
+
+  const startRenderingTime = performance.now();
+  const data = useMemo(() => {
+    return {
+      nodes: renderData.commits.map((commit) => {
+        return {
+          key: commit.hash,
+          attributes: {
+            x: numOfCommits < 1000 ? commit.x * 3 : commit.x * 50,
+            y: numOfCommits < 1000 ? commit.y : commit.y * 4,
+            size: 10,
+            label: commit.subject,
+            author_name: commit.author.name,
+            author_email: commit.author.email,
+            date: commit.author.timestamp,
+            hash: commit.hash,
+          },
+        };
+      }),
+      edges: renderData.commits
+        .map((commit) =>
+          commit.parents.map((parentHash) => {
+            const parent = renderData.commits.find(
+              (c) => c.hash === parentHash
+            );
+
+            return {
+              key: `${commit.hash}-${parentHash}`,
+              source: commit.hash,
+              target: parentHash,
+              attributes: {
+                size: 3,
+                color:
+                  (parent?.parents?.length === 1 && parent?.style?.color) ||
+                  commit.style?.color,
+              },
+            };
+          })
+        )
+        .flat()
+        .filter((e) => e.target !== ''),
+    };
+  }, [numOfCommits, renderData.commits]);
+
+  const endRenderingTime = performance.now();
+  console.log(
+    `Time taken to parse renderCommits into Sigma data structure: ${
+      endRenderingTime - startRenderingTime
+    }ms`
+  );
 
   return (
-    <Grid.Container
-      css={{ h: '100vh', w: '100%', position: 'fixed' }}
-      justify="center"
-    >
-      {tooltip && (
-        <Card
-          id={`tooltip-${tooltip.hash}`}
-          className="tooltip"
+    <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
+      <RepositoryHeader />
+      <AppSnackbar
+        isOpen={appState.commits.length > 0}
+        message="Repository successfully opened"
+        snackbarProps={{ autoHideDuration: 3000 }}
+      />
+      <AppSnackbar
+        isOpen={!!error}
+        message={error ?? 'Unknown error'}
+        snackbarProps={{ autoHideDuration: 3000 }}
+        alertProps={{ severity: 'error' }}
+      />
+      <div className="graphContainer">
+        <SigmaContainer
           style={{
-            position: 'fixed',
-            width: 'fit-content',
-            top: tooltip.y + 20,
-            left: tooltip.x + 300,
+            width: '100%',
+            height: `${numOfCommits < 1000 ? 2000 : 5000}px`,
+            padding: 0,
+          }}
+          settings={{
+            minCameraRatio: 0.1,
+            maxCameraRatio: 0.8,
+            defaultNodeColor: '#EBEBEB',
+
+            renderLabels: false,
+            hoverRenderer(context, values, settings) {
+              drawHover(context, values, settings);
+            },
           }}
         >
-          <Card.Body>
-            <Text>
-              <span className="tooltip-title">{tooltip.hashAbbrev}</span>
-              {`: ${tooltip.subject}`}
-            </Text>
-            <Text>
-              <span className="tooltip-title">Author</span>
-              {`: ${tooltip.author.name} (${tooltip.author.email})`}
-            </Text>
-            <Text>
-              <span className="tooltip-title">Date</span>
-              {`: ${tooltip.author.timestamp}`}
-            </Text>
-          </Card.Body>
-        </Card>
-      )}
-      <RepositoryHeader />
-      <Grid style={{ width: '100%', height: '100%', overflow: 'scroll' }}>
-        {simpleGraph.length ? (
-          <Gitgraph options={options}>
-            {(gitgraph) => {
-              gitgraph.import(simpleGraph);
-            }}
-          </Gitgraph>
-        ) : null}
+          <LoadGraph data={data ?? {}} />
+        </SigmaContainer>
+      </div>
+      <Grid className="footerContainer">
+        <Text>
+          <span style={{ fontWeight: 'bold' }}>On branch </span>
+          {appState.status.current}
+        </Text>
       </Grid>
     </Grid.Container>
   );
