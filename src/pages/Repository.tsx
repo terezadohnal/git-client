@@ -10,7 +10,7 @@ import '@react-sigma/core/lib/react-sigma.min.css';
 import { RepositoryHeader } from 'components/RepositoryHeader';
 import { options } from 'helpers/globalHelpers';
 import { AppSnackbar } from 'components/AppSnackbar';
-// import { GitgraphCore } from '@gitgraph/core';
+import { GitgraphCore } from '@gitgraph/core';
 import { Gitgraph } from '@gitgraph/react';
 import { useNavigate } from 'react-router-dom';
 import { TooltipCommit } from 'components/types';
@@ -103,15 +103,14 @@ export const Repository = () => {
     }));
   }, [commits, onNodeClick]);
 
-  // const myGitgraph = new GitgraphCore(options);
-  // myGitgraph.getUserApi().import(simpleGraph);
-  // const renderData = myGitgraph.getRenderedData();
+  const myGitgraph = new GitgraphCore(options);
+  myGitgraph.getUserApi().import(simpleGraph);
+  const renderData = myGitgraph.getRenderedData();
+
+  console.log('renderData', renderData);
 
   return (
-    <Grid.Container
-      css={{ h: '100vh', w: '100%', position: 'fixed' }}
-      justify="center"
-    >
+    <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
       <RepositoryHeader />
       <AppSnackbar
         isOpen={appState.commits.length > 0}
@@ -151,7 +150,7 @@ export const Repository = () => {
           </Card.Body>
         </Card>
       )}
-      <Grid style={{ width: '100%', height: '100%', overflow: 'scroll' }}>
+      <Grid className="graphContainer">
         {simpleGraph.length ? (
           <Gitgraph options={options}>
             {(gitgraph) => {
