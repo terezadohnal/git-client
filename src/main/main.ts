@@ -73,7 +73,10 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, arg) => {
 ipcMain.handle(CHANELS.GET_COMMIT_DIFF, async (_, arg) => {
   const git: SimpleGit = simpleGit({ baseDir: arg.path });
   try {
-    const diff = await git.diff([arg.commitHash, arg.previousCommitHash]);
+    const options = arg.previousCommitHash
+      ? [arg.commitHash, arg.previousCommitHash]
+      : [`${arg.commitHash}^!`];
+    const diff = await git.diff(options);
     const diffSummary = await git.diffSummary();
 
     return JSON.stringify({

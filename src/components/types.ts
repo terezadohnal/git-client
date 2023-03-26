@@ -60,7 +60,7 @@ export type ButtonWithBadgeProps = {
   badgeNumber?: number | null;
 };
 
-export type TooltipCommit = {
+export type CommitEvent = {
   refs: string[];
   x: number;
   y: number;

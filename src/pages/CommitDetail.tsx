@@ -26,11 +26,13 @@ export const CommitDetail = () => {
     const currentCommitIndex = appState.commits.findIndex(
       (c) => c.hash === commitHash
     );
+
     try {
       const response = await window.electron.ipcRenderer.getCommitDiff({
         path: appState.repositoryPath,
         commitHash: commitHash || '',
-        previousCommitHash: appState.commits[currentCommitIndex + 1].hash ?? '',
+        previousCommitHash:
+          appState.commits[currentCommitIndex + 1]?.hash ?? '',
       });
       const parsedResponse = JSON.parse(response) as CommitDiffDTO;
       setCommit(appState.commits[currentCommitIndex]);

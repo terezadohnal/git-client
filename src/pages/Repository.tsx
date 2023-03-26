@@ -13,18 +13,18 @@ import { AppSnackbar } from 'components/AppSnackbar';
 import { GitgraphCore } from '@gitgraph/core';
 import { Gitgraph } from '@gitgraph/react';
 import { useNavigate } from 'react-router-dom';
-import { TooltipCommit } from 'components/types';
+import { CommitEvent } from 'components/types';
 import { RepositoryFooter } from 'components/RepositoryFooter';
 
 export const Repository = () => {
   const appState = useAppState();
   const appStateDispatch = useAppStateDispatch();
   const navigate = useNavigate();
-  const [tooltip, setTooltip] = useState<TooltipCommit | null>(null);
+  const [tooltip, setTooltip] = useState<CommitEvent | null>(null);
   const { performance } = window;
 
   const onNodeClick = useCallback(
-    (event: any) => {
+    (event: CommitEvent) => {
       navigate(`/repository/commits/${event.hash}`);
     },
     [navigate]
@@ -110,8 +110,8 @@ export const Repository = () => {
       stats: [],
       notes: '',
       refs: commit.refs ? commit.refs.split(', ') : [''],
-      onClick: (event: TooltipCommit) => onNodeClick(event),
-      onMouseOver: (event: TooltipCommit) => setTooltip(event),
+      onClick: (event: CommitEvent) => onNodeClick(event),
+      onMouseOver: (event: CommitEvent) => setTooltip(event),
       onMouseOut: () => setTooltip(null),
     }));
   }, [commits, onNodeClick]);

@@ -9,7 +9,11 @@ import {
   Text,
 } from '@nextui-org/react';
 import { CheckoutModalProps } from 'components/types';
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { FC, Key, useMemo, useState } from 'react';
 
 export const CheckoutModal: FC<CheckoutModalProps> = ({
@@ -18,6 +22,7 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
   remoteBranches,
 }) => {
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isRemote, setIsRemote] = useState(false);
   const [selectedLocal, setSelectedLocal] = useState<Set<Key> | string>(
@@ -39,13 +44,26 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
   const onCheckoutPress = async () => {
     try {
       setIsLoading(true);
-      await window.electron.ipcRenderer.checkout({
+      const response = await window.electron.ipcRenderer.checkout({
         path: appState.repositoryPath,
         branch: isRemote ? selectedRemoteVal : selectedLocalVal,
         isRemote,
       });
+      if (response) {
+        appStateDispatch({
+          type: StateAction.SET_REPOSITORY_SUCCESS,
+          payload: {
+            repositorySuccess: `Branch ${selectedRemoteVal} successfully checked out`,
+          },
+        });
+      }
     } catch (err: any) {
-      console.log(err);
+      appStateDispatch({
+        type: StateAction.SET_REPOSITORY_ERROR,
+        payload: {
+          repositoryError: err.message,
+        },
+      });
     } finally {
       setIsLoading(false);
       closeCheckoutModal(false);
