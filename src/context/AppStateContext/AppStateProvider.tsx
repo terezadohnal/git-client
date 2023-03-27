@@ -63,6 +63,9 @@ interface SetSnackbar {
     snackbar: Snackbar;
   };
 }
+interface ResetAppState {
+  type: StateAction.RESET_APP_STATE;
+}
 
 export type AppStateAction =
   | SetRepositoryPathAction
@@ -71,7 +74,8 @@ export type AppStateAction =
   | SetStatusAction
   | SetRemoteBranches
   | SetLocalBranches
-  | SetSnackbar;
+  | SetSnackbar
+  | ResetAppState;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -114,6 +118,19 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
       return {
         ...state,
         snackbar: action.payload.snackbar,
+      };
+    case StateAction.RESET_APP_STATE:
+      return {
+        repositoryPath: '',
+        commits: [],
+        commitHash: '',
+        status: {} as StatusResult,
+        remoteBranches: [],
+        localBranches: {} as BranchSummary,
+        snackbar: {
+          message: '',
+          type: MessageTypes.SUCCESS,
+        },
       };
 
     default:

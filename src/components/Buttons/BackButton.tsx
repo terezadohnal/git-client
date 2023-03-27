@@ -16,10 +16,7 @@ export const BackButton = () => {
     if (location.pathname === '/repository') {
       window.localStorage.removeItem('repo');
       appStateDispatch({
-        type: StateAction.SET_REPOSITORY_PATH,
-        payload: {
-          repositoryPath: '',
-        },
+        type: StateAction.RESET_APP_STATE,
       });
     }
     navigate(-1);
