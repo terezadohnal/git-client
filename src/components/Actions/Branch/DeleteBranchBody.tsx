@@ -1,15 +1,14 @@
 import { Button, Loading, Modal, Table } from '@nextui-org/react';
 import { DeleteBranchBodyProps } from 'components/types';
-import {
-  StateAction,
-  useAppState,
-  useAppStateDispatch,
-} from 'context/AppStateContext/AppStateProvider';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import useBranch from 'hooks/useBranch';
+import useRepository from 'hooks/useRepository';
 import { FC, useState } from 'react';
 
 export const DeleteBranchBody: FC<DeleteBranchBodyProps> = ({ onClose }) => {
   const appState = useAppState();
-  const appStateDispatch = useAppStateDispatch();
+  const { deleteBranch } = useBranch();
+  const { fetchDirectory } = useRepository();
   const [isLoading, setIsLoading] = useState(false);
 
   const mappedBranches: { key: number; name: string }[] =
@@ -27,32 +26,9 @@ export const DeleteBranchBody: FC<DeleteBranchBodyProps> = ({ onClose }) => {
   const onDeletePress = async () => {
     try {
       setIsLoading(true);
-      const response = await window.electron.ipcRenderer.deleteBranch({
-        path: appState.repositoryPath,
-        branches:
-          selectedBranches !== 'all'
-            ? selectedBranches
-            : appState.localBranches.all,
-      });
-
-      if (response) {
-        appStateDispatch({
-          type: StateAction.SET_REPOSITORY_SUCCESS,
-          payload: {
-            repositorySuccess: `${
-              selectedBranches === 'all' ? 'Branches' : 'Branch'
-            } successfully deleted`,
-          },
-        });
-      }
-    } catch (error: any) {
-      appStateDispatch({
-        type: StateAction.SET_REPOSITORY_ERROR,
-        payload: {
-          repositoryError: error.message,
-        },
-      });
+      await deleteBranch(selectedBranches);
     } finally {
+      await fetchDirectory();
       setIsLoading(false);
       onClose(false);
     }

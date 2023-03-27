@@ -2,12 +2,14 @@ import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { MessageTypes } from 'helpers/types';
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useRepository from './useRepository';
 import useSnackbar from './useSnackbar';
 
 const useCommit = () => {
   const appState = useAppState();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
+  const { fetchDirectory } = useRepository();
 
   const fetchCommitDiff = useCallback(
     async (commitHash: string, currentCommitIndex: number) => {
@@ -47,6 +49,7 @@ const useCommit = () => {
           message: 'Commit successfully created',
         });
         navigate('/repository');
+        fetchDirectory();
       }
     } catch (err: any) {
       showSnackbar({

@@ -92,11 +92,11 @@ const useRepository = () => {
           localBranches: parsedDir.branches,
         },
       });
-      if (parsedDir.commits.length) {
-        showSnackbar({
-          message: `Successfully fetched ${parsedDir.commits.length} commits`,
-        });
-      }
+      // if (parsedDir.commits.length) {
+      //   showSnackbar({
+      //     message: `Successfully fetched ${parsedDir.commits.length} commits`,
+      //   });
+      // }
     } catch (err: any) {
       showSnackbar({
         message: err.message,

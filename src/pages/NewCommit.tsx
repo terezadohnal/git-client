@@ -29,7 +29,7 @@ export const NewCommit = () => {
       <Grid
         justify="space-between"
         direction="row"
-        className="header repository-header"
+        className=" navbars repo-header nav-background"
       >
         <BackButton />
         <Text h3>New commit</Text>
@@ -93,7 +93,7 @@ export const NewCommit = () => {
               color="secondary"
               style={{ height: 40 }}
               type="submit"
-              disabled={!appState.status.files}
+              disabled={!appState.status?.files.length}
               rounded
             >
               Commit

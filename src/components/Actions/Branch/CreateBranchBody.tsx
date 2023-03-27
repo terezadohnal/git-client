@@ -10,17 +10,16 @@ import {
   Input,
 } from '@nextui-org/react';
 import { CreateBranchBodyProps } from 'components/types';
-import {
-  StateAction,
-  useAppState,
-  useAppStateDispatch,
-} from 'context/AppStateContext/AppStateProvider';
+import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import useBranch from 'hooks/useBranch';
+import useRepository from 'hooks/useRepository';
 import { FC, Key, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const CreateBranchBody: FC<CreateBranchBodyProps> = ({ onClose }) => {
   const appState = useAppState();
-  const appStateDispatch = useAppStateDispatch();
+  const { createBranch } = useBranch();
+  const { fetchDirectory } = useRepository();
   const [isLoading, setIsLoading] = useState(false);
   const [specificCommit, setSpecificCommit] = useState(false);
   const [checkout, setCheckout] = useState(true);
@@ -37,28 +36,10 @@ export const CreateBranchBody: FC<CreateBranchBodyProps> = ({ onClose }) => {
 
   const onCreateBranchPress = async (data?: { name: string }) => {
     try {
-      const response = await window.electron.ipcRenderer.createBranch({
-        path: appState.repositoryPath,
-        name: data?.name ?? '',
-        commit: selectedValue,
-        checkout,
-      });
-      if (response) {
-        appStateDispatch({
-          type: StateAction.SET_REPOSITORY_SUCCESS,
-          payload: {
-            repositorySuccess: `Branch ${data?.name} successfully created`,
-          },
-        });
-      }
-    } catch (error: any) {
-      appStateDispatch({
-        type: StateAction.SET_REPOSITORY_ERROR,
-        payload: {
-          repositoryError: error.message,
-        },
-      });
+      if (!data?.name) return;
+      await createBranch(data?.name, selectedValue, checkout);
     } finally {
+      await fetchDirectory();
       setIsLoading(false);
       onClose(false);
     }

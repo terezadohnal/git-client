@@ -78,23 +78,32 @@ export const PushModal: FC<PushModalProps> = ({
           {appState.status.current}
         </Row>
         <Col>
-          <Text>Push to:</Text>
-          <Dropdown>
-            <Dropdown.Button flat color="secondary" css={{ tt: 'capitalize' }}>
-              {selectedValue}
-            </Dropdown.Button>
-            <Dropdown.Menu
-              color="secondary"
-              disallowEmptySelection
-              selectionMode="single"
-              selectedKeys={selected}
-              onSelectionChange={(keys) => setSelected(keys)}
-            >
-              {remotes.map((r) => (
-                <Dropdown.Item key={r.name}>{r.name}</Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
+          <Row>
+            <Text>Push to:</Text>
+            <Spacer x={1} />
+            <Dropdown>
+              <Dropdown.Button
+                flat
+                color="secondary"
+                css={{ tt: 'capitalize' }}
+              >
+                <div style={{ width: '150px' }} className="textOverflow">
+                  {selectedValue || 'Select..'}
+                </div>
+              </Dropdown.Button>
+              <Dropdown.Menu
+                color="secondary"
+                disallowEmptySelection
+                selectionMode="single"
+                selectedKeys={selected}
+                onSelectionChange={(keys) => setSelected(keys)}
+              >
+                {remotes.map((r) => (
+                  <Dropdown.Item key={r.name}>{r.name}</Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </Row>
           <Spacer y={1} />
           <Button
             size="sm"

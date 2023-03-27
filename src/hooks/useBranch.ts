@@ -26,7 +26,54 @@ const useBranch = () => {
     }
   };
 
-  return { mergeBranch };
+  const createBranch = async (
+    name: string,
+    commit: string,
+    checkout: boolean
+  ) => {
+    try {
+      const response = await window.electron.ipcRenderer.createBranch({
+        path: appState.repositoryPath,
+        name: name ?? '',
+        commit,
+        checkout,
+      });
+      if (response) {
+        showSnackbar({
+          message: `Branch ${name} successfully created`,
+        });
+      }
+    } catch (error: any) {
+      showSnackbar({
+        message: error.message,
+        type: MessageTypes.ERROR,
+      });
+    }
+  };
+
+  const deleteBranch = async (branches: string | Set<React.Key> | null) => {
+    try {
+      const response = await window.electron.ipcRenderer.deleteBranch({
+        path: appState.repositoryPath,
+        branches: branches !== 'all' ? branches : appState.localBranches.all,
+      });
+
+      if (response) {
+        showSnackbar({
+          message: `${
+            branches === 'all' ? 'Branches' : 'Branch'
+          } successfully deleted`,
+        });
+      }
+    } catch (error: any) {
+      showSnackbar({
+        message: error.message,
+        type: MessageTypes.ERROR,
+      });
+    }
+  };
+
+  return { mergeBranch, createBranch, deleteBranch };
 };
 
 export default useBranch;
