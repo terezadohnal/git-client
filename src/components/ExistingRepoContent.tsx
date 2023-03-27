@@ -1,19 +1,12 @@
 import { Button, Collapse, Grid, Input, Spacer } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
-import { FC } from 'react';
+import useRepository from 'hooks/useRepository';
+import { useNavigate } from 'react-router-dom';
 
-type ExistingRepoContentProps = {
-  onOpenFolder: () => void;
-  onOpenRepository: () => void;
-};
-
-export const ExistingRepoContent: FC<ExistingRepoContentProps> = ({
-  onOpenFolder,
-  onOpenRepository,
-}) => {
+export const ExistingRepoContent = () => {
   const appState = useAppState();
-
-  console.log(appState.repositoryPath);
+  const { openExistingRepository } = useRepository();
+  const navigate = useNavigate();
 
   return (
     <Collapse title="Open existing repository">
@@ -23,7 +16,7 @@ export const ExistingRepoContent: FC<ExistingRepoContentProps> = ({
             placeholder="From"
             value={appState.repositoryPath}
             fullWidth
-            onClick={onOpenFolder}
+            onClick={openExistingRepository}
           />
         </Grid.Container>
         <Spacer y={1} />
@@ -32,7 +25,7 @@ export const ExistingRepoContent: FC<ExistingRepoContentProps> = ({
             color="primary"
             shadow
             size="md"
-            onPress={onOpenRepository}
+            onPress={() => navigate('/repository')}
             disabled={!appState.repositoryPath}
           >
             Open

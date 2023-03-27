@@ -7,16 +7,14 @@ import {
   Spacer,
 } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
-import { FC, useState } from 'react';
+import useRepository from 'hooks/useRepository';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { CloningRepoContentProps } from './types';
 
-export const CloningRepoContent: FC<CloningRepoContentProps> = ({
-  onClone,
-  onOpenFolder,
-}) => {
+export const CloningRepoContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const appState = useAppState();
+  const { openFolder, clone } = useRepository();
   const { handleSubmit, register, watch } = useForm({
     defaultValues: {
       repository: '',
@@ -26,9 +24,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
   const onSubmit = async (data: { repository: string }) => {
     try {
       setIsLoading(true);
-      onClone(data);
-    } catch (err: any) {
-      console.log(err.message);
+      await clone(data.repository);
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +38,7 @@ export const CloningRepoContent: FC<CloningRepoContentProps> = ({
           placeholder="Where"
           value={appState.repositoryPath}
           fullWidth
-          onClick={onOpenFolder}
+          onClick={openFolder}
         />
       </Grid.Container>
       <Spacer y={2} />
