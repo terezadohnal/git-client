@@ -1,15 +1,15 @@
 import { Card, Grid, Text } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RepositoryHeader } from 'components/RepositoryHeader';
 import { options } from 'helpers/globalHelpers';
 import { AppSnackbar } from 'components/AppSnackbar';
-import { GitgraphCore } from '@gitgraph/core';
 import { Gitgraph } from '@gitgraph/react';
 import { useNavigate } from 'react-router-dom';
 import { CommitEvent } from 'components/types';
 import { RepositoryFooter } from 'components/RepositoryFooter';
 import useRepository from 'hooks/useRepository';
+import { useMouse } from 'react-use';
 
 export const Repository = () => {
   const appState = useAppState();
@@ -17,6 +17,8 @@ export const Repository = () => {
   const navigate = useNavigate();
   const [tooltip, setTooltip] = useState<CommitEvent | null>(null);
   const { performance } = window;
+  const ref = useRef(null);
+  const { elX, elY } = useMouse(ref);
 
   const onNodeClick = useCallback(
     (event: CommitEvent) => {
@@ -69,12 +71,6 @@ export const Repository = () => {
     }));
   }, [commits, onNodeClick]);
 
-  const myGitgraph = new GitgraphCore(options);
-  myGitgraph.getUserApi().import(simpleGraph);
-  const renderData = myGitgraph.getRenderedData();
-
-  console.log('renderData', renderData);
-
   return (
     <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
       <RepositoryHeader />
@@ -90,8 +86,8 @@ export const Repository = () => {
           style={{
             position: 'fixed',
             width: 'fit-content',
-            top: tooltip.y + 20,
-            left: tooltip.x + 300,
+            top: elY,
+            left: elX + 20,
           }}
         >
           <Card.Body>
@@ -110,7 +106,7 @@ export const Repository = () => {
           </Card.Body>
         </Card>
       )}
-      <Grid className="graphContainer">
+      <Grid className="graphContainer" ref={ref}>
         {simpleGraph.length ? (
           <Gitgraph options={options}>
             {(gitgraph) => {

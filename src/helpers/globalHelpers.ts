@@ -138,7 +138,7 @@ export const options = {
   template: templateExtend(TemplateName.Metro, {
     colors: [
       '#F94144',
-      '#F3722C',
+      '#f59d38',
       '#F8961E',
       '#F9844A',
       '#F9C74F',
