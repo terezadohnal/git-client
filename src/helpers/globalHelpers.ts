@@ -160,9 +160,10 @@ export const options = {
     ],
 
     branch: {
+      spacing: 60,
       lineWidth: 4,
       label: {
-        display: true,
+        display: false,
       },
     },
     commit: {

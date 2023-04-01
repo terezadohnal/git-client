@@ -10,6 +10,7 @@ import { CommitEvent } from 'components/types';
 import { RepositoryFooter } from 'components/RepositoryFooter';
 import useRepository from 'hooks/useRepository';
 import { useMouse } from 'react-use';
+import { GitgraphCore } from '@gitgraph/core';
 
 export const Repository = () => {
   const appState = useAppState();
@@ -17,7 +18,7 @@ export const Repository = () => {
   const navigate = useNavigate();
   const [tooltip, setTooltip] = useState<CommitEvent | null>(null);
   const { performance } = window;
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const { elX, elY } = useMouse(ref);
 
   const onNodeClick = useCallback(
@@ -66,55 +67,147 @@ export const Repository = () => {
       notes: '',
       refs: commit.refs ? commit.refs.split(', ') : [''],
       onClick: (event: CommitEvent) => onNodeClick(event),
-      onMouseOver: (event: CommitEvent) => setTooltip(event),
+      onMouseOver: (event: CommitEvent) => {
+        console.log(event);
+        setTooltip(event);
+      },
       onMouseOut: () => setTooltip(null),
     }));
   }, [commits, onNodeClick]);
 
+  const myGitgraph = new GitgraphCore(options);
+  myGitgraph.getUserApi().import(simpleGraph);
+  const renderData = myGitgraph.getRenderedData();
+
+  const branches = useMemo(() => {
+    const maxByBranch: { [key: string]: number } = {};
+    const arr = renderData.commits
+      .filter((commit) => commit.branchToDisplay !== '')
+      .map((commit) => {
+        return {
+          commitHash: commit.hash,
+          branch: commit.branchToDisplay,
+          x: commit.x,
+          y: commit.y,
+          color: commit.style.dot.color,
+        };
+      });
+
+    arr.forEach((obj) => {
+      const { branch, y } = obj;
+      if (!maxByBranch[branch] || y < maxByBranch[branch]) {
+        maxByBranch[branch] = y;
+      }
+    });
+
+    return arr.filter((obj) => {
+      const { branch, y } = obj;
+      return y === maxByBranch[branch];
+    });
+  }, [renderData.commits]);
+
   return (
-    <Grid.Container css={{ h: '100vh', w: '100%' }} justify="center">
+    <Grid.Container
+      css={{ h: '100vh', w: '100%' }}
+      justify="center"
+      direction="column"
+    >
       <RepositoryHeader />
       <AppSnackbar
         isOpen={!!appState.snackbar.message}
         message={appState.snackbar.message}
         alertProps={{ severity: appState.snackbar.type }}
       />
-      {tooltip && (
-        <Card
-          id={`tooltip-${tooltip.hash}`}
-          className="tooltip"
+      <div
+        style={{
+          width: '100%',
+          flexGrow: 1,
+          overflowY: 'scroll',
+          position: 'relative',
+        }}
+      >
+        <div>
+          {tooltip && (
+            <Card
+              id={`tooltip-${tooltip.hash}`}
+              className="tooltip"
+              style={{
+                position: 'fixed',
+                width: 'fit-content',
+                top: elY,
+                left: elX + 20,
+              }}
+            >
+              <Card.Body>
+                <Text>
+                  <span className="tooltip-title">{tooltip.hashAbbrev}</span>
+                  {`: ${tooltip.subject}`}
+                </Text>
+                <Text>
+                  <span className="tooltip-title">Author</span>
+                  {`: ${tooltip.author.name} (${tooltip.author.email})`}
+                </Text>
+                <Text>
+                  <span className="tooltip-title">Date</span>
+                  {`: ${tooltip.author.timestamp}`}
+                </Text>
+              </Card.Body>
+            </Card>
+          )}
+        </div>
+        <div
           style={{
-            position: 'fixed',
-            width: 'fit-content',
-            top: elY,
-            left: elX + 20,
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: ref.current?.clientHeight || 0,
           }}
         >
-          <Card.Body>
-            <Text>
-              <span className="tooltip-title">{tooltip.hashAbbrev}</span>
-              {`: ${tooltip.subject}`}
-            </Text>
-            <Text>
-              <span className="tooltip-title">Author</span>
-              {`: ${tooltip.author.name} (${tooltip.author.email})`}
-            </Text>
-            <Text>
-              <span className="tooltip-title">Date</span>
-              {`: ${tooltip.author.timestamp}`}
-            </Text>
-          </Card.Body>
-        </Card>
-      )}
-      <Grid className="graphContainer" ref={ref}>
-        {simpleGraph.length ? (
-          <Gitgraph options={options}>
-            {(gitgraph) => {
-              gitgraph.import(simpleGraph);
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              height: '100%',
             }}
-          </Gitgraph>
-        ) : null}
-      </Grid>
+          >
+            {branches.map((branch) => {
+              return (
+                <Grid
+                  key={branch?.commitHash}
+                  className="branchLabel"
+                  style={{
+                    top: branch?.y,
+                    left: branch?.x ? branch.x + 40 : 0,
+                  }}
+                >
+                  <Text
+                    style={{
+                      background: 'white',
+                      width: 'fit-content',
+                      whiteSpace: 'nowrap',
+                      border: `1px solid ${branch.color}`,
+                      padding: '5px',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    {branch?.branch}
+                  </Text>
+                </Grid>
+              );
+            })}
+          </div>
+        </div>
+        <Grid className="graphContainer" ref={ref}>
+          {simpleGraph.length ? (
+            <Gitgraph options={options}>
+              {(gitgraph) => {
+                gitgraph.import(simpleGraph);
+              }}
+            </Gitgraph>
+          ) : null}
+        </Grid>
+      </div>
       <RepositoryFooter />
     </Grid.Container>
   );

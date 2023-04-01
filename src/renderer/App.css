@@ -1,24 +1,3 @@
-/*
- * @NOTE: Prepend a `~` to css file paths that are in your node_modules
- *        See https://github.com/webpack-contrib/sass-loader#imports
- */
-/* body {
-  position: relative;
-  color: white;
-  height: 100vh;
-  background: linear-gradient(
-    200.96deg,
-    #f7f5ea -29.09%,
-    #fbd9e6 51.77%,
-    #a97ebb 129.35%
-  );
-  font-family: sans-serif;
-  overflow-y: scroll;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
-
 * {
   margin: 0;
   padding: 0;
@@ -81,9 +60,10 @@ body {
 }
 
 .graphContainer {
-  height: calc(100vh - 140px);
-  overflow: scroll;
   width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .footerContainer {
@@ -101,4 +81,10 @@ body {
 
 .tooltip-title {
   font-weight: 600;
+}
+
+.branchLabel {
+  position: absolute;
+  z-index: 100;
+  opacity: 0.8;
 }
