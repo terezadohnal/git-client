@@ -69,10 +69,7 @@ export const Repository = () => {
       notes: '',
       refs: commit.refs ? commit.refs.split(', ') : [''],
       onClick: (event: CommitEvent) => onNodeClick(event),
-      onMouseOver: (event: CommitEvent) => {
-        console.log(event);
-        setTooltip(event);
-      },
+      onMouseOver: (event: CommitEvent) => setTooltip(event),
       onMouseOut: () => setTooltip(null),
     }));
   }, [commits, onNodeClick]);

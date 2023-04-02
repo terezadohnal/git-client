@@ -38,13 +38,13 @@ export const CommitDetail = () => {
   }, [fetchDiffs]);
 
   const renderFile = (file: DiffFile) => {
-    const { oldRevision, newRevision, type, hunks, newPath } = file;
+    const { oldRevision, newRevision, type, hunks, newPath, oldPath } = file;
 
     if (!newPath) return null;
 
     return (
       <Collapse
-        title={newPath}
+        title={type === 'delete' ? oldPath : newPath}
         css={{ h3: { fontSize: '18px' } }}
         subtitle={`Type: ${type}`}
         key={`${oldRevision}-${newRevision}`}
