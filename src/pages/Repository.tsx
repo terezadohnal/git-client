@@ -1,4 +1,4 @@
-import { Card, Grid, Text } from '@nextui-org/react';
+import { Grid } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RepositoryHeader } from 'components/RepositoryHeader';
@@ -11,6 +11,8 @@ import { RepositoryFooter } from 'components/RepositoryFooter';
 import useRepository from 'hooks/useRepository';
 import { useMouse } from 'react-use';
 import { GitgraphCore } from '@gitgraph/core';
+import { CommitTooltip } from 'components/CommitTooltip';
+import { BranchLabel } from 'components/BranchLabel';
 
 export const Repository = () => {
   const appState = useAppState();
@@ -86,7 +88,7 @@ export const Repository = () => {
       .map((commit) => {
         return {
           commitHash: commit.hash,
-          branch: commit.branchToDisplay,
+          name: commit.branchToDisplay,
           x: commit.x,
           y: commit.y,
           color: commit.style.dot.color,
@@ -94,15 +96,15 @@ export const Repository = () => {
       });
 
     arr.forEach((obj) => {
-      const { branch, y } = obj;
-      if (!maxByBranch[branch] || y < maxByBranch[branch]) {
-        maxByBranch[branch] = y;
+      const { name, y } = obj;
+      if (!maxByBranch[name] || y < maxByBranch[name]) {
+        maxByBranch[name] = y;
       }
     });
 
     return arr.filter((obj) => {
-      const { branch, y } = obj;
-      return y === maxByBranch[branch];
+      const { name, y } = obj;
+      return y === maxByBranch[name];
     });
   }, [renderData.commits]);
 
@@ -128,31 +130,13 @@ export const Repository = () => {
       >
         <div>
           {tooltip && (
-            <Card
-              id={`tooltip-${tooltip.hash}`}
-              className="tooltip"
-              style={{
-                position: 'fixed',
-                width: 'fit-content',
-                top: elY,
-                left: elX + 20,
-              }}
-            >
-              <Card.Body>
-                <Text>
-                  <span className="tooltip-title">{tooltip.hashAbbrev}</span>
-                  {`: ${tooltip.subject}`}
-                </Text>
-                <Text>
-                  <span className="tooltip-title">Author</span>
-                  {`: ${tooltip.author.name} (${tooltip.author.email})`}
-                </Text>
-                <Text>
-                  <span className="tooltip-title">Date</span>
-                  {`: ${tooltip.author.timestamp}`}
-                </Text>
-              </Card.Body>
-            </Card>
+            <CommitTooltip
+              hashAbbrev={tooltip.hashAbbrev}
+              author={tooltip.author}
+              subject={tooltip.subject}
+              top={elY}
+              left={elX}
+            />
           )}
         </div>
         <div
@@ -172,29 +156,7 @@ export const Repository = () => {
             }}
           >
             {branches.map((branch) => {
-              return (
-                <Grid
-                  key={branch?.commitHash}
-                  className="branchLabel"
-                  style={{
-                    top: branch?.y,
-                    left: branch?.x ? branch.x + 40 : 0,
-                  }}
-                >
-                  <Text
-                    style={{
-                      background: 'white',
-                      width: 'fit-content',
-                      whiteSpace: 'nowrap',
-                      border: `1px solid ${branch.color}`,
-                      padding: '5px',
-                      borderRadius: '8px',
-                    }}
-                  >
-                    {branch?.branch}
-                  </Text>
-                </Grid>
-              );
+              return <BranchLabel branch={branch} key={branch.commitHash} />;
             })}
           </div>
         </div>

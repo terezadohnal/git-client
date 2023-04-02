@@ -78,29 +78,29 @@ export const CommitDetail = () => {
         <Text h3>Commit detail</Text>
       </Grid>
       <Grid style={{ width: '100%', padding: 30 }} justify="flex-start">
-        <Card isHoverable variant="flat" css={{ mw: '100%' }}>
+        <Card variant="flat" css={{ mw: '100%' }}>
           <Card.Body>
             {commit?.author_name && (
               <Text>
-                <span style={{ fontWeight: 'bold' }}>Created by:</span>
+                <span style={{ fontWeight: 'bold' }}>Created by: </span>
                 {commit?.author_name} ({commit.author_email})
               </Text>
             )}
             {commit?.date && (
               <Text>
-                <span style={{ fontWeight: 'bold' }}>Created at:</span>
+                <span style={{ fontWeight: 'bold' }}>Created at: </span>
                 {format(new Date(commit?.date), 'dd/MM/yyyy H:m')}
               </Text>
             )}
             {commit?.message && (
               <Text>
-                <span style={{ fontWeight: 'bold' }}>Message:</span>
+                <span style={{ fontWeight: 'bold' }}>Message: </span>
                 {commit?.message}
               </Text>
             )}
             {commit?.hash && (
               <Text>
-                <span style={{ fontWeight: 'bold' }}>Hash:</span>
+                <span style={{ fontWeight: 'bold' }}>Hash: </span>
                 {commit?.hash}
               </Text>
             )}

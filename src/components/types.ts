@@ -103,3 +103,25 @@ export type CheckoutModalProps = {
   visible: boolean;
   remoteBranches: string[];
 };
+
+export type CommitTooltipProps = {
+  hashAbbrev: string;
+  subject: string;
+  author: {
+    name: string;
+    email: string;
+    timestamp: number;
+  };
+  top: number;
+  left: number;
+};
+
+export type BranchLabelProps = {
+  branch: {
+    name: string;
+    commitHash: string;
+    x: number;
+    y: number;
+    color?: string;
+  };
+};
