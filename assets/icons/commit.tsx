@@ -15,8 +15,8 @@ export const CommitIcon = () => {
         stroke="#D1B1F0"
         strokeWidth="6"
       />
-      <line x1="22" y1="50" x2="78" y2="50" stroke="#D1B1F0" strokeWidth="4" />
-      <line x1="50" y1="23" x2="50" y2="79" stroke="#D1B1F0" strokeWidth="4" />
+      <line x1="22" y1="49" x2="78" y2="49" stroke="#D1B1F0" strokeWidth="6" />
+      <line x1="50" y1="23" x2="50" y2="79" stroke="#D1B1F0" strokeWidth="6" />
     </svg>
   );
 };

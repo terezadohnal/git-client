@@ -15,14 +15,21 @@ export const BranchIcon = () => {
         stroke="#D1B1F0"
         strokeWidth="6"
       />
-      <circle cx="42.5" cy="71.5" r="7.5" fill="#D1B1F0" />
-      <circle cx="71.5" cy="42.5" r="7.5" fill="#D1B1F0" />
-      <circle cx="42.5" cy="29.5" r="7.5" fill="#D1B1F0" />
-      <line x1="43" y1="36" x2="43" y2="65" stroke="#D1B1F0" strokeWidth="2" />
+      <circle cx="44" cy="73" r="9" fill="#D1B1F0" />
+      <circle cx="73" cy="42" r="9" fill="#D1B1F0" />
+      <circle cx="44" cy="28" r="9" fill="#D1B1F0" />
+      <line
+        x1="44.5"
+        y1="36"
+        x2="44.5"
+        y2="65"
+        stroke="#D1B1F0"
+        strokeWidth="5"
+      />
       <path
         d="M71 48C65 64.5 61.5001 66.5 48.3703 69.3363"
         stroke="#D1B1F0"
-        strokeWidth="2"
+        strokeWidth="5"
       />
     </svg>
   );
