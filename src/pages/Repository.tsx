@@ -159,7 +159,7 @@ export const Repository = () => {
         </div>
         <Grid className="graphContainer" ref={ref}>
           {simpleGraph.length ? (
-            <Gitgraph options={options}>
+            <Gitgraph key={commits.length} options={options}>
               {(gitgraph) => {
                 gitgraph.import(simpleGraph);
               }}

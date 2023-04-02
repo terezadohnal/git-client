@@ -111,7 +111,7 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
             <Text>Checkout remote:</Text>
             <Spacer x={0.5} />
             <Dropdown>
-              <Dropdown.Button color="secondary" size="sm" flat rounded>
+              <Dropdown.Button color="secondary" size="sm" flat>
                 <div style={{ width: '150px' }} className="textOverflow">
                   {selectedRemoteVal || 'Select remote branch'}
                 </div>
@@ -143,7 +143,7 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
             <Text>Checkout local:</Text>
             <Spacer x={0.5} />
             <Dropdown>
-              <Dropdown.Button color="secondary" size="sm" flat rounded>
+              <Dropdown.Button color="secondary" size="sm" flat>
                 <div style={{ width: '150px' }} className="textOverflow">
                   {selectedLocalVal || 'Select local branch'}
                 </div>

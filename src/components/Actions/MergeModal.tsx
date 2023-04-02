@@ -55,7 +55,7 @@ export const MergeModal: FC<MergeModalProps> = ({
             <Text>Select branch:</Text>
             <Spacer x={0.5} />
             <Dropdown>
-              <Dropdown.Button color="secondary" flat rounded>
+              <Dropdown.Button color="secondary" flat>
                 <div style={{ width: '150px' }} className="textOverflow">
                   {selectedValue || 'Select..'}
                 </div>
