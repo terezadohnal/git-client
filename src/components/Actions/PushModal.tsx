@@ -7,6 +7,8 @@ import {
   Dropdown,
   Spacer,
   Loading,
+  Badge,
+  Card,
 } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { MessageTypes } from 'helpers/types';
@@ -70,15 +72,23 @@ export const PushModal: FC<PushModalProps> = ({
         <Text h3>Push changes</Text>
       </Modal.Header>
       <Modal.Body>
-        <Text>Are you sure you want to push changes to remote repository?</Text>
-        <Row>
-          <Text b style={{ paddingRight: 5 }}>
-            Current branch:
-          </Text>
-          {appState.status.current}
-        </Row>
+        <Card variant="flat">
+          <Card.Body>
+            <Text>
+              Are you sure you want to push changes to remote repository?
+            </Text>
+            <Row>
+              <Text b style={{ paddingRight: 5 }}>
+                Current branch:
+              </Text>
+              <Badge size="md" color="warning" disableOutline>
+                {appState.status.current}
+              </Badge>
+            </Row>
+          </Card.Body>
+        </Card>
         <Col>
-          <Row>
+          <Row align="center" justify="space-between">
             <Text>Push to:</Text>
             <Spacer x={1} />
             <Dropdown>
@@ -88,7 +98,7 @@ export const PushModal: FC<PushModalProps> = ({
                 css={{ tt: 'capitalize' }}
               >
                 <div style={{ width: '150px' }} className="textOverflow">
-                  {selectedValue || 'Select..'}
+                  {selectedValue || 'Remote'}
                 </div>
               </Dropdown.Button>
               <Dropdown.Menu
@@ -111,6 +121,7 @@ export const PushModal: FC<PushModalProps> = ({
             type="button"
             bordered
             onPress={() => setShowAddRemoteForm(!showAddRemoteForm)}
+            css={{ transition: 'all 1s ease-out' }}
           >
             Add new remote
           </Button>

@@ -101,17 +101,12 @@ export const RepositoryHeader = () => {
       />
       <MergeModal visible={mergeVisible} closeMergeModal={setMergeVisible} />
       <BackButton />
-      <Button
-        auto
-        color="secondary"
-        flat
-        rounded
-        animated
+      <ButtonWithBadge
         icon={<CommitIcon />}
-        onPress={onCommitPress}
-      >
-        Commit
-      </Button>
+        label="Commit"
+        onButtonPress={onCommitPress}
+        badgeNumber={appState.status.files?.length}
+      />
       <ButtonWithBadge
         icon={<PushIcon />}
         label="Push"

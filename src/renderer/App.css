@@ -11,6 +11,7 @@ body {
 }
 
 .home {
+  margin: 0;
   background: linear-gradient(
     200.96deg,
     #caefd7 -19.09%,

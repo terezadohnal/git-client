@@ -36,6 +36,7 @@ export const CreateBranchBody: FC<CreateBranchBodyProps> = ({ onClose }) => {
 
   const onCreateBranchPress = async (data?: { name: string }) => {
     try {
+      setIsLoading(true);
       if (!data?.name) return;
       await createBranch(data?.name, selectedValue, checkout);
     } finally {
@@ -54,7 +55,10 @@ export const CreateBranchBody: FC<CreateBranchBodyProps> = ({ onClose }) => {
             size="sm"
             style={{ width: '100%' }}
             color="secondary"
-            onChange={() => setSpecificCommit(!specificCommit)}
+            onChange={() => {
+              setSpecificCommit(!specificCommit);
+              if (specificCommit) setSelected(new Set(['']));
+            }}
           >
             Specific commit:
           </Checkbox>
@@ -110,7 +114,7 @@ export const CreateBranchBody: FC<CreateBranchBodyProps> = ({ onClose }) => {
           color="secondary"
           rounded
           type="submit"
-          disabled={isLoading || !getValues('name')}
+          disabled={isLoading || !getValues('name') || !checkout}
         >
           {isLoading ? <Loading size="sm" type="points" /> : 'Create Branch'}
         </Button>

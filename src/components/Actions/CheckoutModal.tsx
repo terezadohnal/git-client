@@ -83,20 +83,22 @@ export const CheckoutModal: FC<CheckoutModalProps> = ({
           <Text h3>Checkout Branch</Text>
           <Button.Group size="sm" color="secondary" rounded bordered>
             <Button
+              animated
               onPress={() => {
                 setIsRemote(false);
                 setSelectedRemote(new Set(['']));
               }}
-              animated
+              css={!isRemote ? { backgroundColor: '$purple200' } : {}}
             >
               Checkout local
             </Button>
             <Button
+              animated
               onPress={() => {
                 setIsRemote(true);
                 setSelectedLocal(new Set(['']));
               }}
-              animated
+              css={isRemote ? { backgroundColor: '$purple200' } : {}}
             >
               Checkout remote
             </Button>

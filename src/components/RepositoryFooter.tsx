@@ -1,4 +1,4 @@
-import { Button, Grid, Text } from '@nextui-org/react';
+import { Button, Grid, Row, Badge, Spacer } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { useState } from 'react';
 import { ModalContainer } from './Actions/ModalContainer';
@@ -17,15 +17,21 @@ export const RepositoryFooter = () => {
       <Button
         size="sm"
         color="secondary"
+        rounded
         flat
+        auto
+        animated
         onPress={() => setCheckoutVisible(true)}
       >
         Checkout
       </Button>
-      <Text>
+      <Row align="center" justify="flex-end">
         <span style={{ fontWeight: 'bold' }}>On branch </span>
-        {appState.status.current ?? 'loading...'}
-      </Text>
+        <Spacer x={0.5} />
+        <Badge size="md" color="warning" disableOutline>
+          {appState.status.current ?? 'loading...'}
+        </Badge>
+      </Row>
     </Grid>
   );
 };

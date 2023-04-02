@@ -66,7 +66,7 @@ export const DeleteBranchBody: FC<DeleteBranchBodyProps> = ({ onClose }) => {
             shadow
             noMargin
             align="center"
-            rowsPerPage={4}
+            rowsPerPage={5}
             rounded
             onlyDots
             size="sm"

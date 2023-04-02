@@ -4,12 +4,7 @@ import { MessageTypes } from 'helpers/types';
 import useSnackbar from 'hooks/useSnackbar';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
-
-type AddRemoteFormProps = {
-  // eslint-disable-next-line no-unused-vars
-  closeForm: (val: boolean) => void;
-  onAddRemote: () => void;
-};
+import { AddRemoteFormProps } from './types';
 
 export const AddRemoteForm: FC<AddRemoteFormProps> = ({
   closeForm,

@@ -1,6 +1,7 @@
 import {
+  Badge,
   Button,
-  Checkbox,
+  Card,
   Col,
   Dropdown,
   Loading,
@@ -21,7 +22,6 @@ export const MergeModal: FC<MergeModalProps> = ({
   const appState = useAppState();
   const { mergeBranch } = useBranch();
   const [isLoading, setIsLoading] = useState(false);
-  const [checkout, setCheckout] = useState(true);
   const [selected, setSelected] = useState<Set<Key> | string>(new Set(['']));
 
   const selectedValue = useMemo(
@@ -51,7 +51,7 @@ export const MergeModal: FC<MergeModalProps> = ({
       </Modal.Header>
       <Modal.Body>
         <Col>
-          <Row align="center">
+          <Row align="center" justify="space-between">
             <Text>Select branch:</Text>
             <Spacer x={0.5} />
             <Dropdown>
@@ -83,16 +83,17 @@ export const MergeModal: FC<MergeModalProps> = ({
             </Dropdown>
           </Row>
           <Spacer y={1} />
-          <Checkbox
-            size="sm"
-            color="secondary"
-            defaultSelected
-            onChange={() => setCheckout(!checkout)}
-          >
-            Merge to current branch:
-            <Spacer x={0.5} />
-            <Text weight="bold">{appState.status.current}</Text>
-          </Checkbox>
+          <Card variant="flat">
+            <Card.Body>
+              <Row align="center">
+                Merge to current branch:
+                <Spacer x={0.5} />
+                <Badge size="md" color="warning" disableOutline>
+                  {appState.status.current}
+                </Badge>
+              </Row>
+            </Card.Body>
+          </Card>
         </Col>
       </Modal.Body>
       <Modal.Footer>

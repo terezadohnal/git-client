@@ -19,12 +19,20 @@ export const BranchModal: FC<BranchModalProps> = ({
     >
       <Modal.Header>
         <Col>
-          <Text h3>New Branch</Text>
+          <Text h3>Branch</Text>
           <Button.Group size="sm" color="secondary" rounded bordered>
-            <Button onPress={() => setShowDelete(false)} animated>
+            <Button
+              onPress={() => setShowDelete(false)}
+              animated
+              style={!showDelete ? { backgroundColor: '$purple200' } : {}}
+            >
               Create
             </Button>
-            <Button onPress={() => setShowDelete(true)} animated>
+            <Button
+              onPress={() => setShowDelete(true)}
+              animated
+              style={showDelete ? { backgroundColor: '$purple200' } : {}}
+            >
               Delete
             </Button>
           </Button.Group>

@@ -1,5 +1,7 @@
 import {
+  Badge,
   Button,
+  Card,
   Col,
   Dropdown,
   Loading,
@@ -81,7 +83,7 @@ export const PullModal: FC<PullModalProps> = ({
       </Modal.Header>
       <Modal.Body>
         <Col>
-          <Row align="center">
+          <Row align="center" justify="space-between">
             <Text h5>Pull from repository:</Text>
             <Spacer x={0.5} />
             <Dropdown>
@@ -106,7 +108,7 @@ export const PullModal: FC<PullModalProps> = ({
             </Dropdown>
           </Row>
           <Spacer y={1} />
-          <Row align="center">
+          <Row align="center" justify="space-between">
             <Text h5>Remote branch to pull:</Text>
             <Spacer x={0.5} />
             <Dropdown>
@@ -115,7 +117,7 @@ export const PullModal: FC<PullModalProps> = ({
                 color="secondary"
                 css={{ tt: 'capitalize' }}
               >
-                {selectedRemoteBranch}
+                {selectedRemoteBranch || 'Remote'}
               </Dropdown.Button>
               <Dropdown.Menu
                 color="secondary"
@@ -131,13 +133,19 @@ export const PullModal: FC<PullModalProps> = ({
             </Dropdown>
           </Row>
           <Spacer y={1} />
-          <Row align="center">
-            <Text h5 style={{ marginBottom: 0 }}>
-              Pull into local branch:
-            </Text>
-            <Spacer x={0.5} />
-            <Text>{appState.status.current}</Text>
-          </Row>
+          <Card variant="flat">
+            <Card.Body>
+              <Row align="center">
+                <Text h5 style={{ marginBottom: 0 }}>
+                  Pull into local branch:
+                </Text>
+                <Spacer x={0.5} />
+                <Badge size="md" color="warning" disableOutline>
+                  {appState.status.current}
+                </Badge>
+              </Row>
+            </Card.Body>
+          </Card>
         </Col>
       </Modal.Body>
       <Modal.Footer>

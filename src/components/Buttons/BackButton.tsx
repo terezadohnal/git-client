@@ -26,7 +26,7 @@ export const BackButton = () => {
     (event: KeyboardEvent) => {
       const pressed = formatKey(event);
       switch (pressed) {
-        case 'MetaKeyB':
+        case 'Escape':
           onBackPress();
           break;
         default:
@@ -50,6 +50,7 @@ export const BackButton = () => {
       color="secondary"
       rounded
       animated
+      auto
       flat
       style={{ height: 40 }}
       onPress={onBackPress}

@@ -41,6 +41,11 @@ export type DeleteBranchBodyProps = {
   onClose: (val: boolean) => void;
 };
 
+export type AddRemoteFormProps = {
+  closeForm: (val: boolean) => void;
+  onAddRemote: () => void;
+};
+
 export type AppSnackbarProps = {
   snackbarProps?: SnackbarProps;
   alertProps?: AlertProps;

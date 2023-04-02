@@ -31,22 +31,22 @@ export const CloningRepoContent = () => {
   };
 
   return (
-    <Collapse title="Clone remote repo">
+    <Collapse title="Clone remote repository">
       <Grid.Container direction="column" justify="center" alignItems="center">
         <Input
           readOnly
-          placeholder="Where"
+          placeholder="Destination path"
           value={appState.repositoryPath}
           fullWidth
           onClick={openFolder}
         />
       </Grid.Container>
-      <Spacer y={2} />
+      <Spacer y={0.5} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid.Container direction="column" justify="center" alignItems="center">
           <Input
             id="repository"
-            labelPlaceholder="Repository name"
+            labelPlaceholder="Repository URL"
             type="text"
             clearable
             fullWidth
