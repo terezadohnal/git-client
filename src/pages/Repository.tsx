@@ -2,17 +2,15 @@ import { Grid } from '@nextui-org/react';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RepositoryHeader } from 'components/RepositoryHeader';
-import { options } from 'helpers/globalHelpers';
 import { AppSnackbar } from 'components/AppSnackbar';
-import { Gitgraph } from '@gitgraph/react';
 import { useNavigate } from 'react-router-dom';
 import { CommitEvent } from 'components/types';
 import { RepositoryFooter } from 'components/RepositoryFooter';
 import useRepository from 'hooks/useRepository';
 import { useMouse } from 'react-use';
-import { GitgraphCore } from '@gitgraph/core';
 import { CommitTooltip } from 'components/CommitTooltip';
-import { BranchLabel } from 'components/BranchLabel';
+import Graph from 'components/Graph';
+import { Branches } from 'components/Branches';
 
 export const Repository = () => {
   const appState = useAppState();
@@ -74,37 +72,6 @@ export const Repository = () => {
     }));
   }, [commits, onNodeClick]);
 
-  const myGitgraph = new GitgraphCore(options);
-  myGitgraph.getUserApi().import(simpleGraph);
-  const renderData = myGitgraph.getRenderedData();
-
-  const branches = useMemo(() => {
-    const maxByBranch: { [key: string]: number } = {};
-    const arr = renderData.commits
-      .filter((commit) => commit.branchToDisplay !== '')
-      .map((commit) => {
-        return {
-          commitHash: commit.hash,
-          name: commit.branchToDisplay,
-          x: commit.x,
-          y: commit.y,
-          color: commit.style.dot.color,
-        };
-      });
-
-    arr.forEach((obj) => {
-      const { name, y } = obj;
-      if (!maxByBranch[name] || y < maxByBranch[name]) {
-        maxByBranch[name] = y;
-      }
-    });
-
-    return arr.filter((obj) => {
-      const { name, y } = obj;
-      return y === maxByBranch[name];
-    });
-  }, [renderData.commits]);
-
   return (
     <Grid.Container
       css={{ h: '100vh', w: '100%' }}
@@ -117,7 +84,7 @@ export const Repository = () => {
         message={appState.snackbar.message}
         alertProps={{ severity: appState.snackbar.type }}
       />
-      <div
+      <Grid
         style={{
           width: '100%',
           flexGrow: 1,
@@ -125,18 +92,7 @@ export const Repository = () => {
           position: 'relative',
         }}
       >
-        <div>
-          {tooltip && (
-            <CommitTooltip
-              hashAbbrev={tooltip.hashAbbrev}
-              author={tooltip.author}
-              subject={tooltip.subject}
-              top={elY}
-              left={elX}
-            />
-          )}
-        </div>
-        <div
+        <Grid
           style={{
             position: 'absolute',
             left: 0,
@@ -145,28 +101,21 @@ export const Repository = () => {
             height: ref.current?.clientHeight || 0,
           }}
         >
-          <div
-            style={{
-              position: 'relative',
-              width: '100%',
-              height: '100%',
-            }}
-          >
-            {branches.map((branch) => {
-              return <BranchLabel branch={branch} key={branch.commitHash} />;
-            })}
-          </div>
-        </div>
-        <Grid className="graphContainer" ref={ref}>
-          {simpleGraph.length ? (
-            <Gitgraph key={commits.length} options={options}>
-              {(gitgraph) => {
-                gitgraph.import(simpleGraph);
-              }}
-            </Gitgraph>
-          ) : null}
+          <Grid>
+            {tooltip && (
+              <CommitTooltip
+                hashAbbrev={tooltip.hashAbbrev}
+                author={tooltip.author}
+                subject={tooltip.subject}
+                top={elY}
+                left={elX}
+              />
+            )}
+          </Grid>
+          <Branches simpleGraph={simpleGraph} />
         </Grid>
-      </div>
+        <Graph simpleGraph={simpleGraph} ref={ref} />
+      </Grid>
       <RepositoryFooter />
     </Grid.Container>
   );

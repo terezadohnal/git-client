@@ -15,7 +15,7 @@ export const CommitTooltip: FC<CommitTooltipProps> = ({
       id={`tooltip-${hashAbbrev}`}
       className="tooltip"
       style={{
-        position: 'fixed',
+        position: 'absolute',
         width: 'fit-content',
         top,
         left: left + 20,
