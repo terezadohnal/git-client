@@ -1,13 +1,17 @@
 import { Button, Grid } from '@nextui-org/react';
-import { useAppState } from 'context/AppStateContext/AppStateProvider';
+import {
+  StateAction,
+  useAppState,
+  useAppStateDispatch,
+} from 'context/AppStateContext/AppStateProvider';
 import { formatKey } from 'helpers/globalHelpers';
 import { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { BranchIcon } from '../../assets/icons/branch';
-import { CommitIcon } from '../../assets/icons/commit';
-import { MergeIcon } from '../../assets/icons/merge';
-import { PullIcon } from '../../assets/icons/pull';
-import { PushIcon } from '../../assets/icons/push';
+import { useNavigate } from 'react-router-dom';
+import { BranchIcon } from './icons/branch';
+import { CommitIcon } from './icons/commit';
+import { MergeIcon } from './icons/merge';
+import { PullIcon } from './icons/pull';
+import { PushIcon } from './icons/push';
 import { BranchModal } from './Actions/Branch/BranchModal';
 import { MergeModal } from './Actions/MergeModal';
 import { ModalContainer } from './Actions/ModalContainer';
@@ -16,8 +20,8 @@ import { ButtonWithBadge } from './Buttons/ButtonWithBadge';
 
 export const RepositoryHeader = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const appState = useAppState();
+  const appStateDispatch = useAppStateDispatch();
   const [pushVisible, setPushVisible] = useState(false);
   const [pullVisible, setPullVisible] = useState(false);
   const [branchVisible, setBranchVisible] = useState(false);
@@ -27,44 +31,61 @@ export const RepositoryHeader = () => {
     navigate('/repository/create-commit');
   }, [navigate]);
 
-  const onSwitchPress = () => {
-    if (location.pathname === '/repository') {
-      navigate('/repository/secret');
-    } else if (location.pathname === '/repository/secret') {
-      navigate('/repository');
-    }
-  };
+  const setIsModalOpen = useCallback(
+    (value: boolean) => {
+      appStateDispatch({
+        type: StateAction.SET_IS_MODAL_OPEN,
+        payload: { isModalOpen: value },
+      });
+    },
+    [appStateDispatch]
+  );
 
   const handleKeyPress = useCallback(
     (event: KeyboardEvent) => {
       const pressed = formatKey(event);
       switch (pressed) {
-        case 'MetaKeyC':
+        case 'ShiftMetaKeyC':
           onCommitPress();
           break;
-        case 'MetaKeyM':
+        case 'ShiftMetaKeyM':
           setMergeVisible(true);
+          setIsModalOpen(true);
           break;
-        case 'MetaKeyB':
+        case 'ShiftMetaKeyB':
           setBranchVisible(true);
+          setIsModalOpen(true);
           break;
-        case 'MetaKeyP':
+        case 'ShiftMetaKeyP':
           setPushVisible(true);
+          setIsModalOpen(true);
           break;
-        case 'MetaKeyL':
+        case 'ShiftMetaKeyL':
           setPullVisible(true);
+          setIsModalOpen(true);
           break;
-        case 'ShiftKeyQ':
-          if (mergeVisible) setMergeVisible(false);
-          if (branchVisible) setBranchVisible(false);
-          if (pushVisible) setPushVisible(false);
-          if (pullVisible) setPullVisible(false);
+        case 'Escape':
+          if (appState.isModalOpen) {
+            if (mergeVisible) setMergeVisible(false);
+            if (branchVisible) setBranchVisible(false);
+            if (pushVisible) setPushVisible(false);
+            if (pullVisible) setPullVisible(false);
+            setIsModalOpen(false);
+          }
           break;
         default:
           break;
       }
     },
-    [branchVisible, mergeVisible, onCommitPress, pullVisible, pushVisible]
+    [
+      appState.isModalOpen,
+      branchVisible,
+      mergeVisible,
+      onCommitPress,
+      pullVisible,
+      pushVisible,
+      setIsModalOpen,
+    ]
   );
 
   useEffect(() => {
@@ -140,16 +161,6 @@ export const RepositoryHeader = () => {
         onPress={() => setMergeVisible(true)}
       >
         Merge
-      </Button>
-      <Button
-        auto
-        color="secondary"
-        flat
-        rounded
-        animated
-        onPress={onSwitchPress}
-      >
-        S
       </Button>
     </Grid>
   );

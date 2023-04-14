@@ -1,16 +1,34 @@
 import { Button } from '@nextui-org/react';
+import { BackIcon } from 'components/icons/back';
+import { HomeIcon } from 'components/icons/home';
 import {
   StateAction,
+  useAppState,
   useAppStateDispatch,
 } from 'context/AppStateContext/AppStateProvider';
 import { formatKey } from 'helpers/globalHelpers';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export const BackButton = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const appState = useAppState();
   const appStateDispatch = useAppStateDispatch();
+
+  const icon = useMemo(() => {
+    if (location.pathname === '/repository') {
+      return <HomeIcon />;
+    }
+    return <BackIcon />;
+  }, [location.pathname]);
+
+  const buttonText = useMemo(() => {
+    if (location.pathname === '/repository') {
+      return 'Home';
+    }
+    return 'Back';
+  }, [location.pathname]);
 
   const onBackPress = useCallback(() => {
     if (location.pathname === '/repository') {
@@ -27,13 +45,15 @@ export const BackButton = () => {
       const pressed = formatKey(event);
       switch (pressed) {
         case 'Escape':
-          onBackPress();
+          if (!appState.isModalOpen) {
+            onBackPress();
+          }
           break;
         default:
           break;
       }
     },
-    [onBackPress]
+    [appState.isModalOpen, onBackPress]
   );
 
   useEffect(() => {
@@ -54,8 +74,9 @@ export const BackButton = () => {
       flat
       style={{ height: 40 }}
       onPress={onBackPress}
+      icon={icon}
     >
-      Back
+      {buttonText}
     </Button>
   );
 };

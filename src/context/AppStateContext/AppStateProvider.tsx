@@ -17,6 +17,7 @@ interface AppState {
   remoteBranches: string[];
   localBranches: BranchSummary;
   snackbar: Snackbar;
+  isModalOpen: boolean;
 }
 
 interface SetRepositoryPathAction {
@@ -66,6 +67,12 @@ interface SetSnackbar {
 interface ResetAppState {
   type: StateAction.RESET_APP_STATE;
 }
+interface SetIsModalOpen {
+  type: StateAction.SET_IS_MODAL_OPEN;
+  payload: {
+    isModalOpen: boolean;
+  };
+}
 
 export type AppStateAction =
   | SetRepositoryPathAction
@@ -75,7 +82,8 @@ export type AppStateAction =
   | SetRemoteBranches
   | SetLocalBranches
   | SetSnackbar
-  | ResetAppState;
+  | ResetAppState
+  | SetIsModalOpen;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -119,6 +127,11 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
         ...state,
         snackbar: action.payload.snackbar,
       };
+    case StateAction.SET_IS_MODAL_OPEN:
+      return {
+        ...state,
+        isModalOpen: action.payload.isModalOpen,
+      };
     case StateAction.RESET_APP_STATE:
       return {
         repositoryPath: '',
@@ -131,6 +144,7 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
           message: '',
           type: MessageTypes.SUCCESS,
         },
+        isModalOpen: false,
       };
 
     default:
@@ -149,6 +163,7 @@ const initialAppState: AppState = {
     message: '',
     type: MessageTypes.SUCCESS,
   },
+  isModalOpen: false,
 };
 
 export default function AppStateProvider(props: { children: ReactElement }) {
