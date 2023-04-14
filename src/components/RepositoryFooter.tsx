@@ -13,30 +13,35 @@ export const RepositoryFooter = () => {
   const appStateDispatch = useAppStateDispatch();
   const [checkoutVisible, setCheckoutVisible] = useState(false);
 
-  const handleKeyPress = useCallback(
-    (event: KeyboardEvent) => {
-      const pressed = formatKey(event);
-      switch (pressed) {
-        case 'ShiftMetaKeyU':
-          setCheckoutVisible(true);
-          appStateDispatch({
-            type: StateAction.SET_IS_MODAL_OPEN,
-            payload: { isModalOpen: true },
-          });
-          break;
-        case 'Escape':
-          setCheckoutVisible(false);
-          appStateDispatch({
-            type: StateAction.SET_IS_MODAL_OPEN,
-            payload: { isModalOpen: false },
-          });
-          break;
-        default:
-          break;
-      }
+  const setIsModalOpen = useCallback(
+    (value: boolean) => {
+      appStateDispatch({
+        type: StateAction.SET_IS_MODAL_OPEN,
+        payload: { isModalOpen: value },
+      });
     },
     [appStateDispatch]
   );
+
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      const pressed = formatKey(event);
+      if (pressed === 'Escape' && appState.isModalOpen) {
+        setCheckoutVisible(false);
+        setIsModalOpen(false);
+      }
+    },
+    [appState.isModalOpen, setIsModalOpen]
+  );
+
+  useEffect(() => {
+    window.electron.ipcRenderer.onCommitOpen((_, value) => {
+      if (value === 'checkout') {
+        setCheckoutVisible(true);
+        setIsModalOpen(true);
+      }
+    });
+  }, [setIsModalOpen]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress);

@@ -5,6 +5,7 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
 } from 'electron';
+import { CHANELS } from '../constants';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -100,6 +101,83 @@ export default class MenuBuilder {
         },
       ],
     };
+    const subMenuRepository: DarwinMenuItemConstructorOptions = {
+      label: 'Repository',
+      submenu: [
+        {
+          label: 'Open repository',
+          accelerator: 'Shift+Command+O',
+          click: () => {
+            this.mainWindow.webContents.send(
+              CHANELS.HANDLE_REPO_ACTION,
+              'repository'
+            );
+          },
+        },
+        { type: 'separator' },
+
+        {
+          label: 'Commit',
+          accelerator: 'Shift+Command+C',
+          click: () => {
+            this.mainWindow.webContents.send(
+              CHANELS.HANDLE_REPO_ACTION,
+              'commit'
+            );
+          },
+        },
+        {
+          label: 'Checkout',
+          accelerator: 'Shift+Command+U',
+          click: () => {
+            this.mainWindow.webContents.send(
+              CHANELS.HANDLE_REPO_ACTION,
+              'checkout'
+            );
+          },
+        },
+        {
+          label: 'Push',
+          accelerator: 'Shift+Command+P',
+          click: () => {
+            this.mainWindow.webContents.send(
+              CHANELS.HANDLE_REPO_ACTION,
+              'push'
+            );
+          },
+        },
+        {
+          label: 'Pull',
+          accelerator: 'Shift+Command+L',
+          click: () => {
+            this.mainWindow.webContents.send(
+              CHANELS.HANDLE_REPO_ACTION,
+              'pull'
+            );
+          },
+        },
+        {
+          label: 'Merge',
+          accelerator: 'Shift+Command+M',
+          click: () => {
+            this.mainWindow.webContents.send(
+              CHANELS.HANDLE_REPO_ACTION,
+              'merge'
+            );
+          },
+        },
+        {
+          label: 'Branch',
+          accelerator: 'Shift+Command+B',
+          click: () => {
+            this.mainWindow.webContents.send(
+              CHANELS.HANDLE_REPO_ACTION,
+              'branch'
+            );
+          },
+        },
+      ],
+    };
     const subMenuViewDev: MenuItemConstructorOptions = {
       label: 'View',
       submenu: [
@@ -189,7 +267,14 @@ export default class MenuBuilder {
         ? subMenuViewDev
         : subMenuViewProd;
 
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+    return [
+      subMenuAbout,
+      subMenuEdit,
+      subMenuRepository,
+      subMenuView,
+      subMenuWindow,
+      subMenuHelp,
+    ];
   }
 
   buildDefaultTemplate() {

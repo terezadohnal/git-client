@@ -65,6 +65,10 @@ const API = {
 
     checkout: (args: { path: string; branch: string; isRemote: boolean }) =>
       ipcRenderer.invoke(CHANELS.CHECKOUT, args),
+
+    // eslint-disable-next-line no-unused-vars
+    onCommitOpen: (callback: (_: any, value: string) => void) =>
+      ipcRenderer.on(CHANELS.HANDLE_REPO_ACTION, callback),
   },
 };
 

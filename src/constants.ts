@@ -14,4 +14,5 @@ export const CHANELS = {
   PULL: 'pull',
   MERGE: 'merge',
   CHECKOUT: 'checkout',
+  HANDLE_REPO_ACTION: 'handle-repo-action',
 } as const;

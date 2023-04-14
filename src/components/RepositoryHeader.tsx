@@ -41,47 +41,56 @@ export const RepositoryHeader = () => {
     [appStateDispatch]
   );
 
-  const handleKeyPress = useCallback(
-    (event: KeyboardEvent) => {
-      const pressed = formatKey(event);
-      switch (pressed) {
-        case 'ShiftMetaKeyC':
+  useEffect(() => {
+    window.electron.ipcRenderer.onCommitOpen((_, value) => {
+      switch (value) {
+        case 'commit':
           onCommitPress();
           break;
-        case 'ShiftMetaKeyM':
+        case 'merge':
           setMergeVisible(true);
           setIsModalOpen(true);
           break;
-        case 'ShiftMetaKeyB':
+        case 'branch':
           setBranchVisible(true);
           setIsModalOpen(true);
           break;
-        case 'ShiftMetaKeyP':
+        case 'push':
           setPushVisible(true);
           setIsModalOpen(true);
           break;
-        case 'ShiftMetaKeyL':
+        case 'pull':
           setPullVisible(true);
           setIsModalOpen(true);
           break;
-        case 'Escape':
-          if (appState.isModalOpen) {
-            if (mergeVisible) setMergeVisible(false);
-            if (branchVisible) setBranchVisible(false);
-            if (pushVisible) setPushVisible(false);
-            if (pullVisible) setPullVisible(false);
-            setIsModalOpen(false);
-          }
+        case 'repository':
+          window.localStorage.removeItem('repo');
+          appStateDispatch({
+            type: StateAction.RESET_APP_STATE,
+          });
+          navigate('/');
           break;
         default:
           break;
+      }
+    });
+  }, [appStateDispatch, navigate, onCommitPress, setIsModalOpen]);
+
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      const pressed = formatKey(event);
+      if (pressed === 'Escape' && appState.isModalOpen) {
+        if (mergeVisible) setMergeVisible(false);
+        if (branchVisible) setBranchVisible(false);
+        if (pushVisible) setPushVisible(false);
+        if (pullVisible) setPullVisible(false);
+        setIsModalOpen(false);
       }
     },
     [
       appState.isModalOpen,
       branchVisible,
       mergeVisible,
-      onCommitPress,
       pullVisible,
       pushVisible,
       setIsModalOpen,

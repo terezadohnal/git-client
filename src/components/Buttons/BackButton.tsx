@@ -43,14 +43,8 @@ export const BackButton = () => {
   const handleKeyPress = useCallback(
     (event: KeyboardEvent) => {
       const pressed = formatKey(event);
-      switch (pressed) {
-        case 'Escape':
-          if (!appState.isModalOpen) {
-            onBackPress();
-          }
-          break;
-        default:
-          break;
+      if (pressed === 'Escape' && !appState.isModalOpen) {
+        onBackPress();
       }
     },
     [appState.isModalOpen, onBackPress]
