@@ -58,13 +58,13 @@ export const NewCommit = () => {
               }}
             >
               <Table.Header>
-                <Table.Column align="center">File</Table.Column>
+                <Table.Column align="start">File</Table.Column>
               </Table.Header>
               <Table.Body>
                 {appState.status?.files?.map((file) => (
                   <Table.Row key={file.path}>
                     <Table.Cell
-                      css={{ display: 'flex', justifyContent: 'center' }}
+                      css={{ display: 'flex', justifyContent: 'left' }}
                     >
                       {file.path}
                     </Table.Cell>

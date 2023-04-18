@@ -8,7 +8,7 @@ export const BranchLabel: FC<BranchLabelProps> = ({ branch }) => {
       className="branchLabel"
       style={{
         top: branch?.y,
-        left: branch?.x ? branch.x + 40 : 0,
+        left: branch?.x ? branch.x + 30 : 0,
       }}
     >
       <Text

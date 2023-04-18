@@ -89,7 +89,7 @@ export const CommitDetail = () => {
             {commit?.date && (
               <Text>
                 <span style={{ fontWeight: 'bold' }}>Created at: </span>
-                {format(new Date(commit?.date), 'dd/MM/yyyy H:m')}
+                {format(new Date(commit?.date), 'dd/MM/yyyy HH:mm')}
               </Text>
             )}
             {commit?.message && (

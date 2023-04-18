@@ -18,7 +18,7 @@ export const CommitTooltip: FC<CommitTooltipProps> = ({
         position: 'absolute',
         width: 'fit-content',
         top,
-        left: left + 20,
+        left: left + 15,
       }}
     >
       <Card.Body>
