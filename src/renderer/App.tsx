@@ -7,7 +7,6 @@ import AppStateProvider from 'context/AppStateContext/AppStateProvider';
 import { CommitDetail } from 'pages/CommitDetail';
 import { NewCommit } from 'pages/NewCommit';
 import { theme } from 'theme';
-import { SecretRepository } from 'pages/SecretRepository';
 
 export default function App() {
   return (
@@ -21,7 +20,6 @@ export default function App() {
               element={<CommitDetail />}
             />
             <Route path="/repository/create-commit" element={<NewCommit />} />
-            <Route path="/repository/secret" element={<SecretRepository />} />
             <Route path="/repository" element={<Repository />} />
           </Routes>
         </Router>

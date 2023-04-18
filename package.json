@@ -95,13 +95,10 @@
     "@gitgraph/react": "^1.6.0",
     "@mui/material": "^5.11.4",
     "@nextui-org/react": "^1.0.0-beta.12",
-    "@react-sigma/core": "^3.2.0",
     "date-fns": "^2.29.3",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^5.2.3",
-    "graphology": "^0.25.1",
-    "graphology-types": "^0.24.7",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-diff-view": "^2.5.0",
@@ -109,7 +106,6 @@
     "react-hook-form": "^7.42.1",
     "react-router-dom": "^6.4.0",
     "react-use": "^17.4.0",
-    "sigma": "^2.4.0",
     "simple-git": "^3.16.0"
   },
   "devDependencies": {
