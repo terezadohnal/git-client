@@ -54,9 +54,14 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, arg) => {
           tree: '%T',
           refs: '%D',
         },
+        maxCount: 1000, // enables faster loading of bigger repositories
         '--all': null,
       });
       const branches = await git.branchLocal();
+
+      if (mainWindow) {
+        mainWindow.setTitle(arg.path);
+      }
 
       return JSON.stringify({
         status: status ?? null,
@@ -190,8 +195,9 @@ ipcMain.handle(CHANELS.MERGE, async (_, args) => {
 
 ipcMain.handle(CHANELS.CHECKOUT, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
+  console.log(args);
   try {
-    const options = args.isRemote ? ['-b'] : [];
+    const options = args.isRemote ? ['-b', args.branch] : [];
     return await git.checkout(args.branch, options);
   } catch (e: any) {
     throw new Error(e);
@@ -280,6 +286,11 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
+  });
+
+  mainWindow.on('focus', () => {
+    if (!mainWindow) throw new Error('"mainWindow" is not defined');
+    mainWindow.webContents.send(CHANELS.ON_APP_FOCUS);
   });
 
   mainWindow.on('closed', () => {

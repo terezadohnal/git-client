@@ -3,12 +3,14 @@ import { AppSnackbar } from 'components/AppSnackbar';
 import { BackButton } from 'components/Buttons/BackButton';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import useCommit from 'hooks/useCommit';
-import { useState } from 'react';
+import useRepository from 'hooks/useRepository';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const NewCommit = () => {
   const appState = useAppState();
   const { createCommit } = useCommit();
+  const { fetchDirectory } = useRepository();
   const [selectedFiles, setSelectedFiles] = useState<
     string | Set<React.Key> | null
   >(null);
@@ -17,6 +19,19 @@ export const NewCommit = () => {
       message: '',
     },
   });
+
+  const refetch = useCallback(async () => {
+    await fetchDirectory();
+  }, [fetchDirectory]);
+
+  useEffect(() => {
+    window.electron.ipcRenderer.onAppFocus(() => {
+      refetch();
+    });
+    return () => {
+      window.electron.ipcRenderer.removeFocusEventListener();
+    };
+  }, [refetch]);
 
   const onHandleSubmit = async (data: { message: string }) => {
     await createCommit({

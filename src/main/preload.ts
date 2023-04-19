@@ -69,6 +69,12 @@ const API = {
     // eslint-disable-next-line no-unused-vars
     onCommitOpen: (callback: (_: any, value: string) => void) =>
       ipcRenderer.on(CHANELS.HANDLE_REPO_ACTION, callback),
+
+    onAppFocus: (callback: () => void) =>
+      ipcRenderer.on(CHANELS.ON_APP_FOCUS, callback),
+
+    removeFocusEventListener: () =>
+      ipcRenderer.removeAllListeners(CHANELS.ON_APP_FOCUS),
   },
 };
 

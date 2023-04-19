@@ -15,4 +15,5 @@ export const CHANELS = {
   MERGE: 'merge',
   CHECKOUT: 'checkout',
   HANDLE_REPO_ACTION: 'handle-repo-action',
+  ON_APP_FOCUS: 'on-app-focus',
 } as const;

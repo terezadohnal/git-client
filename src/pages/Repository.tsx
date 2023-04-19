@@ -28,16 +28,26 @@ export const Repository = () => {
     [navigate]
   );
 
+  const refetch = useCallback(async () => {
+    await fetchDirectory();
+  }, [fetchDirectory]);
+
   useEffect(() => {
     const startFetchingTime = performance.now();
-    fetchDirectory();
+    refetch();
     const endFetchingTime = performance.now();
     console.log(
       `Time taken to fetch all commits: ${
         endFetchingTime - startFetchingTime
       }ms`
     );
-  }, [fetchDirectory, performance]);
+  }, [refetch, performance]);
+
+  useEffect(() => {
+    window.electron.ipcRenderer.onAppFocus(() => {
+      refetch();
+    });
+  }, [refetch]);
 
   const { commits } = appState;
 

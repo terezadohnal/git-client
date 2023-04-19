@@ -45,6 +45,13 @@ export const options = {
         display: false,
       },
     },
+    tag: {
+      color: 'white',
+      bgColor: 'transparent',
+      borderRadius: 0,
+      pointerWidth: 0,
+      strokeColor: 'transparent',
+    },
     commit: {
       dot: {
         size: 8,
