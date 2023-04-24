@@ -93,6 +93,18 @@ ipcMain.handle(CHANELS.GET_COMMIT_DIFF, async (_, arg) => {
   }
 });
 
+ipcMain.handle(CHANELS.GET_DIFF, async (_, arg) => {
+  const git: SimpleGit = simpleGit({ baseDir: arg.path });
+  try {
+    const diff = await git.diff([arg.file]);
+    return JSON.stringify({
+      diff: diff ?? null,
+    });
+  } catch (error: any) {
+    throw new Error(error);
+  }
+});
+
 ipcMain.handle(CHANELS.COMMIT, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   const files =

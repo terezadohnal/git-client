@@ -1,15 +1,16 @@
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { useCallback, useEffect, useState } from 'react';
 // @ts-ignore
-import { parseDiff, Diff, Hunk } from 'react-diff-view';
+import { parseDiff } from 'react-diff-view';
 import 'react-diff-view/style/index.css';
 import { useParams } from 'react-router-dom';
 import { Grid, Text, Collapse, Card } from '@nextui-org/react';
-import { CommitDiffDTO, CommitDTO, DiffFile, DiffHunk } from 'helpers/types';
+import { CommitDiffDTO, CommitDTO, DiffFile } from 'helpers/types';
 import { BackButton } from 'components/Buttons/BackButton';
 import { format } from 'date-fns';
 import { AppSnackbar } from 'components/AppSnackbar';
 import useCommit from 'hooks/useCommit';
+import { RenderDiffFile } from 'components/RenderDiffFile';
 
 export const CommitDetail = () => {
   const appState = useAppState();
@@ -36,31 +37,6 @@ export const CommitDetail = () => {
   useEffect(() => {
     fetchDiffs();
   }, [fetchDiffs]);
-
-  const renderFile = (file: DiffFile) => {
-    const { oldRevision, newRevision, type, hunks, newPath, oldPath } = file;
-
-    if (!newPath) return null;
-
-    return (
-      <Collapse
-        title={type === 'delete' ? oldPath : newPath}
-        css={{ h3: { fontSize: '18px' } }}
-        subtitle={`Type: ${type}`}
-        key={`${oldRevision}-${newRevision}`}
-      >
-        <Grid>
-          <Diff viewType="split" diffType={type} hunks={hunks}>
-            {() =>
-              hunks.map((hunk: DiffHunk) => (
-                <Hunk key={hunk.content} hunk={hunk} />
-              ))
-            }
-          </Diff>
-        </Grid>
-      </Collapse>
-    );
-  };
 
   return (
     <Grid.Container css={{ h: '100%', w: '100%' }} justify="center">
@@ -109,7 +85,9 @@ export const CommitDetail = () => {
       </Grid>
       <Grid style={{ height: '100%', width: '100%', padding: 20 }}>
         <Collapse.Group accordion={false} shadow>
-          {files.map(renderFile)}
+          {files.map((file: DiffFile) => (
+            <RenderDiffFile file={file} />
+          ))}
         </Collapse.Group>
       </Grid>
     </Grid.Container>

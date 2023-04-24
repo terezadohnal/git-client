@@ -31,6 +31,24 @@ const useCommit = () => {
     [appState.commits, appState.repositoryPath, showSnackbar]
   );
 
+  const fetchDiff = useCallback(
+    async (file: string) => {
+      try {
+        return await window.electron.ipcRenderer.getDiff({
+          path: appState.repositoryPath,
+          file,
+        });
+      } catch (err: any) {
+        showSnackbar({
+          message: err.message,
+          type: MessageTypes.ERROR,
+        });
+      }
+      return null;
+    },
+    [appState.repositoryPath, showSnackbar]
+  );
+
   const createCommit = async ({
     files,
     message,
@@ -59,7 +77,7 @@ const useCommit = () => {
     }
   };
 
-  return { fetchCommitDiff, createCommit };
+  return { fetchCommitDiff, fetchDiff, createCommit };
 };
 
 export default useCommit;

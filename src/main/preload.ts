@@ -24,6 +24,9 @@ const API = {
       previousCommitHash: string;
     }) => ipcRenderer.invoke(CHANELS.GET_COMMIT_DIFF, args),
 
+    getDiff: (args: { path: string; file: string }) =>
+      ipcRenderer.invoke(CHANELS.GET_DIFF, args),
+
     commit: (args: {
       path: string;
       files: string | Set<React.Key> | null;
