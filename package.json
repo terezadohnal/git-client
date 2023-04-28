@@ -100,7 +100,6 @@
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^5.2.3",
-    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-diff-view": "^2.5.0",
     "react-dom": "^18.2.0",
@@ -118,7 +117,6 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@types/jest": "^28.1.7",
-    "@types/lodash": "^4.14.192",
     "@types/node": "18.7.6",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
@@ -180,7 +178,7 @@
     "webpack-merge": "^5.8.0"
   },
   "build": {
-    "productName": "ElectronReact",
+    "productName": "GiteeApp",
     "appId": "org.erb.ElectronReact",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
@@ -198,6 +196,7 @@
           "x64"
         ]
       },
+      "icon": "assets/Gitee.icns",
       "type": "distribution",
       "hardenedRuntime": true,
       "entitlements": "assets/entitlements.mac.plist",

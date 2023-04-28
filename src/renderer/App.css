@@ -32,11 +32,13 @@ body {
 .repo-header {
   border-bottom: 2px solid #faf4ff;
   justify-content: space-between;
+  align-items: center;
 }
 
 .repo-footer {
   border-top: 2px solid #faf4ff;
   justify-content: space-between;
+  align-items: center;
 }
 
 .nav-background {

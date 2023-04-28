@@ -37,6 +37,7 @@ export const Home = () => {
       style={{
         height: '100vh',
         display: 'flex',
+        margin: '0',
       }}
       className="home"
     >

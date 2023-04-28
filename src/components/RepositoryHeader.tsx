@@ -113,6 +113,8 @@ export const RepositoryHeader = () => {
     <Grid
       justify="space-between"
       direction="row"
+      alignItems="center"
+      style={{ padding: '15px' }}
       className="navbars repo-header nav-background"
     >
       <ModalContainer

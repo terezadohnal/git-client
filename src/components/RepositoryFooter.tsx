@@ -52,7 +52,10 @@ export const RepositoryFooter = () => {
   }, [handleKeyPress]);
 
   return (
-    <Grid className="navbars repo-footer nav-background">
+    <Grid
+      style={{ padding: '15px' }}
+      className="navbars repo-footer nav-background"
+    >
       <ModalContainer
         closeModal={setCheckoutVisible}
         visible={checkoutVisible}
