@@ -55,7 +55,7 @@ export default class MenuBuilder {
 
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'Electron',
+      label: 'App',
       submenu: [
         {
           label: 'Hide App',
@@ -329,6 +329,81 @@ export default class MenuBuilder {
                   },
                 },
               ],
+      },
+      {
+        label: '&Repository',
+        submenu: [
+          {
+            label: '&Open repository',
+            accelerator: 'Alt+Ctrl+O',
+            click: () => {
+              this.mainWindow.webContents.send(
+                CHANELS.HANDLE_REPO_ACTION,
+                'repository'
+              );
+            },
+          },
+          {
+            label: '&Commit',
+            accelerator: 'Alt+Ctrl+C',
+            click: () => {
+              this.mainWindow.webContents.send(
+                CHANELS.HANDLE_REPO_ACTION,
+                'commit'
+              );
+            },
+          },
+          {
+            label: '&Checkout',
+            accelerator: 'Alt+Ctrl+U',
+            click: () => {
+              this.mainWindow.webContents.send(
+                CHANELS.HANDLE_REPO_ACTION,
+                'checkout'
+              );
+            },
+          },
+          {
+            label: '&Push',
+            accelerator: 'Alt+Ctrl+P',
+            click: () => {
+              this.mainWindow.webContents.send(
+                CHANELS.HANDLE_REPO_ACTION,
+                'push'
+              );
+            },
+          },
+          {
+            label: '&Pull',
+            accelerator: 'Alt+Ctrl+L',
+            click: () => {
+              this.mainWindow.webContents.send(
+                CHANELS.HANDLE_REPO_ACTION,
+                'pull'
+              );
+            },
+          },
+          {
+            label: '&Merge',
+            accelerator: 'Alt+Ctrl+M',
+            click: () => {
+              this.mainWindow.webContents.send(
+                CHANELS.HANDLE_REPO_ACTION,
+                'merge'
+              );
+            },
+          },
+          {
+            label: '&Branch',
+            accelerator: 'Alt+Ctrl+B',
+            click: () => {
+              this.mainWindow.webContents.send(
+                CHANELS.HANDLE_REPO_ACTION,
+                'branch'
+              );
+            },
+          },
+        ],
       },
       {
         label: 'Help',
