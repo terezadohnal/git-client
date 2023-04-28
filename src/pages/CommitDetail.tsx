@@ -84,9 +84,9 @@ export const CommitDetail = () => {
         </Card>
       </Grid>
       <Grid style={{ height: '100%', width: '100%', padding: 20 }}>
-        <Collapse.Group accordion={false} shadow>
+        <Collapse.Group accordion={false} shadow aria-label="Render diff files">
           {files.map((file: DiffFile) => (
-            <RenderDiffFile file={file} />
+            <RenderDiffFile file={file} key={file.newPath} />
           ))}
         </Collapse.Group>
       </Grid>

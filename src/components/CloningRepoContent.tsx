@@ -35,6 +35,7 @@ export const CloningRepoContent = () => {
       <Grid.Container direction="column" justify="center" alignItems="center">
         <Input
           readOnly
+          aria-label="Destination path"
           placeholder="Destination path"
           value={appState.repositoryPath}
           fullWidth

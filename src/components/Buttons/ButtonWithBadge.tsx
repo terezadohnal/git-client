@@ -18,6 +18,7 @@ export const ButtonWithBadge: FC<ButtonWithBadgeProps> = ({
         animated
         icon={icon}
         onPress={onButtonPress}
+        data-testid="button-with-badge"
       >
         {label}
       </Button>
@@ -25,7 +26,7 @@ export const ButtonWithBadge: FC<ButtonWithBadgeProps> = ({
   }
 
   return (
-    <Badge color="error" content={badgeNumber}>
+    <Badge color="error" content={badgeNumber} data-testid="badge">
       <Button
         auto
         color="secondary"

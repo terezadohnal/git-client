@@ -19,12 +19,13 @@ export const AppSnackbar: FC<AppSnackbarProps> = ({
     <Snackbar
       open={open}
       onClose={() => toggleOpen()}
+      data-testid="snackbar"
       autoHideDuration={4000}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       {...snackbarProps}
       sx={{ marginTop: 10 }}
     >
-      <Alert onClose={() => toggleOpen()} {...alertProps}>
+      <Alert onClose={() => toggleOpen()} {...alertProps} data-testid="alert">
         {message}
       </Alert>
     </Snackbar>

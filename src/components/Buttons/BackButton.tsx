@@ -69,6 +69,7 @@ export const BackButton = () => {
       style={{ height: 40 }}
       onPress={onBackPress}
       icon={icon}
+      data-testid={`${buttonText}-button`}
     >
       {buttonText}
     </Button>

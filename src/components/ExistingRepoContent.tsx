@@ -12,6 +12,7 @@ export const ExistingRepoContent = () => {
         <Grid.Container direction="column" justify="center" alignItems="center">
           <Input
             placeholder="Open.."
+            aria-label="Open existing repository"
             value={appState.repositoryPath}
             fullWidth
             onClick={openExistingRepository}

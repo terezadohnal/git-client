@@ -41,9 +41,9 @@ export const Home = () => {
       className="home"
     >
       <AppSnackbar
-        isOpen={!!appState.snackbar.message}
-        message={appState.snackbar.message}
-        alertProps={{ severity: appState.snackbar.type }}
+        isOpen={!!appState.snackbar?.message}
+        message={appState.snackbar?.message}
+        alertProps={{ severity: appState.snackbar?.type }}
       />
       <Grid.Container justify="center" direction="column" alignItems="center">
         <Text h3 color="white">

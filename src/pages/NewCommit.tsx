@@ -140,7 +140,7 @@ export const NewCommit = () => {
               <Spacer y={1} />
               <Text h5>Latest changes in file</Text>
               <Spacer y={1} />
-              <Collapse.Group accordion shadow>
+              <Collapse.Group accordion shadow aria-label="Render diff files">
                 {diff.map((file: DiffFile) => (
                   <RenderDiffFile file={file} key={file.newPath} expanded />
                 ))}
