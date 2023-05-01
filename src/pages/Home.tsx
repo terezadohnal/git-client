@@ -48,7 +48,7 @@ export const Home = () => {
       />
       <Grid.Container justify="center" direction="column" alignItems="center">
         <Text h3 color="white">
-          Here is your best Git app
+          Your favorite Git client
         </Text>
         <Text h5 color="white">
           Clone or open your existing repo

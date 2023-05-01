@@ -24,14 +24,14 @@ export const BranchModal: FC<BranchModalProps> = ({
             <Button
               onPress={() => setShowDelete(false)}
               animated
-              style={!showDelete ? { backgroundColor: '$purple200' } : {}}
+              css={!showDelete ? { backgroundColor: '$purple200' } : {}}
             >
               Create
             </Button>
             <Button
               onPress={() => setShowDelete(true)}
               animated
-              style={showDelete ? { backgroundColor: '$purple200' } : {}}
+              css={showDelete ? { backgroundColor: '$purple200' } : {}}
             >
               Delete
             </Button>
