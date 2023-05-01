@@ -19,6 +19,8 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
+// Function to clone new repository from remote
+
 ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
   const git: SimpleGit = simpleGit();
   try {
@@ -36,6 +38,8 @@ ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
     throw new Error(err);
   }
 });
+
+// Function to fetch directory status containing commits, branches and status
 
 ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, arg) => {
   const git: SimpleGit = simpleGit({ baseDir: arg.path, trimmed: false });
@@ -75,6 +79,8 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, arg) => {
   }
 });
 
+// Function to get diffs of a commit
+
 ipcMain.handle(CHANELS.GET_COMMIT_DIFF, async (_, arg) => {
   const git: SimpleGit = simpleGit({ baseDir: arg.path });
   try {
@@ -93,6 +99,8 @@ ipcMain.handle(CHANELS.GET_COMMIT_DIFF, async (_, arg) => {
   }
 });
 
+// Function to get single diff of a file
+
 ipcMain.handle(CHANELS.GET_DIFF, async (_, arg) => {
   const git: SimpleGit = simpleGit({ baseDir: arg.path });
   try {
@@ -104,6 +112,8 @@ ipcMain.handle(CHANELS.GET_DIFF, async (_, arg) => {
     throw new Error(error);
   }
 });
+
+// Function to create new commit in the repository
 
 ipcMain.handle(CHANELS.COMMIT, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
@@ -120,6 +130,8 @@ ipcMain.handle(CHANELS.COMMIT, async (_, args) => {
   }
 });
 
+// Function to get all the remotes
+
 ipcMain.handle(CHANELS.GET_REMOTES, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   try {
@@ -128,6 +140,8 @@ ipcMain.handle(CHANELS.GET_REMOTES, async (_, args) => {
     throw new Error(e);
   }
 });
+
+// Function to get all the remote branches of a repository
 
 ipcMain.handle(CHANELS.GET_REMOTE_BRANCHES, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
@@ -139,6 +153,8 @@ ipcMain.handle(CHANELS.GET_REMOTE_BRANCHES, async (_, args) => {
   }
 });
 
+// Function to add a remote to a repository
+
 ipcMain.handle(CHANELS.ADD_REMOTE, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   try {
@@ -148,6 +164,8 @@ ipcMain.handle(CHANELS.ADD_REMOTE, async (_, args) => {
   }
 });
 
+// Function to push to a remote branch
+
 ipcMain.handle(CHANELS.PUSH, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   try {
@@ -156,6 +174,8 @@ ipcMain.handle(CHANELS.PUSH, async (_, args) => {
     throw new Error(e);
   }
 });
+
+// Function to pull from a remote branch
 
 ipcMain.handle(CHANELS.PULL, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
@@ -168,6 +188,8 @@ ipcMain.handle(CHANELS.PULL, async (_, args) => {
   }
 });
 
+// Function to create a new branch and checkout to it
+
 ipcMain.handle(CHANELS.CREATE_BRANCH, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   try {
@@ -179,6 +201,8 @@ ipcMain.handle(CHANELS.CREATE_BRANCH, async (_, args) => {
     throw new Error(e);
   }
 });
+
+// Function to delete a local branch
 
 ipcMain.handle(CHANELS.DELETE_BRANCH, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
@@ -193,6 +217,8 @@ ipcMain.handle(CHANELS.DELETE_BRANCH, async (_, args) => {
   }
 });
 
+// Function to merge a branch
+
 ipcMain.handle(CHANELS.MERGE, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
   try {
@@ -205,9 +231,10 @@ ipcMain.handle(CHANELS.MERGE, async (_, args) => {
   }
 });
 
+// Function to checkout to a branch
+
 ipcMain.handle(CHANELS.CHECKOUT, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
-  console.log(args);
   try {
     const options = args.isRemote ? ['-b', args.branch] : [];
     return await git.checkout(args.branch, options);
@@ -215,6 +242,8 @@ ipcMain.handle(CHANELS.CHECKOUT, async (_, args) => {
     throw new Error(e);
   }
 });
+
+// Check if path is a git repository
 
 ipcMain.handle(CHANELS.IS_REPO, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
@@ -224,6 +253,8 @@ ipcMain.handle(CHANELS.IS_REPO, async (_, args) => {
     throw new Error(e);
   }
 });
+
+// Controls opening file dialog
 
 const handleFileOpen = async () => {
   const { canceled, filePaths } = await dialog.showOpenDialog({
@@ -236,6 +267,8 @@ const handleFileOpen = async () => {
 };
 
 ipcMain.handle(CHANELS.OPEN_FILE, handleFileOpen);
+
+// Controls window functions from main process
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

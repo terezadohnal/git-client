@@ -53,6 +53,8 @@ export default class MenuBuilder {
     });
   }
 
+  // Template for menu available on macOS platform
+
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
       label: 'App',
@@ -269,6 +271,8 @@ export default class MenuBuilder {
       subMenuHelp,
     ];
   }
+
+  // Default template menu for Windows, Linux platforms
 
   buildDefaultTemplate() {
     const templateDefault = [
