@@ -47,9 +47,10 @@ export const CloningRepoContent = () => {
         <Grid.Container direction="column" justify="center" alignItems="center">
           <Input
             id="repository"
-            labelPlaceholder="Repository URL"
+            placeholder="Repository URL"
             type="text"
             clearable
+            aria-labelledby="repository"
             fullWidth
             disabled={!appState.repositoryPath}
             {...register('repository')}

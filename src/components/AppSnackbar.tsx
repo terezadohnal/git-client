@@ -20,7 +20,7 @@ export const AppSnackbar: FC<AppSnackbarProps> = ({
       open={open}
       onClose={() => toggleOpen()}
       data-testid="snackbar"
-      autoHideDuration={4000}
+      autoHideDuration={6000}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       {...snackbarProps}
       sx={{ marginTop: 10 }}
