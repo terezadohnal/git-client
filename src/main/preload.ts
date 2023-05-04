@@ -15,7 +15,7 @@ const API = {
     isRepository: (args: { path: string }) =>
       ipcRenderer.invoke(CHANELS.IS_REPO, args),
 
-    fetchDirectoryStatus: (args: { path: string }) =>
+    fetchDirectoryStatus: (args: { path: string; maxCommitLoad: number }) =>
       ipcRenderer.invoke(CHANELS.FETCH_DIRECTORY_STATUS, args),
 
     getCommitDiff: (args: {
@@ -76,8 +76,9 @@ const API = {
     onAppFocus: (callback: () => void) =>
       ipcRenderer.on(CHANELS.ON_APP_FOCUS, callback),
 
-    removeFocusEventListener: () =>
-      ipcRenderer.removeAllListeners(CHANELS.ON_APP_FOCUS),
+    removeFocusEventListener: () => {
+      ipcRenderer.removeAllListeners(CHANELS.ON_APP_FOCUS);
+    },
   },
 };
 

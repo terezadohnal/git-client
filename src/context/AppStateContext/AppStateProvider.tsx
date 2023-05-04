@@ -18,6 +18,8 @@ interface AppState {
   localBranches: BranchSummary;
   snackbar: Snackbar;
   isModalOpen: boolean;
+  maxCommitLoad: number;
+  isLoadMoreButtonDisabled: boolean;
 }
 
 interface SetRepositoryPathAction {
@@ -74,6 +76,14 @@ interface SetIsModalOpen {
   };
 }
 
+interface SetIsLoadMoreButtonDisabled {
+  type: StateAction.SET_IS_LOAD_MORE_BUTTON_DISABLED;
+}
+
+interface IncreaseMaxCommitLoad {
+  type: StateAction.INCREASE_MAX_COMMIT_LOAD;
+}
+
 export type AppStateAction =
   | SetRepositoryPathAction
   | SetCommitsAction
@@ -83,7 +93,9 @@ export type AppStateAction =
   | SetLocalBranches
   | SetSnackbar
   | ResetAppState
-  | SetIsModalOpen;
+  | SetIsModalOpen
+  | IncreaseMaxCommitLoad
+  | SetIsLoadMoreButtonDisabled;
 
 export const AppContext = createContext<AppState>({} as AppState);
 export const AppDispatchContext = createContext<Dispatch<AppStateAction>>(
@@ -132,6 +144,16 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
         ...state,
         isModalOpen: action.payload.isModalOpen,
       };
+    case StateAction.INCREASE_MAX_COMMIT_LOAD:
+      return {
+        ...state,
+        maxCommitLoad: state.maxCommitLoad + 100,
+      };
+    case StateAction.SET_IS_LOAD_MORE_BUTTON_DISABLED:
+      return {
+        ...state,
+        isLoadMoreButtonDisabled: true,
+      };
     case StateAction.RESET_APP_STATE:
       return {
         repositoryPath: '',
@@ -145,6 +167,8 @@ const appStateReducer = (state: AppState, action: AppStateAction) => {
           type: MessageTypes.SUCCESS,
         },
         isModalOpen: false,
+        maxCommitLoad: 100,
+        isLoadMoreButtonDisabled: false,
       };
 
     default:
@@ -164,6 +188,8 @@ const initialAppState: AppState = {
     type: MessageTypes.SUCCESS,
   },
   isModalOpen: false,
+  maxCommitLoad: 100,
+  isLoadMoreButtonDisabled: false,
 };
 
 export default function AppStateProvider(props: { children: ReactElement }) {

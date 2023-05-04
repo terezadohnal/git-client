@@ -1,5 +1,5 @@
 import { Grid, Text } from '@nextui-org/react';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import useSnackbar from 'hooks/useSnackbar';
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { MessageTypes } from 'helpers/types';
@@ -10,11 +10,9 @@ export const BranchLabel: FC<BranchLabelProps> = ({ branch }) => {
   const appState = useAppState();
   const { showSnackbar } = useSnackbar();
   const { fetchDirectory } = useRepository();
-  const [isLoading, setIsLoading] = useState(false);
 
   const onCheckoutPress = async () => {
     try {
-      setIsLoading(true);
       const response = await window.electron.ipcRenderer.checkout({
         path: appState.repositoryPath,
         branch: branch.name,
@@ -35,8 +33,6 @@ export const BranchLabel: FC<BranchLabelProps> = ({ branch }) => {
         message: err.message,
         type: MessageTypes.ERROR,
       });
-    } finally {
-      setIsLoading(false);
     }
   };
   return (
@@ -47,7 +43,7 @@ export const BranchLabel: FC<BranchLabelProps> = ({ branch }) => {
         left: branch?.x ? branch.x + 30 : 0,
         cursor: 'pointer',
       }}
-      onClick={onCheckoutPress}
+      onDoubleClick={onCheckoutPress}
     >
       <Text
         style={{

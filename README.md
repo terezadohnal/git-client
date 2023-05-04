@@ -1,14 +1,12 @@
-# git-client
+# Gitee app
 
-My bachelor thesis repository where I create desktop GUI for git focused on graph visualization.
+My bachelor thesis repository where I create desktop GUI for Git focused on graph visualization.
 
-##Description
+## Description
 
 Application allows you to do basic Git operation: commit, push, pull, checkout, merge, clone, branch. It also allows you to visualize your git graph and see how your commits are connected. You can also see the difference between two commits and see the changes in your code.
 
 To see all keyboard shortcuts available please check out upper submenu called **Repository**.
-
-**Follow these steps to run this repository**
 
 ## Installation
 

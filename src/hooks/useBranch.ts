@@ -1,10 +1,12 @@
 import { useAppState } from 'context/AppStateContext/AppStateProvider';
 import { MessageTypes } from 'helpers/types';
 import useSnackbar from './useSnackbar';
+import useRepository from './useRepository';
 
 const useBranch = () => {
   const appState = useAppState();
   const { showSnackbar } = useSnackbar();
+  const { fetchDirectory } = useRepository();
 
   const mergeBranch = async (branch: string) => {
     try {
@@ -14,6 +16,7 @@ const useBranch = () => {
         current: appState.status?.current ?? '',
       });
       if (response) {
+        fetchDirectory();
         showSnackbar({
           message: `Branch ${branch} successfully merged`,
         });
@@ -39,6 +42,7 @@ const useBranch = () => {
         checkout,
       });
       if (response) {
+        fetchDirectory();
         showSnackbar({
           message: `Branch ${name} successfully created`,
         });
@@ -59,6 +63,7 @@ const useBranch = () => {
       });
 
       if (response) {
+        fetchDirectory();
         showSnackbar({
           message: `${
             branches === 'all' ? 'Branches' : 'Branch'

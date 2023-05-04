@@ -95,3 +95,10 @@ body {
   z-index: 100;
   opacity: 0.8;
 }
+
+.branchLabel:hover {
+  background-color: #f1e8fb;
+  border-radius: 8px;
+  opacity: 1;
+  transition: all 0.3s ease;
+}

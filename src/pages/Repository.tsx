@@ -17,7 +17,6 @@ export const Repository = () => {
   const { fetchDirectory } = useRepository();
   const navigate = useNavigate();
   const [tooltip, setTooltip] = useState<CommitEvent | null>(null);
-  const { performance } = window;
   const ref = useRef<HTMLDivElement | null>(null);
   const { elX, elY } = useMouse(ref);
 
@@ -33,20 +32,16 @@ export const Repository = () => {
   }, [fetchDirectory]);
 
   useEffect(() => {
-    const startFetchingTime = performance.now();
     refetch();
-    const endFetchingTime = performance.now();
-    console.log(
-      `Time taken to fetch all commits: ${
-        endFetchingTime - startFetchingTime
-      }ms`
-    );
-  }, [refetch, performance]);
+  }, [refetch]);
 
   useEffect(() => {
-    window.electron.ipcRenderer.onAppFocus(() => {
+    const handleAppFocus = () => {
       refetch();
-    });
+    };
+    window.electron.ipcRenderer.onAppFocus(handleAppFocus);
+
+    return () => window.electron.ipcRenderer.removeFocusEventListener();
   }, [refetch]);
 
   const { commits } = appState;

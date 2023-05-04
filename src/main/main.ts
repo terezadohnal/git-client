@@ -41,8 +41,8 @@ ipcMain.handle(CHANELS.CLONE, async (event, arg) => {
 
 // Function to fetch directory status containing commits, branches and status
 
-ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, arg) => {
-  const git: SimpleGit = simpleGit({ baseDir: arg.path, trimmed: false });
+ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, args) => {
+  const git: SimpleGit = simpleGit({ baseDir: args.path, trimmed: false });
   try {
     const isRepo = await git.checkIsRepo();
     if (isRepo) {
@@ -58,13 +58,13 @@ ipcMain.handle(CHANELS.FETCH_DIRECTORY_STATUS, async (_, arg) => {
           tree: '%T',
           refs: '%D',
         },
-        maxCount: 1000, // enables faster loading of bigger repositories
+        maxCount: args.maxCommitLoad, // enables faster loading of bigger repositories
         '--all': null,
       });
       const branches = await git.branchLocal();
 
       if (mainWindow) {
-        mainWindow.setTitle(arg.path);
+        mainWindow.setTitle(args.path);
       }
 
       return JSON.stringify({
@@ -235,9 +235,10 @@ ipcMain.handle(CHANELS.MERGE, async (_, args) => {
 
 ipcMain.handle(CHANELS.CHECKOUT, async (_, args) => {
   const git: SimpleGit = simpleGit({ baseDir: args.path });
+  const branch = args.branch.split('/')[args.branch.split('/').length - 1];
   try {
-    const options = args.isRemote ? ['-b', args.branch] : [];
-    return await git.checkout(args.branch, options);
+    const options = args.isRemote ? ['-b', branch] : [];
+    return await git.checkout(branch, options);
   } catch (e: any) {
     throw new Error(e);
   }
@@ -317,7 +318,6 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
-      devTools: false,
     },
   });
 

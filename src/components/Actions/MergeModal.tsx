@@ -75,6 +75,7 @@ export const MergeModal: FC<MergeModalProps> = ({
                     className="textOverflow"
                     showFullDescription
                     key={branch}
+                    textValue={branch}
                   >
                     <Text>{branch}</Text>
                   </Dropdown.Item>
